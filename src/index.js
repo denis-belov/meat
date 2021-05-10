@@ -112,7 +112,7 @@ window.addEventListener(
 
 								scene.add(gltf.scene);
 
-								document.getElementById('spinner').style.display = 'none';
+								// document.getElementById('spinner').style.display = 'none';
 
 								// gltf.animations; // Array<THREE.AnimationClip>
 								// gltf.scene; // THREE.Group
