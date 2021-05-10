@@ -14,6 +14,10 @@ import '@babel/polyfill';
 
 
 
+const dpr = window.devicePixelRatio || 1;
+
+
+
 window.THREE = THREE;
 
 
@@ -67,59 +71,11 @@ window.addEventListener(
 
 										document.getElementById('spinner').style.display = 'block';
 
-										const { scene, camera, renderer } = XR8.Threejs.xrScene();
-
-										const ambient_light = new THREE.AmbientLight(0xFFFFFF);
-										// ambient_light.intensity = 2;
-
-										scene.add(ambient_light);
-
-										const spot_light = new THREE.SpotLight(0xFFFFFF);
-										spot_light.intensity = 2;
-										spot_light.distance = 0;
-										spot_light.penumbra = 1;
-										spot_light.decay = 2;
-										spot_light.angle = Math.PI * 0.5;
-										spot_light.position.set(0, 10, 0);
-
-										scene.add(spot_light);
-										scene.add(spot_light.target);
-
-										// prevent scroll/pinch gestures on canvas
-										canvas.addEventListener(
-
-											'touchmove',
-
-											(evt) => evt.preventDefault(),
-										);
+										const { scene, camera } = XR8.Threejs.xrScene();
 
 										// Sync the xr controller's 6DoF position and camera paremeters with our scene.
 										XR8.XrController
 											.updateCameraProjectionMatrix({ origin: camera.position, facing: camera.quaternion });
-
-										const gl = renderer.getContext();
-
-										gl.viewport(0, 0, window.innerWidth, window.innerHeight);
-
-										renderer.setSize(window.innerWidth, window.innerHeight);
-
-										canvas.width = window.innerWidth;
-										canvas.height = window.innerHeight;
-										canvas.style.width = '100%';
-										canvas.style.height = '100%';
-
-										// Recenter content when the canvas is tapped.
-										canvas.addEventListener(
-
-											'touchstart',
-
-											(evt) => {
-
-												evt.touches.length === 1 && XR8.XrController.recenter();
-											},
-
-											true,
-										);
 
 										gltf_loader.load(
 
@@ -161,11 +117,11 @@ window.addEventListener(
 
 					onStart: () => {
 
-						const { renderer } = XR8.Threejs.xrScene();
+						const { scene, renderer } = XR8.Threejs.xrScene();
 
 						const gl = renderer.getContext();
 
-						gl.viewport(0, 0, window.innerWidth, window.innerHeight);
+						gl.viewport(0, 0, window.innerWidth * dpr, window.innerHeight * dpr);
 
 						renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -174,87 +130,41 @@ window.addEventListener(
 						canvas.style.width = '100%';
 						canvas.style.height = '100%';
 
-						// const { scene, camera, renderer } = XR8.Threejs.xrScene();
+						const ambient_light = new THREE.AmbientLight(0xFFFFFF);
 
-						// const ambient_light = new THREE.AmbientLight(0xFFFFFF);
-						// // ambient_light.intensity = 2;
+						scene.add(ambient_light);
 
-						// scene.add(ambient_light);
+						const spot_light = new THREE.SpotLight(0xFFFFFF);
+						spot_light.intensity = 2;
+						spot_light.distance = 0;
+						spot_light.penumbra = 1;
+						spot_light.decay = 2;
+						spot_light.angle = Math.PI * 0.5;
+						spot_light.position.set(0, 10, 0);
 
-						// const spot_light = new THREE.SpotLight(0xFFFFFF);
-						// spot_light.intensity = 2;
-						// spot_light.distance = 0;
-						// spot_light.penumbra = 1;
-						// spot_light.decay = 2;
-						// spot_light.angle = Math.PI * 0.5;
-						// spot_light.position.set(0, 10, 0);
+						scene.add(spot_light);
+						scene.add(spot_light.target);
 
-						// scene.add(spot_light);
-						// scene.add(spot_light.target);
+						// Prevent scroll/pinch gestures on canvas.
+						canvas.addEventListener(
 
-						// // prevent scroll/pinch gestures on canvas
-						// canvas.addEventListener(
+							'touchmove',
 
-						// 	'touchmove',
+							(evt) => evt.preventDefault(),
+						);
 
-						// 	(evt) => evt.preventDefault(),
-						// );
+						// Recenter content when the canvas is tapped.
+						canvas.addEventListener(
 
-						// // Sync the xr controller's 6DoF position and camera paremeters with our scene.
-						// XR8.XrController
-						// 	.updateCameraProjectionMatrix({ origin: camera.position, facing: camera.quaternion });
+							'touchstart',
 
-						// const gl = renderer.getContext();
+							(evt) => {
 
-						// gl.viewport(0, 0, window.innerWidth, window.innerHeight);
+								evt.touches.length === 1 && XR8.XrController.recenter();
+							},
 
-						// renderer.setSize(window.innerWidth, window.innerHeight);
-
-						// canvas.width = window.innerWidth;
-						// canvas.height = window.innerHeight;
-						// canvas.style.width = '100%';
-						// canvas.style.height = '100%';
-
-						// // Recenter content when the canvas is tapped.
-						// canvas.addEventListener(
-
-						// 	'touchstart',
-
-						// 	(evt) => {
-
-						// 		evt.touches.length === 1 && XR8.XrController.recenter();
-						// 	},
-
-						// 	true,
-						// );
-
-						// gltf_loader.load(
-
-						// 	'models/Butcher\'s_Word_ Factory.glb',
-
-						// 	(gltf) => {
-
-						// 		scene.add(gltf.scene);
-
-						// 		document.getElementById('spinner').style.display = 'none';
-
-						// 		// gltf.animations; // Array<THREE.AnimationClip>
-						// 		// gltf.scene; // THREE.Group
-						// 		// gltf.scenes; // Array<THREE.Group>
-						// 		// gltf.cameras; // Array<THREE.Camera>
-						// 		// gltf.asset; // Object
-						// 	},
-
-						// 	// (xhr) => {
-
-						// 	// 	console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-						// 	// },
-
-						// 	// (error) => {
-
-						// 	// 	alert('An error happened');
-						// 	// },
-						// );
+							true,
+						);
 					},
 				},
 			],
