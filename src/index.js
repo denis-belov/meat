@@ -4,15 +4,8 @@ global
 XR8,
 */
 
-/*
-eslint-disable
-
-no-bitwise,
-*/
 
 
-
-// import FileSaver from 'file-saver';
 import * as THREE from 'three';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
@@ -75,39 +68,6 @@ window.addEventListener(
 						scene.add(spot_light);
 						scene.add(spot_light.target);
 
-						gltf_loader.load(
-
-							'models/Butcher\'s_Word_ Factory.glb',
-
-							(gltf) => {
-
-								scene.add(gltf.scene);
-
-								// gltf.animations; // Array<THREE.AnimationClip>
-								// gltf.scene; // THREE.Group
-								// gltf.scenes; // Array<THREE.Group>
-								// gltf.cameras; // Array<THREE.Camera>
-								// gltf.asset; // Object
-							},
-
-							(xhr) => {
-
-								console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-							},
-
-							// (error) => {
-
-							// 	alert('An error happened');
-							// },
-						);
-
-						// const cube =
-						// 	new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial({ color: 'red' }));
-
-						// cube.position.z = -4;
-
-						// scene.add(cube);
-
 						// prevent scroll/pinch gestures on canvas
 						canvas.addEventListener(
 
@@ -117,7 +77,8 @@ window.addEventListener(
 						);
 
 						// Sync the xr controller's 6DoF position and camera paremeters with our scene.
-						XR8.XrController.updateCameraProjectionMatrix({ origin: camera.position, facing: camera.quaternion });
+						XR8.XrController
+							.updateCameraProjectionMatrix({ origin: camera.position, facing: camera.quaternion });
 
 						const gl = renderer.getContext();
 
@@ -141,6 +102,34 @@ window.addEventListener(
 							},
 
 							true,
+						);
+
+						gltf_loader.load(
+
+							'models/Butcher\'s_Word_ Factory.glb',
+
+							(gltf) => {
+
+								scene.add(gltf.scene);
+
+								document.getElementById('spinner').style.display = 'none';
+
+								// gltf.animations; // Array<THREE.AnimationClip>
+								// gltf.scene; // THREE.Group
+								// gltf.scenes; // Array<THREE.Group>
+								// gltf.cameras; // Array<THREE.Camera>
+								// gltf.asset; // Object
+							},
+
+							// (xhr) => {
+
+							// 	console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+							// },
+
+							// (error) => {
+
+							// 	alert('An error happened');
+							// },
 						);
 					},
 				},
