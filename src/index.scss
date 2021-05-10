@@ -30,17 +30,15 @@ canvas {
 // loading roller
 .lds-spinner {
   color: official;
-  // display: inline-block;
-  position: absolute;
+  display: block;
+  position: fixed;
   width: 80px;
   height: 80px;
   z-index: 999999;
-  left: calc(50% - 40px);
-  top: calc(50% - 40px);
-
-  // safari
-  left: -webkit-calc(50% - 40px);
-  top: -webkit-calc(50% - 40px);
+  left: 50%;
+  top: 50%;
+  margin-left: -40px;
+  margin-top: -40px;
 }
 .lds-spinner div {
   transform-origin: 40px 40px;
