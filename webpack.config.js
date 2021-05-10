@@ -6,7 +6,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-// const CopyPlugin = require('copy-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = (env) => ({
 
@@ -129,14 +129,14 @@ module.exports = (env) => ({
 			},
 		}),
 
-		// new CopyPlugin({
+		new CopyPlugin({
 
-		// 	patterns: [
+			patterns: [
 
-		// 		{ from: 'src/models', to: 'models' },
-		// 		{ from: 'src/textures', to: 'textures' },
-		// 	],
-		// }),
+				{ from: 'src/models', to: 'models' },
+				// { from: 'src/textures', to: 'textures' },
+			],
+		}),
 
 		new webpack.DefinePlugin({
 
