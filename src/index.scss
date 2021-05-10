@@ -37,6 +37,10 @@ canvas {
   z-index: 999999;
   left: calc(50% - 40px);
   top: calc(50% - 40px);
+
+  // safari
+  left: -webkit-calc(50% - 40px);
+  top: -webkit-calc(50% - 40px);
 }
 .lds-spinner div {
   transform-origin: 40px 40px;
