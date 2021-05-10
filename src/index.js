@@ -1,7 +1,6 @@
 /*
 global
 
-LOG,
 XR8,
 */
 

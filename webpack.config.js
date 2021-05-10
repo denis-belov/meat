@@ -33,7 +33,7 @@ module.exports = (env) => ({
 				exclude: /node_modules/,
 				use:
 
-					env === 'development' || env === 'production' ?
+					env === 'development' ?
 
 						'babel-loader' :
 
@@ -72,38 +72,6 @@ module.exports = (env) => ({
 			{
 				test: /\.(png|jpg|jpeg)$/,
 				use: 'base64-inline-loader',
-			},
-
-			{
-				test: /\.cpp$/,
-				use: [
-
-					{
-
-						loader: '../xgk-cpp-webpack-loader/build/index.js',
-
-						options: {
-
-							execute: 'make -f /home/denis/reps/denis-belov/wasm-test/src/cpp/makefile',
-							target: '/home/denis/reps/denis-belov/wasm-test/src/cpp/build/js/main.js',
-							// total_rebuild: [
-
-							//   '/home/denis/reps/denis-belov/xgk-math/makefiles/emcc/makefile':
-							// ],
-							watch_file: [
-
-								'/home/denis/reps/denis-belov/xgk-math/makefiles/emcc/makefile',
-								'/home/denis/reps/denis-belov/wasm-test/src/cpp/makefile',
-							],
-							watch_dir: [
-
-								'/home/denis/reps/denis-belov/xgk-math/src',
-								'/home/denis/reps/denis-belov/wasm-test/src/cpp/src',
-							],
-							// entry: '/home/denis/reps/denis-belov/wasm-test/src/cpp/src/main.cpp',
-						},
-					},
-				],
 			},
 		],
 	},
@@ -150,7 +118,6 @@ module.exports = (env) => ({
 
 		compress: true,
 		historyApiFallback: true,
-		// host: 'localhost',
 		host: '0.0.0.0',
 		port: 8080,
 		open: true,
