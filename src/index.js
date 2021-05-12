@@ -34,6 +34,11 @@ gltf_loader.setDRACOLoader(draco_loader);
 
 
 
+let mixer = null;
+const clock = new THREE.Clock();
+
+
+
 window.addEventListener(
 
 	'xrloaded',
@@ -79,13 +84,33 @@ window.addEventListener(
 
 										gltf_loader.load(
 
-											'models/Butcher\'s_Word_ Factory.glb',
+											// 'models/Butcher\'s_Word_ Factory.glb',
+											'models/Grill.glb',
 
 											(gltf) => {
 
-												scene.add(gltf.scene);
+												// LOG(123);
 
 												document.getElementById('spinner').style.display = 'none';
+
+												mixer = new THREE.AnimationMixer(gltf.scene);
+												// alert(gltf.animations.length);
+												const action = mixer.clipAction(gltf.animations[0]);
+
+												scene.add(gltf.scene);
+
+												gltf.scene.position.z = -5;
+
+												const animate = () => {
+
+													mixer && mixer.update(clock.getDelta());
+
+													requestAnimationFrame(animate);
+												};
+
+												animate();
+
+												action.play();
 
 												// gltf.animations; // Array<THREE.AnimationClip>
 												// gltf.scene; // THREE.Group
@@ -118,6 +143,8 @@ window.addEventListener(
 					onStart: () => {
 
 						const { scene, renderer } = XR8.Threejs.xrScene();
+
+						LOG(XR8.Threejs.xrScene());
 
 						const gl = renderer.getContext();
 
