@@ -35,6 +35,11 @@ gltf_loader.setDRACOLoader(draco_loader);
 
 
 
+const CubeTextureLoader = new THREE.CubeTextureLoader();
+CubeTextureLoader.setPath('textures/cubemap/');
+
+let cube_map = null;
+
 const loadModel = (scene, file_path) =>
 {
 	return new Promise(
@@ -57,36 +62,38 @@ const loadModel = (scene, file_path) =>
 					// const cube_map =
 					// 	await CubeTextureLoader.load([ 'posx.jpg', 'negx.jpg', 'posy.jpg', 'negy.jpg', 'posz.jpg', 'negz.jpg' ]);
 
-					// // alert(cube_map);
+					// alert(cube_map);
 
-					// gltf.scene.traverse((elm) => {
+					gltf.scene.traverse((elm) => {
 
-					// 	if (elm.isMesh) {
+						if (elm.isMesh) {
 
-					// 		if (Array.isArray(elm.material)) {
+							if (Array.isArray(elm.material)) {
 
-					// 			elm.material.forEach(
+								elm.material.forEach(
 
-					// 				(_elm) => {
+									(_elm) => {
 
-					// 					_elm.envMap = cube_map;
-					// 					// _elm.side = THREE.FrontSide;
-					// 					_elm.needsUpdate = true;
-					// 				},
-					// 			);
-					// 		}
-					// 		else {
+										_elm.envMap = cube_map;
+										// _elm.side = THREE.FrontSide;
+										_elm.needsUpdate = true;
+									},
+								);
+								// LOG(elm.material)
+							}
+							else {
 
-					// 			elm.material.envMap = cube_map;
-					// 			// elm.material.side = THREE.FrontSide;
-					// 			elm.material.needsUpdate = true;
-					// 		}
-					// 	}
-					// });
+								elm.material.envMap = cube_map;
+								// elm.material.side = THREE.FrontSide;
+								elm.material.needsUpdate = true;
+								// LOG(elm.material)
+							}
+						}
+					});
 
 					scene.add(gltf.scene);
 
-					gltf.scene.position.z = -2;
+					gltf.scene.position.z = -16;
 
 					resolve();
 
@@ -153,27 +160,54 @@ window.addEventListener(
 
 								process:
 
-									async () => {
+									() => {
 
 										XR8.XrController.configure({ imageTargets: [] });
 
-										alert('image found');
+										// alert('image found');
+										document.getElementById('wrapper').style.display = 'block';
 
-										document.getElementById('spinner').style.display = 'block';
+										const tap3 = async () => {
 
-										const { scene } = XR8.Threejs.xrScene();
+											document.getElementById('wrapper').style.display = 'none';
+											document.getElementById('spinner').style.display = 'block';
 
-										await loadModel(
+											const { scene } = XR8.Threejs.xrScene();
 
-											scene,
+											cube_map = await CubeTextureLoader.load([ 'posx.jpg', 'negx.jpg', 'posy.jpg', 'negy.jpg', 'posz.jpg', 'negz.jpg' ])
 
-											'models/Butcher\'s_Word_ Factory.glb',
-											// 'models/Grill.glb',
-										);
+											await loadModel(
 
-										await loadModel(scene, 'models/Meatman.glb');
+												scene,
 
-										document.getElementById('spinner').style.display = 'none';
+												'models/Butcher\'s_Word_ Factory.glb',
+												// 'models/Grill.glb',
+											);
+
+											await loadModel(scene, 'models/Meatman.glb');
+
+											document.getElementById('spinner').style.display = 'none';
+										};
+
+										const tap2 = () => {
+
+											document.getElementById('zoom').style.display = 'none';
+											document.getElementById('start').style.display = 'inline-block';
+
+											document.getElementById('wrapper').removeEventListener('click', tap2);
+											document.getElementById('wrapper').addEventListener('click', tap3);
+										};
+
+										const tap1 = () => {
+
+											document.getElementById('click').style.display = 'none';
+											document.getElementById('zoom').style.display = 'initial';
+
+											document.getElementById('wrapper').removeEventListener('click', tap1);
+											document.getElementById('wrapper').addEventListener('click', tap2);
+										};
+
+										document.getElementById('wrapper').addEventListener('click', tap1);
 									},
 							},
 							// {event: 'reality.imageupdated', process: logEvent},

@@ -101,8 +101,9 @@ module.exports = (env) => ({
 
 			patterns: [
 
+				{ from: 'src/images', to: 'images' },
 				{ from: 'src/models', to: 'models' },
-				// { from: 'src/textures', to: 'textures' },
+				{ from: 'src/textures', to: 'textures' },
 			],
 		}),
 
