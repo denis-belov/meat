@@ -7,7 +7,7 @@ html
 		block title
 			title
 
-		meta(name="viewport", content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0")
+		meta(name="viewport", content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no")
 
 		script(src="//apps.8thwall.com/xrweb?appKey=9JzsUVFvcpuB9DlCNhiOgzdqbKMPzDtCVMMz8nMGRw6JgyGBcUEpASuPrS3AIBHbL976i9")
 
@@ -19,11 +19,6 @@ html
 
 			.wrapper-inner
 
-				img(
-
-					src="images/grid_white 1.png"
-					style="position: relative; top: 50px;"
-				)
 				img#click(
 
 					src="images/click 1.png"
@@ -44,7 +39,20 @@ html
 
 					style="display: block; margin-top: 20px; margin-bottom: 50px;"
 				)
-					span Наведите камеру на поверхность и тапните по ней пальцем
+					span
+						| Наведите камеру на поверхность
+						br
+						| и тапните по ней пальцем
+					span(style="display: none;")
+						| Чтобы увеличить или уменьшить,
+						br
+						| используйте жест "зум"
+
+		#next_animation(
+
+			style="display: none; position: fixed; right: 10px; bottom: 10px;"
+		)
+			span Next animation
 
 
 		#spinner.lds-spinner

@@ -14,6 +14,20 @@ import '@babel/polyfill';
 
 
 
+const _try = (_function) =>
+{
+	try {
+
+		_function();
+	}
+	catch (_error) {
+
+		alert(_error);
+	}
+};
+
+
+
 window.THREE = THREE;
 
 
@@ -30,8 +44,10 @@ gltf_loader.setDRACOLoader(draco_loader);
 
 
 
-// let mixer = null;
-// const clock = new THREE.Clock();
+let meatman_mixer = null;
+let meatman_actions = null;
+let meatman_animation_index = 0;
+const clock = new THREE.Clock();
 
 
 
@@ -40,7 +56,77 @@ CubeTextureLoader.setPath('textures/cubemap/');
 
 let cube_map = null;
 
-const loadModel = (scene, file_path) =>
+
+
+const raycaster = new THREE.Raycaster();
+const screen_center = new THREE.Vector2();
+const xz_plane = new THREE.Plane(new THREE.Vector3(0, 1, 0));
+const xz_plane_intersection = new THREE.Vector3();
+let _camera = null;
+let _scene = null;
+
+let grid_mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1, 10, 10), new THREE.MeshBasicMaterial({ color: 'white', wireframe: true }));
+
+grid_mesh.rotation.x = -Math.PI * 0.5;
+
+
+
+// const ind = document.createElement('div');
+// ind.style.position = 'absolute';
+// ind.style.zIndex = 999999;
+// ind.style.left = 0;
+// ind.style.top = 0;
+// document.body.appendChild(ind);
+
+
+
+const touch_start1 = new THREE.Vector2();
+const touch_start2 = new THREE.Vector2();
+let touch_distance_start = 0;
+const touch_move1 = new THREE.Vector2();
+const touch_move2 = new THREE.Vector2();
+let zoom = 1;
+
+window.addEventListener('touchstart', (evt) => {
+
+	if (evt.touches.length === 2) {
+
+		touch_start1.set(evt.touches[0].clientX / window.innerWidth, evt.touches[0].clientY / window.innerHeight);
+		touch_start2.set(evt.touches[1].clientX / window.innerWidth, evt.touches[1].clientY / window.innerHeight);
+
+		touch_distance_start = touch_start1.distanceTo(touch_start2);
+	}
+});
+
+window.addEventListener('touchmove', (evt) => {
+
+	if (evt.touches.length === 2) {
+
+		touch_move1.set(evt.touches[0].clientX / window.innerWidth, evt.touches[0].clientY / window.innerHeight);
+		touch_move2.set(evt.touches[1].clientX / window.innerWidth, evt.touches[1].clientY / window.innerHeight);
+
+		zoom += (touch_move1.distanceTo(touch_move2) - touch_distance_start) * 2;
+
+		if (zoom <= 0.1)
+		{
+			zoom = 0.1;
+		}
+
+		touch_distance_start = touch_move1.distanceTo(touch_move2);
+
+		_scene.children.forEach((elm) => {
+
+			if (elm.isMesh || elm instanceof THREE.Object3D) {
+
+				elm.scale.set(zoom, zoom, zoom);
+			}
+		});
+	}
+});
+
+
+
+const loadModel = (camera, scene, file_path, object_type) =>
 {
 	return new Promise(
 
@@ -52,17 +138,25 @@ const loadModel = (scene, file_path) =>
 
 				async (gltf) =>
 				{
-					// mixer = new THREE.AnimationMixer(gltf.scene);
-					// // alert(gltf.animations.length);
-					// const action = mixer.clipAction(gltf.animations[0]);
+					if (gltf.animations.length > 0 && object_type === 0)
+					{
+						meatman_mixer = new THREE.AnimationMixer(gltf.scene);
+						meatman_actions = gltf.animations.map
+						(
+							(animation) =>
+							{
+								const action = meatman_mixer.clipAction(animation);
 
-					// const CubeTextureLoader = new THREE.CubeTextureLoader();
-					// CubeTextureLoader.setPath('textures/cubemap/');
+								action.loop = THREE.LoopOnce;
 
-					// const cube_map =
-					// 	await CubeTextureLoader.load([ 'posx.jpg', 'negx.jpg', 'posy.jpg', 'negy.jpg', 'posz.jpg', 'negz.jpg' ]);
+								return action;
+							},
+						);
+					}
 
-					// alert(cube_map);
+					// alert(gltf.animations.length);
+					// // mixer = new THREE.AnimationMixer(gltf.scene);
+					// // const action = mixer.clipAction(gltf.animations[0]);
 
 					gltf.scene.traverse((elm) => {
 
@@ -75,44 +169,22 @@ const loadModel = (scene, file_path) =>
 									(_elm) => {
 
 										_elm.envMap = cube_map;
-										// _elm.side = THREE.FrontSide;
 										_elm.needsUpdate = true;
 									},
 								);
-								// LOG(elm.material)
 							}
 							else {
 
 								elm.material.envMap = cube_map;
-								// elm.material.side = THREE.FrontSide;
 								elm.material.needsUpdate = true;
-								// LOG(elm.material)
 							}
 						}
 					});
 
-					scene.add(gltf.scene);
+					gltf.scene.scale.set(zoom, zoom, zoom);
+					gltf.scene.position.copy(xz_plane_intersection);
 
-					gltf.scene.position.z = -16;
-
-					resolve();
-
-					// const animate = () => {
-
-					// 	mixer && mixer.update(clock.getDelta());
-
-					// 	requestAnimationFrame(animate);
-					// };
-
-					// animate();
-
-					// action.play();
-
-					// gltf.animations; // Array<THREE.AnimationClip>
-					// gltf.scene; // THREE.Group
-					// gltf.scenes; // Array<THREE.Group>
-					// gltf.cameras; // Array<THREE.Camera>
-					// gltf.asset; // Object
+					resolve(gltf.scene);
 				},
 
 				// (xhr) =>
@@ -164,43 +236,77 @@ window.addEventListener(
 
 										XR8.XrController.configure({ imageTargets: [] });
 
-										// alert('image found');
 										document.getElementById('wrapper').style.display = 'block';
+
+										const { camera, scene } = XR8.Threejs.xrScene();
+
+										scene.add(grid_mesh);
+
+										raycaster.setFromCamera(screen_center, camera);
+
+										raycaster.ray.intersectPlane(xz_plane, xz_plane_intersection);
 
 										const tap3 = async () => {
 
 											document.getElementById('wrapper').style.display = 'none';
 											document.getElementById('spinner').style.display = 'block';
 
-											const { scene } = XR8.Threejs.xrScene();
+											scene.remove(grid_mesh);
+											grid_mesh = null;
 
 											cube_map = await CubeTextureLoader.load([ 'posx.jpg', 'negx.jpg', 'posy.jpg', 'negy.jpg', 'posz.jpg', 'negz.jpg' ])
 
-											await loadModel(
+											const factory_mesh = await loadModel(
+
+												camera,
 
 												scene,
 
 												'models/Butcher\'s_Word_ Factory.glb',
-												// 'models/Grill.glb',
 											);
 
-											await loadModel(scene, 'models/Meatman.glb');
+											const meatman_mesh = await loadModel(camera, scene, 'models/Meatman.glb', 0);
+
+											scene.add(factory_mesh);
+											scene.add(meatman_mesh);
+
+											document.getElementById('next_animation').addEventListener(
+
+												'click',
+
+												(evt) =>
+												{
+													meatman_actions[meatman_animation_index].play();
+
+													++meatman_animation_index;
+
+													if (meatman_animation_index > meatman_actions.length - 1)
+													{
+														meatman_animation_index = 0;
+													}
+												},
+											);
 
 											document.getElementById('spinner').style.display = 'none';
+
+											document.getElementById('next_animation').style.display = 'block';
 										};
 
 										const tap2 = () => {
 
 											document.getElementById('zoom').style.display = 'none';
+											document.getElementsByTagName('span')[2].style.display = 'none';
 											document.getElementById('start').style.display = 'inline-block';
 
 											document.getElementById('wrapper').removeEventListener('click', tap2);
-											document.getElementById('wrapper').addEventListener('click', tap3);
+											document.getElementById('start').addEventListener('click', tap3);
 										};
 
 										const tap1 = () => {
 
 											document.getElementById('click').style.display = 'none';
+											document.getElementsByTagName('span')[1].style.display = 'none';
+											document.getElementsByTagName('span')[2].style.display = 'initial';
 											document.getElementById('zoom').style.display = 'initial';
 
 											document.getElementById('wrapper').removeEventListener('click', tap1);
@@ -223,11 +329,15 @@ window.addEventListener(
 
 						const { renderer, camera, scene } = XR8.Threejs.xrScene();
 
+						_scene = scene;
+						_camera = camera;
+
 						renderer.setSize(window.innerWidth, window.innerHeight);
 
 						renderer.outputEncoding = THREE.sRGBEncoding;
 
 						// Sync the xr controller's 6DoF position and camera paremeters with our scene.
+
 						XR8.XrController.updateCameraProjectionMatrix(
 
 							{
@@ -235,7 +345,7 @@ window.addEventListener(
 									pixelRectWidth: window.innerWidth,
 									pixelRectHeight: window.innerHeight,
 									nearClipPlane: 0.1,
-									farClipPlane: 100,
+									farClipPlane: 1000,
 								},
 
 								origin: camera.position,
@@ -247,43 +357,38 @@ window.addEventListener(
 
 						scene.add(ambient_light);
 
-						// const spot_light = new THREE.SpotLight(0xFFFFFF);
-						// spot_light.intensity = 2;
-						// spot_light.distance = 0;
-						// spot_light.penumbra = 1;
-						// spot_light.decay = 2;
-						// spot_light.angle = Math.PI * 0.5;
-						// spot_light.position.set(0, 10, 0);
 
-						// scene.add(spot_light);
-						// scene.add(spot_light.target);
 
-						// Prevent scroll/pinch gestures on canvas.
+						// // Recenter content when the canvas is tapped.
 						// canvas.addEventListener(
 
-						// 	'touchmove',
+						// 	'touchstart',
 
-						// 	(evt) => evt.preventDefault(),
+						// 	(evt) => {
+
+						// 		evt.touches.length === 1 && XR8.XrController.recenter();
+						// 	},
+
+						// 	true,
 						// );
+					},
 
-						// Recenter content when the canvas is tapped.
-						canvas.addEventListener(
+					onUpdate: () => {
 
-							'touchstart',
+						if (grid_mesh) {
 
-							(evt) => {
+							raycaster.setFromCamera(screen_center, _camera);
 
-								evt.touches.length === 1 && XR8.XrController.recenter();
-							},
+							raycaster.ray.intersectPlane(xz_plane, xz_plane_intersection);
 
-							true,
-						);
+							grid_mesh.position.copy(xz_plane_intersection);
+						}
+
+						meatman_mixer && meatman_mixer.update(clock.getDelta());
 					},
 				},
 			],
 		);
-
-		// XR8.XrController.configure({ disableWorldTracking: true });
 
 		XR8.run({ canvas });
 	},
