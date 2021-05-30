@@ -70,7 +70,7 @@ module.exports = (env) => ({
 			},
 
 			{
-				test: /\.(png|jpg|jpeg)$/,
+				test: /\.(svg|png|jpg|jpeg)$/,
 				use: 'base64-inline-loader',
 			},
 		],

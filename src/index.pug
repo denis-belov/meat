@@ -15,56 +15,135 @@ html
 
 		canvas
 
-		#wrapper.wrapper
+		#wrapper
 
-			.wrapper-inner
+			// 1
+			section.load-section(style="z-index: 999999;")
+				.logo-block
+					img(src='./img/logo-sm.svg' alt='Logo')
+				img.load-img(src='./img/circle.png' alt='Load')
+				.title-block
+					.title-item.top-title &Mcy;&yacy;&scy;&ncy;&icy;&kcy;
+					.title-item.middle-title &Scy;&lcy;&ocy;&vcy;&ocy;
+					.title-item.bottom-title &Gcy;&ocy;&vcy;&ocy;&rcy;&icy;&tcy;
 
-				img#click(
+			#camera-sections
+				header.camera-header(style="display: none; z-index: 999999;")
+					a.back(href='/')
+						svg(style='display:block;' width='19' height='15' viewbox='0 0 19 15' fill='none' xmlns='http://www.w3.org/2000/svg')
+							path(d='M1 7.5C6.66667 7.5 18 7.5 18 7.5M1 7.5C3.125 9.66667 7.375 14 7.375 14M1 7.5C3.125 5.33333 7.375 0.999999 7.375 0.999999' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round')
+					img.camera-logo(src='./img/logo-sm.svg' alt='')
+					a.sound(href='/')
+						svg(style='display:block;' width='20' height='14' viewbox='0 0 20 14' fill='none' xmlns='http://www.w3.org/2000/svg')
+							path(d='M0.976003 11.1348H5.5783L8.87301 13.7868C9.52368 14.199 10.4348 13.8143 10.4348 13.1272V0.870374C10.4348 0.197071 9.50742 -0.201414 8.87301 0.210812L5.5783 2.8628H0.976003C0.439201 2.8628 0 3.2338 0 3.68725V10.3242C0 10.7638 0.439201 11.1348 0.976003 11.1348Z' fill='white')
+							path(fill-rule='evenodd' clip-rule='evenodd' d='M19.6971 3.78033C19.99 3.48744 19.99 3.01256 19.6971 2.71967C19.4042 2.42678 18.9293 2.42678 18.6364 2.71967L16.0417 5.31434L13.4471 2.71967C13.1542 2.42678 12.6793 2.42678 12.3864 2.71967C12.0935 3.01256 12.0935 3.48744 12.3864 3.78033L14.9811 6.375L12.3864 8.96967C12.0935 9.26256 12.0935 9.73744 12.3864 10.0303C12.6793 10.3232 13.1542 10.3232 13.4471 10.0303L16.0417 7.43566L18.6364 10.0303C18.9293 10.3232 19.4042 10.3232 19.6971 10.0303C19.99 9.73744 19.99 9.26256 19.6971 8.96967L17.1024 6.375L19.6971 3.78033Z' fill='white')
 
-					src="images/click 1.png"
-					style="position: relative; top: 0px;"
-				)
-				img#zoom(
+				// 2
+				section.camera-section(style="display: none; z-index: 999999;")
+					.gradient
+					.manual-control.tap
+						img(src='./img/tap.svg' alt='Tap')
+						.description
+							| &Ncy;&acy;&vcy;&iecy;&dcy;&icy;&tcy;&iecy; &kcy;&acy;&mcy;&iecy;&rcy;&ucy; &ncy;&acy; &pcy;&ocy;&vcy;&iecy;&rcy;&khcy;&ncy;&ocy;&scy;&tcy;&softcy; &icy; &tcy;&acy;&pcy;&ncy;&icy;&tcy;&iecy; &pcy;&ocy; &ncy;&iecy;&jcy; &pcy;&acy;&lcy;&softcy;&tscy;&iecy;&mcy;.
 
-					src="images/zoom 2.png"
-					style="display: none; position: relative; bottom: 2px; margin-top: 21px;"
-				)
-				#start(
+				// 3
+				section.camera-section(style="display: none; z-index: 999999;")
+					.gradient
+					.manual-control.increase
+						img(src='./img/zoom.svg' alt='Tap')
+						.description
+							| &CHcy;&tcy;&ocy;&bcy;&ycy; &ucy;&vcy;&iecy;&lcy;&icy;&chcy;&icy;&tcy;&softcy; &icy;&lcy;&icy; &ucy;&mcy;&iecy;&ncy;&softcy;&shcy;&icy;&tcy;&softcy;, &icy;&scy;&pcy;&ocy;&lcy;&softcy;&zcy;&ucy;&jcy;&tcy;&iecy; &zhcy;&iecy;&scy;&tcy; &laquo;&zcy;&ucy;&mcy;&raquo;.
 
-					style="display: none; position: relative; bottom: 10px; margin-top: 49px;"
-				)
-					span Начать
+				// 4
+				section.camera-section.slider-section(style="display: none; z-index: 999999;")
+					.slider-block.meat-slider
+						.slider-content
+							.slider-block-item
+								.slide-title &Kcy;&ucy;&pcy;&acy;&tcy;&ycy;
+								img(style='bottom:5px;' src='./img/kupaty.png' alt='Kupaty')
+							.slider-block-item
+								.slide-title &Bcy;&iecy;&kcy;&ocy;&ncy;
+								img(style='bottom:5px;' src='./img/bacon.png' alt='Kupaty')
+							.slider-block-item
+								.slide-title &Kcy;&ocy;&lcy;&bcy;&acy;&scy;&kcy;&icy;
+								img(style='bottom:4px;' src='./img/sausages.png' alt='Kupaty')
+							.slider-block-item
+								.slide-title &Bcy;&ucy;&rcy;&gcy;&iecy;&rcy;&ycy;
+								img(style='bottom:0;' src='./img/burger.png' alt='Kupaty')
+							.slider-block-item
+								.slide-title &SHcy;&acy;&shcy;&lcy;&ycy;&kcy;
+								img(style='bottom:10px;' src='./img/barbecue.png' alt='Kupaty')
+							.slider-block-item
+								.slide-title &Scy;&tcy;&iecy;&jcy;&kcy;&icy;
+								img(style='bottom:9px;' src='./img/steak.png' alt='Kupaty')
+							.slider-block-item
+								.slide-title &CHcy;&iecy;&vcy;&acy;&pcy;&chcy;&icy;&chcy;&icy;
+								img(style='bottom:0;' src='./img/chevapi.png' alt='Kupaty')
+							.empty-block
 
-				div(
+				// 5
+				section.camera-section.slider-section(style="display: none; z-index: 999999;")
+					.slider-block.sauce-slider
+						.slider-content
+							.slider-block-item.active
+								.slide-title &Ucy;&kcy;&scy;&ucy;&scy;
+								img(style='bottom:7px;' src='./img/vinegar.png' alt='Kupaty')
+							.slider-block-item
+								.slide-title &Mcy;&acy;&jcy;&ocy;&ncy;&iecy;&zcy;
+								img(style='bottom:7px;' src='./img/mayonnaise.png' alt='Kupaty')
+							.slider-block-item
+								.slide-title
+									| &Scy;&ocy;&iecy;&vcy;&ycy;&jcy;
+									br
+									|  &scy;&ocy;&ucy;&scy;
+								img(style='bottom:0;' src='./img/soy-sauce.png' alt='Kupaty')
+							.slider-block-item
+								.slide-title &Scy;&pcy;&iecy;&tscy;&icy;&icy;
+								img(style='bottom:5px;' src='./img/spice.png' alt='Kupaty')
+							.empty-block
 
-					style="display: block; margin-top: 20px; margin-bottom: 50px;"
-				)
-					span
-						| Наведите камеру на поверхность
-						br
-						| и тапните по ней пальцем
-					span(style="display: none;")
-						| Чтобы увеличить или уменьшить,
-						br
-						| используйте жест "зум"
+				// 6
+				section.camera-section.slider-section(style="display: none; z-index: 999999;")
+					.slider-block.spice-slider
+						.slider-content
+							.slider-block-item.active
+								.slide-title &Scy;&ocy;&lcy;&softcy;
+								img(style='bottom:4px;' src='./img/salt.png' alt='Kupaty')
+							.slider-block-item
+								.slide-title &Pcy;&iecy;&rcy;&iecy;&tscy;
+								img(style='bottom:7px;' src='./img/pepper.png' alt='Kupaty')
+							.slider-block-item
+								.slide-title &Lcy;&ucy;&kcy;
+								img(style='bottom:0;' src='./img/onion.png' alt='Kupaty')
+							.slider-block-item
+								.slide-title &Pcy;&acy;&pcy;&rcy;&icy;&kcy;&acy;
+								img(style='bottom:6px;' src='./img/paprika.png' alt='Kupaty')
+							.slider-block-item
+								.slide-title &Pcy;&iecy;&tcy;&rcy;&ucy;&shcy;&kcy;&acy;
+								img(style='bottom:0;' src='./img/parsley.png' alt='Kupaty')
+							.slider-block-item
+								.slide-title &Bcy;&acy;&zcy;&icy;&lcy;&icy;&kcy;
+								img(style='bottom:0;' src='./img/basil.png' alt='Basil')
+							.slider-block-item
+								.slide-title &CHcy;&acy;&bcy;&rcy;&iecy;&tscy;
+								img(style='bottom:17px;' src='./img/tyme-left.png' alt='Tyme')
+								img(style='bottom:17px;' src='./img/tyme-right.png' alt='Tyme')
+							.slider-block-item
+								.slide-title &Kcy;&ocy;&rcy;&icy;&acy;&ncy;&dcy;&rcy;
+								img(style='bottom:-11px;' src='./img/coriander.png' alt='Coriander')
+							.slider-block-item
+								.slide-title
+									| &Pcy;&iecy;&rcy;&iecy;&tscy;
+									br
+									|  &gcy;&ocy;&rcy;&ocy;&shcy;&iecy;&kcy;
+								img(style='bottom:0;' src='./img/peppercorns.png' alt='Peppercorns')
+							.empty-block
 
-		#next_animation(
-
-			style="display: none; position: fixed; right: 10px; bottom: 10px;"
-		)
-			span Next animation
-
-
-		#spinner.lds-spinner
-			div
-			div
-			div
-			div
-			div
-			div
-			div
-			div
-			div
-			div
-			div
-			div
+				// 7
+				section.camera-section.end-section(style="display: none; z-index: 999999;")
+					.gradient
+					.link-block
+						.double-link
+							a.end-link.cook-more(href='/') &Pcy;&rcy;&icy;&gcy;&ocy;&tcy;&ocy;&vcy;&icy;&tcy;&softcy; &iecy;&shchcy;&iecy;
+							a.end-link.return-factory(href='/') &Ncy;&acy; &zcy;&acy;&vcy;&ocy;&dcy;
+						a.go-site(href='/') &Pcy;&iecy;&rcy;&iecy;&jcy;&tcy;&icy; &ncy;&acy; &scy;&acy;&jcy;&tcy;
