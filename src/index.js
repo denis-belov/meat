@@ -7,6 +7,7 @@ XR8,
 
 
 import * as THREE from 'three';
+import ExternalDataLoader from 'external-data-loader';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
@@ -46,6 +47,7 @@ gltf_loader.setDRACOLoader(draco_loader);
 
 const clock = new THREE.Clock();
 
+const external_data_loader = new ExternalDataLoader();
 const CubeTextureLoader = new THREE.CubeTextureLoader();
 CubeTextureLoader.setPath('textures/cubemap/');
 
@@ -130,20 +132,16 @@ window.addEventListener(
 	},
 );
 
-
-
-let animation_end_counter = 0;
-
-
-
-const loadModel = (file_path) =>
+const parseGlb = (arraybuffer) =>
 	new Promise(
 
 		(resolve) =>
 		{
-			gltf_loader.load(
+			gltf_loader.parse(
 
-				file_path,
+				arraybuffer,
+
+				'/',
 
 				(gltf) =>
 				{
@@ -159,9 +157,17 @@ const loadModel = (file_path) =>
 							{
 								const action = gltf.scene.mixer.clipAction(animation);
 
-								action.loop = THREE.LoopOnce;
+								if (
 
-								action.clampWhenFinished = true;
+									animation.name !== 'Idle_Marinade&Spices' &&
+									animation.name !== 'Scene_Idle_Food' &&
+									animation.name !== 'Scene_Marinade&Spices'
+								)
+								{
+									action.loop = THREE.LoopOnce;
+
+									action.clampWhenFinished = true;
+								}
 
 								gltf.scene.animations[animation.name] = action;
 							},
@@ -194,25 +200,8 @@ const loadModel = (file_path) =>
 						},
 					);
 
-					// gltf.scene.scale.set(zoom, zoom, zoom);
-					// gltf.scene.position.copy(xz_plane_intersection);
-
-					// alert(xz_plane_intersection.x, xz_plane_intersection.y, xz_plane_intersection.z);
-
-					// gltf.scene.position.set(0, 0, -10);
-
 					resolve(gltf.scene);
 				},
-
-				// (xhr) =>
-				// {
-				// 	console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-				// },
-
-				// (error) =>
-				// {
-				// 	alert('An error happened');
-				// },
 			);
 		},
 	);
@@ -225,7 +214,7 @@ let meatman_mesh = null;
 let grill_mesh = null;
 let sauces_mesh = null;
 let spices_mesh = null;
-const sauces_children = {};
+// const sauces_children = {};
 
 
 
@@ -307,11 +296,10 @@ window.addEventListener(
 
 					onStart: async () =>
 					{
-						document.getElementsByClassName('load-section')[0].style.display = 'none';
-						document.getElementsByClassName('camera-header')[0].style.display = '';
-						document.getElementsByClassName('camera-section')[0].style.display = 'block';
-
 						const { renderer, camera, scene } = XR8.Threejs.xrScene();
+
+						// camera.matrixAutoUpdate = false;
+						// camera.position.z = -10;
 
 						_scene = scene;
 						_camera = camera;
@@ -340,16 +328,139 @@ window.addEventListener(
 
 						scene.add(ambient_light);
 
+						const [ scale_item ] = document.getElementsByClassName('scale-item');
+						const [ percent ] = document.getElementsByClassName('percent');
+
+						const
+							{
+								// posx,
+								// negx,
+								// posy,
+								// negy,
+								// posz,
+								// negz,
+								scene_model_binary,
+								meatman_model_binary,
+								grill_model_binary,
+								sauces_model_binary,
+								spices_model_binary,
+							} = await external_data_loader.load(
+
+								{
+									sources:
+									{
+										// posx:
+										// {
+										// 	source: 'textures/cubemap/posx.jpg',
+										// 	type: 'image',
+										// },
+
+										// negx:
+										// {
+										// 	source: 'textures/cubemap/negx.jpg',
+										// 	type: 'image',
+										// },
+
+										// posy:
+										// {
+										// 	source: 'textures/cubemap/posy.jpg',
+										// 	type: 'image',
+										// },
+
+										// negy:
+										// {
+										// 	source: 'textures/cubemap/negy.jpg',
+										// 	type: 'image',
+										// },
+
+										// posz:
+										// {
+										// 	source: 'textures/cubemap/posz.jpg',
+										// 	type: 'image',
+										// },
+
+										// negz:
+										// {
+										// 	source: 'textures/cubemap/negz.jpg',
+										// 	type: 'image',
+										// },
+
+										scene_model_binary:
+										{
+											source: 'models/Scene.glb',
+											type: 'arraybuffer',
+										},
+
+										meatman_model_binary:
+										{
+											source: 'models/Meatman.glb',
+											type: 'arraybuffer',
+										},
+
+										grill_model_binary:
+										{
+											source: 'models/Grill.glb',
+											type: 'arraybuffer',
+										},
+
+										sauces_model_binary:
+										{
+											source: 'models/Sauces.glb',
+											type: 'arraybuffer',
+										},
+
+										spices_model_binary:
+										{
+											source: 'models/Spices.glb',
+											type: 'arraybuffer',
+										},
+									},
+
+									progress:
+
+									() =>
+									{
+										const percent_loaded =
+											`${ Math.round(external_data_loader.loaded / external_data_loader.length * 100) }%`;
+
+										percent.innerHTML = percent_loaded;
+
+										scale_item.style.width = percent_loaded;
+									},
+								},
+							);
+
+						// cube_map = new THREE.CubeTexture(
+
+						// 	[
+						// 		posx,
+						// 		negx,
+						// 		posy,
+						// 		negy,
+						// 		posz,
+						// 		negz,
+						// 	],
+						// );
+
 						cube_map =
 							await CubeTextureLoader.load([ 'posx.jpg', 'negx.jpg', 'posy.jpg', 'negy.jpg', 'posz.jpg', 'negz.jpg' ]);
 
-						scene_mesh = await loadModel('models/Scene.glb');
-						meatman_mesh = await loadModel('models/Meatman.glb');
-						grill_mesh = await loadModel('models/Grill.glb');
-						sauces_mesh = await loadModel('models/Sauces.glb');
-						spices_mesh = await loadModel('models/Spices.glb');
+						scene_mesh = await parseGlb(scene_model_binary);
+						meatman_mesh = await parseGlb(meatman_model_binary);
+						grill_mesh = await parseGlb(grill_model_binary);
+						sauces_mesh = await parseGlb(sauces_model_binary);
+						spices_mesh = await parseGlb(spices_model_binary);
 
-						Array.from(document.getElementsByClassName('camera-section')[2].getElementsByClassName('slider-block-item')).forEach(
+						const meat_buttons =
+							Array.from(document.getElementsByClassName('camera-section')[2].getElementsByClassName('slider-block-item'));
+
+						const sauce_buttons =
+							Array.from(document.getElementsByClassName('camera-section')[3].getElementsByClassName('slider-block-item'));
+
+						const spices_buttons =
+							Array.from(document.getElementsByClassName('camera-section')[4].getElementsByClassName('slider-block-item'));
+
+						meat_buttons.forEach(
 
 							(elm) =>
 							{
@@ -361,14 +472,90 @@ window.addEventListener(
 									{
 										document.getElementsByClassName('camera-section')[2].style.display = 'none';
 
-										scene_mesh.animations['Scene_Start'].stop();
-										meatman_mesh.animations['Start'].stop();
-										grill_mesh.animations['Grill_Start'].stop();
-
-										scene_mesh.animations['Scene_GetFood'].play();
+										meatman_mesh.animations['Idle_Food'].stop();
 										meatman_mesh.animations['Get_Food'].play();
+
+										scene_mesh.animations['Scene_Idle_Food'].stop();
+										scene_mesh.animations['Scene_GetFood'].play();
 									},
 								);
+							},
+						);
+
+						scene_mesh.mixer.addEventListener(
+
+							'finished',
+
+							({ action }) =>
+							{
+								LOG(action?._clip?.name)
+								action?._clip?.name &&
+
+									scene_mesh.animations[action._clip.name].stop();
+
+								switch (action._clip.name)
+								{
+								case 'Scene_Start':
+
+									LOG('Scene_Start')
+
+									scene_mesh.animations['Scene_Idle_Food'].play();
+
+									break;
+
+								case 'Scene_GetFood':
+
+									scene_mesh.animations['Scene_Marinade&Spices'].play();
+
+									break;
+
+								default:
+								}
+							},
+						);
+
+						grill_mesh.mixer.addEventListener(
+
+							'finished',
+
+							({ action }) =>
+							{
+								if (action?._clip?.name)
+								{
+									scene.remove(grill_mesh);
+
+									grill_mesh.animations[action._clip.name].stop();
+								}
+							},
+						);
+
+						sauces_mesh.mixer.addEventListener(
+
+							'finished',
+
+							({ action }) =>
+							{
+								if (action?._clip?.name)
+								{
+									sauces_mesh.animations[action._clip.name].stop();
+
+									document.getElementsByClassName('camera-section')[3].style.display = 'block';
+								}
+							},
+						);
+
+						spices_mesh.mixer.addEventListener(
+
+							'finished',
+
+							({ action }) =>
+							{
+								if (action?._clip?.name)
+								{
+									spices_mesh.animations[action._clip.name].stop();
+
+									document.getElementsByClassName('camera-section')[4].style.display = 'block';
+								}
 							},
 						);
 
@@ -378,54 +565,69 @@ window.addEventListener(
 
 							({ action }) =>
 							{
-								if (action?._clip?.name === 'Start')
+								if (action?._clip?.name)
 								{
-									document.getElementsByClassName('camera-section')[2].style.display = 'block';
-								}
-								else if (action?._clip?.name === 'Get_Food')
-								{
-									scene.add(sauces_mesh);
+									meatman_mesh.animations[action._clip.name].stop();
 
-									scene_mesh.animations['Scene_GetFood'].stop();
-									meatman_mesh.animations['Get_Food'].stop();
-
-									sauces_mesh.animations['Sauces_Start'].play();
-								}
-								else if (action?._clip?.name === 'Marinade_Speak')
-								{
-									scene.remove(sauces_mesh);
-									scene.add(spices_mesh);
-
-									meatman_mesh.animations['Marinade_Speak'].stop();
-
-									spices_mesh.animations['Spices_Start'].play();
-								}
-							},
-						);
-
-						const sauce_buttons = Array.from(document.getElementsByClassName('camera-section')[3].getElementsByClassName('slider-block-item'));
-
-						sauce_buttons.forEach(
-
-							(elm) =>
-							{
-								elm.addEventListener(
-
-									'click',
-
-									() =>
+									switch (action._clip.name)
 									{
-										sauces_mesh.animations['Sauces_Start'].stop();
-										sauces_mesh.animations['Sauces_Vinegar'].stop();
-										sauces_mesh.animations['Sauces_Mayonnaise'].stop();
-										sauces_mesh.animations['Sauces_SoySauce'].stop();
+									case 'Start':
 
-										meatman_mesh.animations['Marinade_Vinegar'].stop();
-										meatman_mesh.animations['Marinade_Mayonnaise'].stop();
-										meatman_mesh.animations['Marinade_SoySauce'].stop();
-										meatman_mesh.animations['Marinade_Speak'].stop();
-									},
-								);
+										meatman_mesh.animations['Idle_Food'].play();
+
+										document.getElementsByClassName('camera-section')[2].style.display = 'block';
+
+										break;
+
+									case 'Get_Food':
+
+										scene.add(sauces_mesh);
+
+										meatman_mesh.animations['Idle_Marinade&Spices'].play();
+
+										sauces_mesh.animations['Sauces_Start'].play();
+
+										break;
+
+
+									case 'Marinade_Wrong02':
+									case 'Marinade_Wrong02.001':
+									case 'Marinade_Wrong03':
+									case 'Get_Spices':
+
+										meatman_mesh.animations['Idle_Marinade&Spices'].play();
+
+										break;
+
+									case 'Marinade_Speak':
+
+										scene.remove(sauces_mesh);
+										scene.add(spices_mesh);
+
+										meatman_mesh.animations['Idle_Marinade&Spices'].play();
+
+										spices_mesh.animations['Spices_Start'].play();
+
+										break;
+
+									case 'Final':
+
+										meatman_mesh.animations['Final_Speak'].play();
+
+										break;
+
+									case 'Final_Speak':
+
+										meatman_mesh.animations['Final_Idle'].play();
+
+										document.getElementsByClassName('camera-section')[4].style.display = 'none';
+										document.getElementsByClassName('camera-section')[5].style.display = 'block';
+
+										break;
+
+									default:
+									}
+								}
 							},
 						);
 
@@ -437,8 +639,8 @@ window.addEventListener(
 							{
 								sauce_buttons[0].style.display = 'none';
 
-								sauces_mesh.animations['Sauces_Vinegar'].play();
-								meatman_mesh.animations['Marinade_Vinegar'].play();
+								meatman_mesh.animations['Idle_Marinade&Spices'].stop();
+								meatman_mesh.animations['Marinade_Wrong02'].play();
 							},
 						);
 
@@ -450,8 +652,8 @@ window.addEventListener(
 							{
 								sauce_buttons[1].style.display = 'none';
 
-								sauces_mesh.animations['Sauces_Mayonnaise'].play();
-								meatman_mesh.animations['Marinade_Mayonnaise'].play();
+								meatman_mesh.animations['Idle_Marinade&Spices'].stop();
+								meatman_mesh.animations['Marinade_Wrong02.001'].play();
 							},
 						);
 
@@ -463,8 +665,8 @@ window.addEventListener(
 							{
 								sauce_buttons[2].style.display = 'none';
 
-								sauces_mesh.animations['Sauces_SoySauce'].play();
-								meatman_mesh.animations['Marinade_SoySauce'].play();
+								meatman_mesh.animations['Idle_Marinade&Spices'].stop();
+								meatman_mesh.animations['Marinade_Wrong03'].play();
 							},
 						);
 
@@ -476,36 +678,12 @@ window.addEventListener(
 							{
 								document.getElementsByClassName('camera-section')[3].style.display = 'none';
 
+								meatman_mesh.animations['Idle_Marinade&Spices'].stop();
 								meatman_mesh.animations['Marinade_Speak'].play();
 							},
 						);
 
-						sauces_mesh.mixer.addEventListener(
-
-							'finished',
-
-							({ action }) =>
-							{
-								if (action?._clip?.name === 'Sauces_Start')
-								{
-									document.getElementsByClassName('camera-section')[3].style.display = 'block';
-								}
-								else if (action?._clip?.name === 'Sauces_Vinegar')
-								{
-									sauces_children['Uksus'].visible = false;
-								}
-								else if (action?._clip?.name === 'Sauces_Mayonnaise')
-								{
-									sauces_children['Mayonez'].visible = false;
-								}
-								else if (action?._clip?.name === 'Sauces_SoySauce')
-								{
-									sauces_children['Soy_sous'].visible = false;
-								}
-							},
-						);
-
-						Array.from(document.getElementsByClassName('camera-section')[4].getElementsByClassName('slider-block-item')).forEach(
+						spices_buttons.slice(0, -1).forEach(
 
 							(elm) =>
 							{
@@ -515,23 +693,21 @@ window.addEventListener(
 
 									() =>
 									{
-										document.getElementsByClassName('camera-section')[4].style.display = 'none';
-										document.getElementsByClassName('camera-section')[5].style.display = 'block';
+										meatman_mesh.animations['Idle_Marinade&Spices'].stop();
+										meatman_mesh.animations['Get_Spices'].play();
 									},
 								);
 							},
 						);
 
-						spices_mesh.mixer.addEventListener(
+						spices_buttons.slice(-1)[0].addEventListener(
 
-							'finished',
+							'click',
 
-							({ action }) =>
+							() =>
 							{
-								if (action?._clip?.name === 'Spices_Start')
-								{
-									document.getElementsByClassName('camera-section')[4].style.display = 'block';
-								}
+								meatman_mesh.animations['Idle_Marinade&Spices'].stop();
+								meatman_mesh.animations['Final'].play();
 							},
 						);
 
@@ -563,6 +739,8 @@ window.addEventListener(
 
 										grid_mesh = null;
 
+										// xz_plane_intersection.set(0, -1, -6);
+
 										scene_mesh.scale.set(zoom, zoom, zoom);
 										scene_mesh.position.copy(xz_plane_intersection);
 
@@ -574,24 +752,6 @@ window.addEventListener(
 
 										sauces_mesh.scale.set(zoom, zoom, zoom);
 										sauces_mesh.position.copy(xz_plane_intersection);
-
-										sauces_mesh.traverse(
-
-											(elm) =>
-											{
-												if (
-
-													elm.name === 'Mayonez' ||
-													elm.name === 'Uksus' ||
-													elm.name === 'Soy_sous'
-												)
-												{
-													sauces_children[elm.name] = elm;
-												}
-											},
-										);
-
-										LOG(sauces_children)
 
 										spices_mesh.scale.set(zoom, zoom, zoom);
 										spices_mesh.position.copy(xz_plane_intersection);
@@ -606,10 +766,6 @@ window.addEventListener(
 
 											() =>
 											{
-												// scene_mesh.animations['Scene_Start'].stop();
-												// meatman_mesh.animations['Start'].stop();
-												// grill_mesh.animations['Grill_Start'].stop();
-
 												scene_mesh.animations['Scene_Start'].play();
 												meatman_mesh.animations['Start'].play();
 												grill_mesh.animations['Grill_Start'].play();
@@ -617,7 +773,7 @@ window.addEventListener(
 												scene.visible = true;
 											},
 
-											0,
+											500,
 										);
 									},
 								);
@@ -627,23 +783,9 @@ window.addEventListener(
 							},
 						);
 
-						// document.getElementsByClassName('load-section')[0].style.display = 'none';
-						// document.getElementsByClassName('camera-section')[0].style.display = 'block';
-
-
-
-						// // Recenter content when the canvas is tapped.
-						// canvas.addEventListener(
-
-						// 	'touchstart',
-
-						// 	(evt) => {
-
-						// 		evt.touches.length === 1 && XR8.XrController.recenter();
-						// 	},
-
-						// 	true,
-						// );
+						document.getElementsByClassName('load-section')[0].style.display = 'none';
+						document.getElementsByClassName('camera-header')[0].style.display = '';
+						document.getElementsByClassName('camera-section')[0].style.display = 'block';
 					},
 
 					onUpdate: () =>
