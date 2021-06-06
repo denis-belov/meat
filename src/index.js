@@ -4,9 +4,15 @@ global
 XR8,
 */
 
+/*
+eslint-disable
+
+max-statements,
+*/
 
 
-import * as THREE from 'three';
+
+import * as THREE from 'three/src/Three.js';
 import ExternalDataLoader from 'external-data-loader';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
@@ -55,12 +61,20 @@ let cube_map = null;
 
 
 
+const ambient_light = new THREE.AmbientLight(0xFFFFFF, 1);
+
+
+
 const raycaster = new THREE.Raycaster();
 const screen_center = new THREE.Vector2();
 const xz_plane = new THREE.Plane(new THREE.Vector3(0, 1, 0));
 const xz_plane_intersection = new THREE.Vector3();
+let _renderer = null;
 let _camera = null;
 let _scene = null;
+const __scene = new THREE.Scene();
+// __scene.add(ambient_light);
+// LOG(__scene)
 
 // const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 // renderer.setSize(window.innerWidth, window.innerHeight);
@@ -118,16 +132,29 @@ window.addEventListener(
 
 			touch_distance_start = touch_move1.distanceTo(touch_move2);
 
+			// _scene.scale.set(zoom, zoom, zoom);
+
 			_scene.children.forEach(
 
 				(elm) =>
 				{
-					if (elm.isMesh || elm instanceof THREE.Object3D)
+					if (elm?.scale?.set?.call)
 					{
 						elm.scale.set(zoom, zoom, zoom);
 					}
 				},
 			);
+
+			// __scene.children.forEach(
+
+			// 	(elm) =>
+			// 	{
+			// 		if (elm.isMesh || elm instanceof THREE.Object3D)
+			// 		{
+			// 			elm.scale.set(zoom, zoom, zoom);
+			// 		}
+			// 	},
+			// );
 		}
 	},
 );
@@ -161,7 +188,8 @@ const parseGlb = (arraybuffer) =>
 
 									animation.name !== 'Idle_Marinade&Spices' &&
 									animation.name !== 'Scene_Idle_Food' &&
-									animation.name !== 'Scene_Marinade&Spices'
+									animation.name !== 'Scene_Marinade&Spices' &&
+									animation.name !== 'Final_Idle'
 								)
 								{
 									action.loop = THREE.LoopOnce;
@@ -186,6 +214,7 @@ const parseGlb = (arraybuffer) =>
 
 										(_elm) =>
 										{
+											// _elm.depthTest = false;
 											_elm.envMap = cube_map;
 											_elm.needsUpdate = true;
 										},
@@ -193,6 +222,7 @@ const parseGlb = (arraybuffer) =>
 								}
 								else
 								{
+									// elm.material.depthTest = false;
 									elm.material.envMap = cube_map;
 									elm.material.needsUpdate = true;
 								}
@@ -214,6 +244,11 @@ let meatman_mesh = null;
 let grill_mesh = null;
 let sauces_mesh = null;
 let spices_mesh = null;
+let plane_material = null;
+let plane = null;
+// let custom_material = null;
+let qwe = null;
+let qwe2 = null;
 // const sauces_children = {};
 
 
@@ -299,14 +334,15 @@ window.addEventListener(
 						const { renderer, camera, scene } = XR8.Threejs.xrScene();
 
 						// camera.matrixAutoUpdate = false;
-						// camera.position.z = -10;
 
-						_scene = scene;
+						_renderer = renderer;
 						_camera = camera;
+						_scene = scene;
 
 						renderer.setSize(window.innerWidth, window.innerHeight);
 
 						renderer.outputEncoding = THREE.sRGBEncoding;
+						renderer.sortObjects = false;
 
 						XR8.XrController.updateCameraProjectionMatrix(
 
@@ -324,9 +360,10 @@ window.addEventListener(
 							},
 						);
 
-						const ambient_light = new THREE.AmbientLight(0xFFFFFF, 1);
+						// const ambient_light = new THREE.AmbientLight(0xFFFFFF, 1);
 
 						scene.add(ambient_light);
+						// __scene.add(ambient_light.clone());
 
 						const [ scale_item ] = document.getElementsByClassName('scale-item');
 						const [ percent ] = document.getElementsByClassName('percent');
@@ -488,7 +525,6 @@ window.addEventListener(
 
 							({ action }) =>
 							{
-								LOG(action?._clip?.name)
 								action?._clip?.name &&
 
 									scene_mesh.animations[action._clip.name].stop();
@@ -496,8 +532,6 @@ window.addEventListener(
 								switch (action._clip.name)
 								{
 								case 'Scene_Start':
-
-									LOG('Scene_Start')
 
 									scene_mesh.animations['Scene_Idle_Food'].play();
 
@@ -522,7 +556,7 @@ window.addEventListener(
 							{
 								if (action?._clip?.name)
 								{
-									scene.remove(grill_mesh);
+									grill_mesh.visible = false;
 
 									grill_mesh.animations[action._clip.name].stop();
 								}
@@ -581,7 +615,8 @@ window.addEventListener(
 
 									case 'Get_Food':
 
-										scene.add(sauces_mesh);
+										// scene.add(sauces_mesh);
+										sauces_mesh.visible = true;
 
 										meatman_mesh.animations['Idle_Marinade&Spices'].play();
 
@@ -601,8 +636,8 @@ window.addEventListener(
 
 									case 'Marinade_Speak':
 
-										scene.remove(sauces_mesh);
-										scene.add(spices_mesh);
+										sauces_mesh.visible = false;
+										spices_mesh.visible = false;
 
 										meatman_mesh.animations['Idle_Marinade&Spices'].play();
 
@@ -612,18 +647,23 @@ window.addEventListener(
 
 									case 'Final':
 
-										meatman_mesh.animations['Final_Speak'].play();
-
-										break;
-
-									case 'Final_Speak':
-
 										meatman_mesh.animations['Final_Idle'].play();
 
 										document.getElementsByClassName('camera-section')[4].style.display = 'none';
 										document.getElementsByClassName('camera-section')[5].style.display = 'block';
 
+										// break;
+
 										break;
+
+									// case 'Final_Speak':
+
+									// 	meatman_mesh.animations['Final_Idle'].play();
+
+									// 	document.getElementsByClassName('camera-section')[4].style.display = 'none';
+									// 	document.getElementsByClassName('camera-section')[5].style.display = 'block';
+
+									// 	break;
 
 									default:
 									}
@@ -717,6 +757,101 @@ window.addEventListener(
 
 						scene.add(grid_mesh);
 
+
+
+						const plane_noise_texture = new THREE.TextureLoader().load('textures/smooth-noise.jpg');
+						plane_noise_texture.wrapS = THREE.RepeatWrapping;
+						plane_noise_texture.wrapT = THREE.RepeatWrapping;
+
+						const plane_circle_texture = new THREE.TextureLoader().load('textures/smooth-circle.png');
+						plane_circle_texture.wrapS = THREE.RepeatWrapping;
+						plane_circle_texture.wrapT = THREE.RepeatWrapping;
+
+						plane_material = new THREE.ShaderMaterial(
+
+							{
+
+								vertexShader:
+
+								`varying vec2 vUv1;
+								varying vec2 vUv2;
+								uniform float time;
+
+								void main ()
+								{
+									vUv1 = vec2(length(position));
+									vUv2 = uv;
+
+									vec4 transformed = modelMatrix * vec4(position, 1.0);
+
+									// transformed.y += 1.5 + sin(time * 30.0) * 0.1;
+
+									gl_Position = projectionMatrix * viewMatrix * transformed;
+								}`,
+
+								fragmentShader:
+
+								`uniform sampler2D noise;
+								uniform sampler2D circle;
+								uniform float time;
+
+								varying vec2 vUv1;
+								varying vec2 vUv2;
+
+								float rand (vec2 co)
+								{
+									return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);
+								}
+
+								void main ()
+								{
+									gl_FragColor.rgb =
+										texture2D(noise, vUv1 - time + acos((vUv2.t - 0.5))).rgb +
+										texture2D(noise, vUv1 - time + acos((vUv2.s - 0.5))).rgb +
+										texture2D(noise, vUv1 - time + asin((vUv2.t - 0.5))).rgb +
+										texture2D(noise, vUv1 - time + asin((vUv2.s - 0.5))).rgb;
+
+									gl_FragColor.rgb /= 4.0;
+
+									gl_FragColor.a = 1.0;
+
+									// gl_FragColor.rgb /= 4.0;
+
+									gl_FragColor.rgb += smoothstep(0.0, 1.0, 1.0 - length(vUv1)) * 3.0 * (1.0 + sin(time * 50.0) * 0.1);
+
+									gl_FragColor.rgb *= vec3(95.0 / 255.0, 86.0 / 255.0, 175.0 / 255.0);
+
+									// gl_FragColor.rgb *= 1.5;
+
+									gl_FragColor.a = smoothstep(0.5, 1.0, pow(length(gl_FragColor.rgb), 2.0)) * smoothstep(0.0, 1.0, 0.8 - length(vUv1));
+
+									// // gl_FragColor.a *= 0.75;
+
+									// gl_FragColor.rgb *= vec3(95.0 / 255.0, 86.0 / 255.0, 175.0 / 255.0);
+
+									// // gl_FragColor.a = 1.0;
+								}`,
+
+								uniforms:
+								{
+									noise: { value: plane_noise_texture },
+
+									circle: { value: plane_circle_texture },
+
+									time: { value: 0 },
+								},
+
+								transparent: true,
+
+								depthTest: false,
+								// depthWrite: false,
+							},
+						);
+
+						plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1, 10, 10), plane_material);
+
+
+
 						raycaster.setFromCamera(screen_center, camera);
 
 						raycaster.ray.intersectPlane(xz_plane, xz_plane_intersection);
@@ -735,30 +870,66 @@ window.addEventListener(
 									{
 										scene.visible = false;
 
-										scene.remove(grid_mesh);
+										grid_mesh.visible = false;
 
 										grid_mesh = null;
 
-										// xz_plane_intersection.set(0, -1, -6);
+										// xz_plane_intersection.set(0, -0.8, -6);
+
+										plane.scale.set(zoom, zoom, zoom);
+										plane.position.copy(xz_plane_intersection);
+										// plane.renderOrder = 1;
 
 										scene_mesh.scale.set(zoom, zoom, zoom);
 										scene_mesh.position.copy(xz_plane_intersection);
+										scene_mesh.visible = false;
+										// scene_mesh.children[0].children[24].visible = false;
 
 										meatman_mesh.scale.set(zoom, zoom, zoom);
 										meatman_mesh.position.copy(xz_plane_intersection);
 
+										meatman_mesh.children[0].children[15].visible = false;
+										// meatman_mesh.children[0].children[16].visible = false;
+// window.__qwe = scene_mesh.children[0].children;
+										// LOG(scene_mesh.children[0].children)
+										// meatman_mesh.children[0].children[15].position.y += 1;
+										// meatman_mesh.children[0].children[15].material.depthTest = false;
+
+										meatman_mesh.children[0].children[15].material.transparent = true;
+										qwe = new THREE.Mesh(meatman_mesh.children[0].children[15].geometry.clone(), meatman_mesh.children[0].children[15].material);
+										qwe.visible = true;
+										qwe.scale.set(zoom, zoom, zoom);
+										qwe.position.copy(xz_plane_intersection);
+
+										meatman_mesh.children[0].children[16].material.transparent = true;
+										qwe2 = new THREE.Mesh(meatman_mesh.children[0].children[16].geometry.clone(), meatman_mesh.children[0].children[16].material);
+										qwe2.visible = true;
+										qwe2.scale.set(zoom, zoom, zoom);
+										qwe2.position.copy(xz_plane_intersection);
+
 										grill_mesh.scale.set(zoom, zoom, zoom);
 										grill_mesh.position.copy(xz_plane_intersection);
 
+										sauces_mesh.visible = false;
 										sauces_mesh.scale.set(zoom, zoom, zoom);
 										sauces_mesh.position.copy(xz_plane_intersection);
 
+										spices_mesh.visible = false;
 										spices_mesh.scale.set(zoom, zoom, zoom);
 										spices_mesh.position.copy(xz_plane_intersection);
+
+										plane.position.z += 0.5;
+										qwe.position.z += 0.5;
+										qwe2.position.z += 0.5;
 
 										scene.add(scene_mesh);
 										scene.add(meatman_mesh);
 										scene.add(grill_mesh);
+										scene.add(sauces_mesh);
+										scene.add(spices_mesh);
+										scene.add(plane);
+										scene.add(qwe);
+										scene.add(qwe2);
 
 										document.getElementsByClassName('camera-section')[1].style.display = 'none';
 
@@ -768,7 +939,7 @@ window.addEventListener(
 											{
 												scene_mesh.animations['Scene_Start'].play();
 												meatman_mesh.animations['Start'].play();
-												grill_mesh.animations['Grill_Start'].play();
+												grill_mesh.animations.Grill_Start.play();
 
 												scene.visible = true;
 											},
@@ -802,6 +973,19 @@ window.addEventListener(
 						}
 
 						const clock_delta = clock.getDelta();
+
+						if (plane_material)
+						{
+							plane_material.uniforms.time.value += clock_delta * 0.1;
+
+							plane.rotation.copy(_camera.rotation);
+
+							plane.position.y = (1.5 + Math.sin(plane_material.uniforms.time.value * 30.0) * 0.1) * zoom;
+							qwe.position.y = plane.position.y;
+							const sc = (1 + (Math.sin(plane_material.uniforms.time.value * 30.0) + 1) / 2) * zoom;
+							qwe.scale.set(sc, sc, sc);
+							qwe2.position.y = plane.position.y;
+						}
 
 						scene_mesh && scene_mesh.mixer.update(clock_delta);
 						meatman_mesh && meatman_mesh.mixer.update(clock_delta);
