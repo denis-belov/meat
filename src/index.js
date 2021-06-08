@@ -17,7 +17,6 @@ import * as THREE from 'three/src/Three.js';
 import ExternalDataLoader from 'external-data-loader';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import './index.scss';
 import './style.css';
 import '@babel/polyfill';
@@ -73,20 +72,6 @@ const xz_plane_intersection = new THREE.Vector3();
 let _renderer = null;
 let _camera = null;
 let _scene = null;
-// const __scene = new THREE.Scene();
-// __scene.add(ambient_light);
-// LOG(__scene)
-
-// const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-// renderer.setSize(window.innerWidth, window.innerHeight);
-// const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
-// const scene = new THREE.Scene();
-
-// const orbit_controls = new OrbitControls(camera, canvas);
-// LOG(orbit_controls)
-// orbit_controls.enableZoom = true;
-// orbit_controls.enableDamping = true;
-// orbit_controls.dumpingFactor = 10;
 
 
 
@@ -208,24 +193,16 @@ const parseGlb = (arraybuffer) =>
 										(_elm) =>
 										{
 											_elm.envMap = cube_map;
-											// _elm.transparent = true;
-											// _elm.depthTest = true;
 											_elm.needsUpdate = true;
 											_elm.transparent2 = _elm.transparent;
-
-											LOG(_elm.transparent)
 										},
 									);
 								}
 								else
 								{
 									elm.material.envMap = cube_map;
-									// elm.material.transparent = true;
-									// elm.material.depthTest = true;
 									elm.material.needsUpdate = true;
 									elm.material.transparent2 = elm.material.transparent;
-
-									LOG(elm.material.transparent)
 								}
 							}
 						},
@@ -240,77 +217,13 @@ const parseGlb = (arraybuffer) =>
 
 
 let grid_mesh = null;
-let scene_mesh = null;
-let meatman_mesh = null;
-let grill_mesh = null;
-let sauces_mesh = null;
-let spices_mesh = null;
+const meshes = {};
+
 let plane_material = null;
 let plane = null;
-// let custom_material = null;
-let qwe = null;
-let qwe2 = null;
-// const sauces_children = {};
-
-
-
-// window.addEventListener(
-
-// 	'load',
-
-// 	async () =>
-// 	{
-// 		const ambient_light = new THREE.AmbientLight(0xFFFFFF, 1);
-
-// 		scene.add(ambient_light);
-
-// 		cube_map =
-// 			await CubeTextureLoader.load([ 'posx.jpg', 'negx.jpg', 'posy.jpg', 'negy.jpg', 'posz.jpg', 'negz.jpg' ]);
-
-// 		scene_mesh = await loadModel('models/Scene.glb');
-// 		meatman_mesh = await loadModel('models/Meatman.glb');
-// 		grill_mesh = await loadModel('models/Grill.glb');
-
-// 		scene.add(scene_mesh);
-// 		scene.add(meatman_mesh);
-// 		scene.add(grill_mesh);
-
-// 		scene.visible = false;
-
-// 		window.__START__ = () =>
-// 		{
-// 			scene_mesh.animations['Scene_Start'].stop();
-// 			meatman_mesh.animations['Start'].stop();
-// 			grill_mesh.animations['Grill_Start'].stop();
-
-// 			scene_mesh.animations['Scene_Start'].play();
-// 			meatman_mesh.animations['Start'].play();
-// 			grill_mesh.animations['Grill_Start'].play();
-
-// 			scene.visible = true;
-// 		};
-
-// 		document.getElementsByClassName('load-section')[0].style.display = 'none';
-// 		document.getElementsByClassName('camera-section')[0].style.display = 'block';
-
-// 		// const animate = () =>
-// 		// {
-// 		// 	requestAnimationFrame(animate);
-
-// 		// 	// orbit_controls.update();
-
-// 		// 	const clock_delta = clock.getDelta();
-
-// 		// 	scene_mesh.mixer.update(clock_delta);
-// 		// 	meatman_mesh.mixer.update(clock_delta);
-// 		// 	grill_mesh.mixer.update(clock_delta);
-
-// 		// 	renderer.render(scene, camera);
-// 		// };
-
-// 		// animate();
-// 	},
-// );
+let tray = null;
+let tray_barbecue = null;
+let meat = null;
 
 
 
@@ -333,13 +246,6 @@ window.addEventListener(
 					onStart: async () =>
 					{
 						const { renderer, camera, scene } = XR8.Threejs.xrScene();
-
-						// const gl = renderer.getContext();
-
-						// const available_extensions = gl.getSupportedExtensions();
-						// const object_ext = gl.getExtension('gl_FragDepthEXT');
-
-						// LOG(object_ext)
 
 						camera.matrixAutoUpdate = false;
 
@@ -368,132 +274,68 @@ window.addEventListener(
 							},
 						);
 
-						// const ambient_light = new THREE.AmbientLight(0xFFFFFF, 1);
-
 						scene.add(ambient_light);
 
 						const [ scale_item ] = document.getElementsByClassName('scale-item');
 						const [ percent ] = document.getElementsByClassName('percent');
 
-						const
-							{
-								// posx,
-								// negx,
-								// posy,
-								// negy,
-								// posz,
-								// negz,
-								scene_model_binary,
-								meatman_model_binary,
-								grill_model_binary,
-								sauces_model_binary,
-								spices_model_binary,
-							} = await external_data_loader.load(
+						const sources = {};
 
+						const paths =
+						[
+							'models/Scene.glb',
+							'models/Meatman.glb',
+							'models/Grill.glb',
+							'models/Sauces.glb',
+							'models/Spices.glb',
+							'models/Kupaty_Extra.glb',
+							'models/Bacon.glb',
+							'models/Sausages_Barbecue.glb',
+							'models/Burger.glb',
+							'models/Barbecue_Classic.glb',
+							'models/Steak.glb',
+							'models/Chevapchichi.glb',
+						];
+
+						paths
+							.forEach(
+
+								(elm) =>
 								{
-									sources:
+									sources[elm] =
 									{
-										// posx:
-										// {
-										// 	source: 'textures/cubemap/posx.jpg',
-										// 	type: 'image',
-										// },
-
-										// negx:
-										// {
-										// 	source: 'textures/cubemap/negx.jpg',
-										// 	type: 'image',
-										// },
-
-										// posy:
-										// {
-										// 	source: 'textures/cubemap/posy.jpg',
-										// 	type: 'image',
-										// },
-
-										// negy:
-										// {
-										// 	source: 'textures/cubemap/negy.jpg',
-										// 	type: 'image',
-										// },
-
-										// posz:
-										// {
-										// 	source: 'textures/cubemap/posz.jpg',
-										// 	type: 'image',
-										// },
-
-										// negz:
-										// {
-										// 	source: 'textures/cubemap/negz.jpg',
-										// 	type: 'image',
-										// },
-
-										scene_model_binary:
-										{
-											source: 'models/Scene.glb',
-											type: 'arraybuffer',
-										},
-
-										meatman_model_binary:
-										{
-											source: 'models/Meatman.glb',
-											type: 'arraybuffer',
-										},
-
-										grill_model_binary:
-										{
-											source: 'models/Grill.glb',
-											type: 'arraybuffer',
-										},
-
-										sauces_model_binary:
-										{
-											source: 'models/Sauces.glb',
-											type: 'arraybuffer',
-										},
-
-										spices_model_binary:
-										{
-											source: 'models/Spices.glb',
-											type: 'arraybuffer',
-										},
-									},
-
-									progress:
-
-									() =>
-									{
-										const percent_loaded =
-											`${ Math.round(external_data_loader.loaded / external_data_loader.length * 100) }%`;
-
-										percent.innerHTML = percent_loaded;
-
-										scale_item.style.width = percent_loaded;
-									},
+										source: elm,
+										type: 'arraybuffer',
+									};
 								},
 							);
 
-						// cube_map = new THREE.CubeTexture(
+						await external_data_loader.load(
 
-						// 	[
-						// 		posx,
-						// 		negx,
-						// 		posy,
-						// 		negy,
-						// 		posz,
-						// 		negz,
-						// 	],
-						// );
+							{
+								sources,
+
+								progress:
+
+								() =>
+								{
+									const percent_loaded =
+										`${ Math.round(external_data_loader.loaded / external_data_loader.length * 100) }%`;
+
+									percent.innerHTML = percent_loaded;
+
+									scale_item.style.width = percent_loaded;
+								},
+							},
+						);
+
+						for (let i = 0; i < paths.length; ++i)
+						{
+							meshes[paths[i]] = await parseGlb(external_data_loader.content[paths[i]]);
+						}
 
 						cube_map =
 							await CubeTextureLoader.load([ 'posx.jpg', 'negx.jpg', 'posy.jpg', 'negy.jpg', 'posz.jpg', 'negz.jpg' ]);
-
-						scene_mesh = await parseGlb(scene_model_binary);
-						meatman_mesh = await parseGlb(meatman_model_binary);
-						grill_mesh = await parseGlb(grill_model_binary);
-						sauces_mesh = await parseGlb(sauces_model_binary);
-						spices_mesh = await parseGlb(spices_model_binary);
 
 						const meat_buttons =
 							Array.from(document.getElementsByClassName('camera-section')[2].getElementsByClassName('slider-block-item'));
@@ -504,29 +346,71 @@ window.addEventListener(
 						const spices_buttons =
 							Array.from(document.getElementsByClassName('camera-section')[4].getElementsByClassName('slider-block-item'));
 
-						meat_buttons.forEach(
+						[
+							'models/Kupaty_Extra.glb',
+							'models/Bacon.glb',
+							'models/Sausages_Barbecue.glb',
+							'models/Burger.glb',
+							'models/Barbecue_Classic.glb',
+							'models/Steak.glb',
+							'models/Chevapchichi.glb',
+						]
+							.forEach(
 
-							(elm) =>
-							{
-								elm.addEventListener(
-
-									'click',
-
-									() =>
+								(elm, elm_index) =>
+								{
+									if (elm === 'models/Barbecue_Classic.glb')
 									{
-										document.getElementsByClassName('camera-section')[2].style.display = 'none';
+										meat_buttons[elm_index].addEventListener(
 
-										meatman_mesh.animations['Idle_Food'].stop();
-										meatman_mesh.animations['Get_Food'].play();
+											'click',
 
-										scene_mesh.animations['Scene_Idle_Food'].stop();
-										scene_mesh.animations['Scene_GetFood'].play();
-									},
-								);
-							},
-						);
+											() =>
+											{
+												meat = meshes[elm];
 
-						scene_mesh.mixer.addEventListener(
+												meat.__test.visible = true;
+
+												tray.visible = false;
+
+												document.getElementsByClassName('camera-section')[2].style.display = 'none';
+
+												meshes['models/Meatman.glb'].animations['Idle_Food'].stop();
+												meshes['models/Meatman.glb'].animations['Get_Food'].play();
+
+												meshes['models/Scene.glb'].animations['Scene_Idle_Food'].stop();
+												meshes['models/Scene.glb'].animations['Scene_GetFood'].play();
+											},
+										);
+									}
+									else
+									{
+										meat_buttons[elm_index].addEventListener(
+
+											'click',
+
+											() =>
+											{
+												meat = meshes[elm];
+
+												meat.__test.visible = true;
+
+												tray_barbecue.visible = false;
+
+												document.getElementsByClassName('camera-section')[2].style.display = 'none';
+
+												meshes['models/Meatman.glb'].animations['Idle_Food'].stop();
+												meshes['models/Meatman.glb'].animations['Get_Food'].play();
+
+												meshes['models/Scene.glb'].animations['Scene_Idle_Food'].stop();
+												meshes['models/Scene.glb'].animations['Scene_GetFood'].play();
+											},
+										);
+									}
+								},
+							);
+
+						meshes['models/Scene.glb'].mixer.addEventListener(
 
 							'finished',
 
@@ -534,19 +418,19 @@ window.addEventListener(
 							{
 								action?._clip?.name &&
 
-									scene_mesh.animations[action._clip.name].stop();
+									meshes['models/Scene.glb'].animations[action._clip.name].stop();
 
 								switch (action._clip.name)
 								{
 								case 'Scene_Start':
 
-									scene_mesh.animations['Scene_Idle_Food'].play();
+									meshes['models/Scene.glb'].animations['Scene_Idle_Food'].play();
 
 									break;
 
 								case 'Scene_GetFood':
 
-									scene_mesh.animations['Scene_Marinade&Spices'].play();
+									meshes['models/Scene.glb'].animations['Scene_Marinade&Spices'].play();
 
 									break;
 
@@ -555,7 +439,7 @@ window.addEventListener(
 							},
 						);
 
-						grill_mesh.mixer.addEventListener(
+						meshes['models/Grill.glb'].mixer.addEventListener(
 
 							'finished',
 
@@ -563,14 +447,14 @@ window.addEventListener(
 							{
 								if (action?._clip?.name)
 								{
-									grill_mesh.visible = false;
+									meshes['models/Grill.glb'].visible = false;
 
-									grill_mesh.animations[action._clip.name].stop();
+									meshes['models/Grill.glb'].animations[action._clip.name].stop();
 								}
 							},
 						);
 
-						sauces_mesh.mixer.addEventListener(
+						meshes['models/Sauces.glb'].mixer.addEventListener(
 
 							'finished',
 
@@ -578,14 +462,14 @@ window.addEventListener(
 							{
 								if (action?._clip?.name)
 								{
-									sauces_mesh.animations[action._clip.name].stop();
+									meshes['models/Sauces.glb'].animations[action._clip.name].stop();
 
 									document.getElementsByClassName('camera-section')[3].style.display = 'block';
 								}
 							},
 						);
 
-						spices_mesh.mixer.addEventListener(
+						meshes['models/Spices.glb'].mixer.addEventListener(
 
 							'finished',
 
@@ -593,14 +477,14 @@ window.addEventListener(
 							{
 								if (action?._clip?.name)
 								{
-									spices_mesh.animations[action._clip.name].stop();
+									meshes['models/Spices.glb'].animations[action._clip.name].stop();
 
 									document.getElementsByClassName('camera-section')[4].style.display = 'block';
 								}
 							},
 						);
 
-						meatman_mesh.mixer.addEventListener(
+						meshes['models/Meatman.glb'].mixer.addEventListener(
 
 							'finished',
 
@@ -608,27 +492,26 @@ window.addEventListener(
 							{
 								if (action?._clip?.name)
 								{
-									LOG(action._clip.name)
-									meatman_mesh.animations[action._clip.name].stop();
+									meshes['models/Meatman.glb'].animations[action._clip.name].stop();
 
 									switch (action._clip.name)
 									{
 									case 'Start':
 
-										meatman_mesh.animations['Idle_Food'].play();
+										meshes['models/Meatman.glb'].animations['Idle_Food'].play();
 
 										document.getElementsByClassName('camera-section')[2].style.display = 'block';
 
 										break;
 
 									case 'Get_Food':
+									case 'Get_Barbecue':
 
-										// scene.add(sauces_mesh);
-										sauces_mesh.visible = true;
+										meshes['models/Sauces.glb'].visible = true;
 
-										meatman_mesh.animations['Idle_Marinade&Spices'].play();
+										meshes['models/Meatman.glb'].animations['Idle_Marinade&Spices'].play();
 
-										sauces_mesh.animations['Sauces_Start'].play();
+										meshes['models/Sauces.glb'].animations['Sauces_Start'].play();
 
 										break;
 
@@ -638,24 +521,24 @@ window.addEventListener(
 									case 'Marinade_Wrong03':
 									case 'Get_Spices':
 
-										meatman_mesh.animations['Idle_Marinade&Spices'].play();
+										meshes['models/Meatman.glb'].animations['Idle_Marinade&Spices'].play();
 
 										break;
 
 									case 'Marinade_Speak':
 
-										sauces_mesh.visible = false;
-										spices_mesh.visible = false;
+										meshes['models/Sauces.glb'].visible = false;
+										meshes['models/Spices.glb'].visible = true;
 
-										meatman_mesh.animations['Idle_Marinade&Spices'].play();
+										meshes['models/Meatman.glb'].animations['Idle_Marinade&Spices'].play();
 
-										spices_mesh.animations['Spices_Start'].play();
+										meshes['models/Spices.glb'].animations['Spices_Start'].play();
 
 										break;
 
 									case 'Final':
 
-										meatman_mesh.animations['Final_Idle'].play();
+										meshes['models/Meatman.glb'].animations['Final_Idle'].play();
 
 										document.getElementsByClassName('camera-section')[4].style.display = 'none';
 										document.getElementsByClassName('camera-section')[5].style.display = 'block';
@@ -676,8 +559,8 @@ window.addEventListener(
 							{
 								sauce_buttons[0].style.display = 'none';
 
-								meatman_mesh.animations['Idle_Marinade&Spices'].stop();
-								meatman_mesh.animations['Marinade_Wrong02'].play();
+								meshes['models/Meatman.glb'].animations['Idle_Marinade&Spices'].stop();
+								meshes['models/Meatman.glb'].animations['Marinade_Wrong02'].play();
 							},
 						);
 
@@ -689,8 +572,8 @@ window.addEventListener(
 							{
 								sauce_buttons[1].style.display = 'none';
 
-								meatman_mesh.animations['Idle_Marinade&Spices'].stop();
-								meatman_mesh.animations['Marinade_Wrong02.001'].play();
+								meshes['models/Meatman.glb'].animations['Idle_Marinade&Spices'].stop();
+								meshes['models/Meatman.glb'].animations['Marinade_Wrong02.001'].play();
 							},
 						);
 
@@ -702,8 +585,8 @@ window.addEventListener(
 							{
 								sauce_buttons[2].style.display = 'none';
 
-								meatman_mesh.animations['Idle_Marinade&Spices'].stop();
-								meatman_mesh.animations['Marinade_Wrong03'].play();
+								meshes['models/Meatman.glb'].animations['Idle_Marinade&Spices'].stop();
+								meshes['models/Meatman.glb'].animations['Marinade_Wrong03'].play();
 							},
 						);
 
@@ -715,8 +598,8 @@ window.addEventListener(
 							{
 								document.getElementsByClassName('camera-section')[3].style.display = 'none';
 
-								meatman_mesh.animations['Idle_Marinade&Spices'].stop();
-								meatman_mesh.animations['Marinade_Speak'].play();
+								meshes['models/Meatman.glb'].animations['Idle_Marinade&Spices'].stop();
+								meshes['models/Meatman.glb'].animations['Marinade_Speak'].play();
 							},
 						);
 
@@ -730,8 +613,8 @@ window.addEventListener(
 
 									() =>
 									{
-										meatman_mesh.animations['Idle_Marinade&Spices'].stop();
-										meatman_mesh.animations['Get_Spices'].play();
+										meshes['models/Meatman.glb'].animations['Idle_Marinade&Spices'].stop();
+										meshes['models/Meatman.glb'].animations['Get_Spices'].play();
 									},
 								);
 							},
@@ -745,14 +628,14 @@ window.addEventListener(
 							{
 								change_trans = true;
 
-								meatman_mesh.children[0].children[15].visible = false;
-								meatman_mesh.children[0].children[16].visible = false;
+								tray.visible = false;
 
-								qwe.visible = true;
-								qwe2.visible = true;
+								plane.visible = true;
 
-								meatman_mesh.animations['Idle_Marinade&Spices'].stop();
-								meatman_mesh.animations['Final'].play();
+								meat.visible = true;
+
+								meshes['models/Meatman.glb'].animations['Idle_Marinade&Spices'].stop();
+								meshes['models/Meatman.glb'].animations['Final'].play();
 							},
 						);
 
@@ -767,11 +650,6 @@ window.addEventListener(
 						const plane_noise_texture = new THREE.TextureLoader().load('textures/smooth-noise.jpg');
 						plane_noise_texture.wrapS = THREE.RepeatWrapping;
 						plane_noise_texture.wrapT = THREE.RepeatWrapping;
-
-						// const plane_noise_texture2 = new THREE.TextureLoader().load('textures/smooth-noise.jpg');
-						// plane_noise_texture.wrapS = THREE.RepeatWrapping;
-						// plane_noise_texture.wrapT = THREE.RepeatWrapping;
-
 
 						plane_material = new THREE.ShaderMaterial(
 
@@ -790,8 +668,6 @@ window.addEventListener(
 
 									vec4 transformed = modelMatrix * vec4(position, 1.0);
 
-									// transformed.y += 1.5 + sin(time * 30.0) * 0.1;
-
 									gl_Position = projectionMatrix * viewMatrix * transformed;
 
 									gl_Position.z = -1.0;
@@ -800,7 +676,6 @@ window.addEventListener(
 								fragmentShader:
 
 								`uniform sampler2D noise;
-								// uniform sampler2D circle;
 								uniform float time;
 
 								varying vec2 vUv1;
@@ -823,23 +698,11 @@ window.addEventListener(
 
 									gl_FragColor.a = 1.0;
 
-									// gl_FragColor.rgb /= 4.0;
-
 									gl_FragColor.rgb += smoothstep(0.0, 1.0, 1.0 - length(vUv1)) * 3.0 * (1.0 + sin(time * 50.0) * 0.1);
 
 									gl_FragColor.rgb *= vec3(95.0 / 255.0, 86.0 / 255.0, 175.0 / 255.0);
 
-									// gl_FragColor.rgb *= 1.5;
-
 									gl_FragColor.a = smoothstep(0.5, 1.0, pow(length(gl_FragColor.rgb), 2.0)) * smoothstep(0.0, 1.0, 0.8 - length(vUv1));
-
-									// // gl_FragColor.a *= 0.75;
-
-									// gl_FragColor.rgb *= vec3(95.0 / 255.0, 86.0 / 255.0, 175.0 / 255.0);
-
-									// // gl_FragColor.a = 1.0;
-
-									// gl_FragDepth = 1.0;
 								}`,
 
 								uniforms:
@@ -859,8 +722,6 @@ window.addEventListener(
 						);
 
 						plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1, 10, 10), plane_material);
-
-						// plane.onBeforeRender = () => gl.disable(gl.DEPTH_TEST);
 
 
 
@@ -890,57 +751,63 @@ window.addEventListener(
 
 										plane.scale.set(zoom, zoom, zoom);
 										plane.position.copy(xz_plane_intersection);
-										// plane.visible = false;
+										plane.position.add(new THREE.Vector3(0.030909, 0.760915, 0.520341));
+										plane.visible = false;
 
-										scene_mesh.scale.set(zoom, zoom, zoom);
-										scene_mesh.position.copy(xz_plane_intersection);
-										scene_mesh.visible = false;
+										Object.keys(meshes).forEach(
 
-										meatman_mesh.scale.set(zoom, zoom, zoom);
-										meatman_mesh.position.copy(xz_plane_intersection);
+											(elm) =>
+											{
+												meshes[elm].scale.set(zoom, zoom, zoom);
+												meshes[elm].position.copy(xz_plane_intersection);
+											},
+										);
 
-										const qwe_m = meatman_mesh.children[0].children[15].material.clone();
-										qwe_m.env_map = cube_map;
-										// qwe_m.depthTest = true;
-										// qwe_m.transparent = false;
+										tray = meshes['models/Meatman.glb'].children[0].children[15];
+										tray_barbecue = meshes['models/Meatman.glb'].children[0].children[16];
+										window._Q = meshes['models/Scene.glb'].children[0].children;
+										LOG(_Q)
 
-										const qwe2_m = meatman_mesh.children[0].children[16].material.clone();
-										qwe2_m.env_map = cube_map;
-										// qwe2_m.depthTest = true;
-										// qwe2_m.transparent = false;
+										meshes['models/Scene.glb'].children[0].children.slice(25).forEach(
 
-										qwe = new THREE.Mesh(meatman_mesh.children[0].children[15].geometry.clone(), qwe_m);
-										qwe.visible = false;
-										qwe.scale.set(zoom, zoom, zoom);
-										qwe.position.copy(xz_plane_intersection);
+											(elm) =>
+											{
+												elm.visible = false;
+											},
+										);
 
-										qwe2 = new THREE.Mesh(meatman_mesh.children[0].children[16].geometry.clone(), qwe2_m);
-										qwe2.visible = false;
-										qwe2.scale.set(zoom, zoom, zoom);
-										qwe2.position.copy(xz_plane_intersection);
+										meshes['models/Sauces.glb'].visible = false;
+										meshes['models/Spices.glb'].visible = false;
 
-										window.qwe = qwe;
-										window.qwe2 = qwe2;
+										meshes['models/Kupaty_Extra.glb'].__test = meshes['models/Scene.glb'].children[0].children[27];
+										meshes['models/Bacon.glb'].__test = meshes['models/Scene.glb'].children[0].children[25];
+										meshes['models/Sausages_Barbecue.glb'].__test = meshes['models/Scene.glb'].children[0].children[28];
+										meshes['models/Burger.glb'].__test = meshes['models/Scene.glb'].children[0].children[29];
+										meshes['models/Barbecue_Classic.glb'].__test = meshes['models/Scene.glb'].children[0].children[26];
+										meshes['models/Steak.glb'].__test = meshes['models/Scene.glb'].children[0].children[31];
+										meshes['models/Chevapchichi.glb'].__test = meshes['models/Scene.glb'].children[0].children[30];
 
-										grill_mesh.scale.set(zoom, zoom, zoom);
-										grill_mesh.position.copy(xz_plane_intersection);
+										meshes['models/Kupaty_Extra.glb'].visible = false;
+										meshes['models/Bacon.glb'].visible = false;
+										meshes['models/Sausages_Barbecue.glb'].visible = false;
+										meshes['models/Burger.glb'].visible = false;
+										meshes['models/Barbecue_Classic.glb'].visible = false;
+										meshes['models/Steak.glb'].visible = false;
+										meshes['models/Chevapchichi.glb'].visible = false;
 
-										sauces_mesh.visible = false;
-										sauces_mesh.scale.set(zoom, zoom, zoom);
-										sauces_mesh.position.copy(xz_plane_intersection);
-
-										spices_mesh.visible = false;
-										spices_mesh.scale.set(zoom, zoom, zoom);
-										spices_mesh.position.copy(xz_plane_intersection);
-
-										scene.add(scene_mesh);
-										scene.add(meatman_mesh);
-										scene.add(grill_mesh);
-										scene.add(sauces_mesh);
-										scene.add(spices_mesh);
+										scene.add(meshes['models/Scene.glb']);
+										scene.add(meshes['models/Meatman.glb']);
+										scene.add(meshes['models/Grill.glb']);
+										scene.add(meshes['models/Sauces.glb']);
+										scene.add(meshes['models/Spices.glb']);
 										scene.add(plane);
-										scene.add(qwe);
-										scene.add(qwe2);
+										scene.add(meshes['models/Kupaty_Extra.glb']);
+										scene.add(meshes['models/Bacon.glb']);
+										scene.add(meshes['models/Sausages_Barbecue.glb']);
+										scene.add(meshes['models/Burger.glb']);
+										scene.add(meshes['models/Barbecue_Classic.glb']);
+										scene.add(meshes['models/Steak.glb']);
+										scene.add(meshes['models/Chevapchichi.glb']);
 
 										document.getElementsByClassName('camera-section')[1].style.display = 'none';
 
@@ -948,9 +815,9 @@ window.addEventListener(
 
 											() =>
 											{
-												scene_mesh.animations['Scene_Start'].play();
-												meatman_mesh.animations['Start'].play();
-												grill_mesh.animations.Grill_Start.play();
+												meshes['models/Scene.glb'].animations['Scene_Start'].play();
+												meshes['models/Meatman.glb'].animations['Start'].play();
+												meshes['models/Grill.glb'].animations.Grill_Start.play();
 
 												scene.visible = true;
 											},
@@ -989,36 +856,36 @@ window.addEventListener(
 						{
 							plane_material.uniforms.time.value += clock_delta * 0.1;
 
-							const s = Math.sin(plane_material.uniforms.time.value * 30.0) * trans2;
+							if (change_trans && trans < 1)
+							{
+								plane_material.uniforms.time.value = 0;
+								trans += clock_delta;
+								trans2 += Math.sin(trans * Math.PI) * 0.05;
+							}
+
+							const s = Math.cos(plane_material.uniforms.time.value * 30.0);
 							const sc = (1 + ((s + 1) / 2)) * zoom;
 
-							_camera.position.set(0, 0, 5);
+							_camera.position.set(0, 5, 0);
 							_camera.lookAt(xz_plane_intersection);
 							_camera.updateMatrix();
 							_camera.updateMatrixWorld();
+
 							plane.lookAt(_camera.position);
-							plane.position.z = 1;
-							plane.position.y = (trans2 + 0.1 + (s * 0.1)) * zoom;
-							plane.scale.set(sc * trans2, sc * trans2, sc * trans2);
+							plane.position.y = xz_plane_intersection.y + 0.760915 + (((trans2 * 0.8) + (s * trans2 * 0.1)) * zoom);
+							plane.scale.set(trans2, trans2, trans2);
 
-							qwe.position.copy(plane.position);
-							qwe.scale.set(sc, sc, sc);
-
-							qwe2.position.copy(plane.position);
-							qwe2.scale.set(sc, sc, sc);
+							if (meat)
+							{
+								meat.position.y = xz_plane_intersection.y + (((trans2 * 0.8) + (s * trans2 * 0.1)) * zoom);
+							}
 						}
 
-						scene_mesh && scene_mesh.mixer.update(clock_delta);
-						meatman_mesh && meatman_mesh.mixer.update(clock_delta);
-						grill_mesh && grill_mesh.mixer.update(clock_delta);
-						sauces_mesh && sauces_mesh.mixer.update(clock_delta);
-						spices_mesh && spices_mesh.mixer.update(clock_delta);
-
-						if (change_trans && trans < 1)
-						{
-							trans += clock_delta;
-							trans2 += Math.sin(trans * Math.PI) * 0.05;
-						}
+						meshes['models/Scene.glb'] && meshes['models/Scene.glb'].mixer.update(clock_delta);
+						meshes['models/Meatman.glb'] && meshes['models/Meatman.glb'].mixer.update(clock_delta);
+						meshes['models/Grill.glb'] && meshes['models/Grill.glb'].mixer.update(clock_delta);
+						meshes['models/Sauces.glb'] && meshes['models/Sauces.glb'].mixer.update(clock_delta);
+						meshes['models/Spices.glb'] && meshes['models/Spices.glb'].mixer.update(clock_delta);
 					},
 				},
 			],
