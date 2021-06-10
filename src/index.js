@@ -308,6 +308,8 @@ let spice_set = null;
 
 let selected_spice_set = [];
 
+// let count = 0;
+
 
 
 window.THREE = THREE;
@@ -648,12 +650,23 @@ window.addEventListener(
 
 												spice_set.unique = [];
 
-												for (const key in spice_set)
+												let count = 0;
+
+												let key = null;
+
+												for (key in spice_set)
 												{
 													if (key !== 'match' && key !== 'unique' && key !== 'name')
 													{
 														spice_set.unique.push(...spice_set[key]);
 													}
+
+													++count;
+												}
+
+												if (count === 4)
+												{
+													spice_set.match = spice_set[key];
 												}
 
 												spice_set.unique = Array.from(new Set(spice_set.unique)).sort((a, b) => (a - b));
@@ -677,10 +690,10 @@ window.addEventListener(
 												document.getElementsByClassName('camera-section')[2].style.display = 'none';
 
 												meshes['models/Meatman.glb'].animations['Idle_Food'].stop();
-												meshes['models/Meatman.glb'].animations['Get_Food'].play();
+												meshes['models/Meatman.glb'].animations['Get_Barbecue'].play();
 
 												meshes['models/Scene.glb'].animations['Scene_Idle_Food'].stop();
-												meshes['models/Scene.glb'].animations['Scene_GetFood'].play();
+												meshes['models/Scene.glb'].animations['Scene_GetBarbecue'].play();
 											},
 										);
 									}
@@ -702,12 +715,23 @@ window.addEventListener(
 
 												spice_set.unique = [];
 
-												for (const key in spice_set)
+												let count = 0;
+
+												let key = null;
+
+												for (key in spice_set)
 												{
 													if (key !== 'match' && key !== 'unique' && key !== 'name')
 													{
 														spice_set.unique.push(...spice_set[key]);
 													}
+
+													++count;
+												}
+
+												if (count === 4)
+												{
+													spice_set.match = spice_set[key];
 												}
 
 												spice_set.unique = Array.from(new Set(spice_set.unique)).sort((a, b) => (a - b));
@@ -760,6 +784,7 @@ window.addEventListener(
 									break;
 
 								case 'Scene_GetFood':
+								case 'Scene_GetBarbecue':
 
 									meshes['models/Scene.glb'].animations['Scene_Marinade&Spices'].play();
 
@@ -866,7 +891,7 @@ window.addEventListener(
 
 										if (spice_set.match && selected_spice_set.length === spice_set.match.length)
 										{
-											LOG('!!!!!', spice_set.name)
+											// LOG('!!!!!', spice_set.name)
 
 											change_trans = true;
 
@@ -985,10 +1010,11 @@ window.addEventListener(
 
 										() =>
 										{
+											LOG('push', elm_index)
 											selected_spice_set.push(elm_index);
 											selected_spice_set = selected_spice_set.sort((a, b) => (a - b));
 
-											// LOG(selected_spice_set)
+											LOG(selected_spice_set)
 
 											if (!spice_set.match)
 											{
@@ -998,8 +1024,10 @@ window.addEventListener(
 
 												for (const key in spice_set)
 												{
+													// LOG(111, key, elm_index, spice_set[key], spice_set[key].includes(elm_index))
 													if (key !== 'match' && key !== 'unique' && key !== 'name' && spice_set[key].includes(elm_index))
 													{
+														// LOG(222, key, elm_index, spice_set[key], spice_set[key].includes(elm_index))
 														++count;
 														// spice_set.match = spice_set[key];
 														// spice_set.name = key;
@@ -1008,6 +1036,8 @@ window.addEventListener(
 														name = key;
 													}
 												}
+
+												LOG(count, spice_set)
 
 												if (count < (Object.keys(spice_set).length - 3))
 												{
@@ -1045,6 +1075,47 @@ window.addEventListener(
 									);
 								},
 							);
+
+
+
+						document.getElementsByClassName('cook-more')[0].addEventListener(
+
+							'click',
+
+							() =>
+							{
+								// count = 0;
+
+								document.getElementsByClassName('camera-section')[5].style.display = 'none';
+
+								meat.visible = false;
+								plane.visible = false;
+								meshes['models/Sauces.glb'].visible = false;
+								meshes['models/Spices.glb'].visible = false;
+
+								meshes['models/Grill.glb'].visible = true;
+
+								tray.visible = true;
+								tray_barbecue.visible = true;
+
+								plane.position.copy(xz_plane_intersection);
+								plane.position.add(new THREE.Vector3(0.030909, 0.760915, 0.520341));
+
+								meat = null;
+								spice_set = null;
+								selected_spice_set.length = 0;
+
+								trans = 0;
+								trans2 = 0;
+								change_trans = false;
+
+								meshes['models/Scene.glb'].animations['Scene_Marinade&Spices'].stop();
+								meshes['models/Scene.glb'].animations['Scene_Start'].play();
+								meshes['models/Meatman.glb'].animations['Final_Idle'].stop();
+								meshes['models/Meatman.glb'].animations['Start'].play();
+								meshes['models/Grill.glb'].animations['Grill_Start'].play();
+							},
+						);
 
 
 
@@ -1150,6 +1221,8 @@ window.addEventListener(
 									{
 										scene.visible = false;
 
+										// meshes['models/Scene.glb'].visible = false;
+
 										grid_mesh.visible = false;
 
 										grid_mesh = null;
@@ -1226,7 +1299,7 @@ window.addEventListener(
 											{
 												meshes['models/Scene.glb'].animations['Scene_Start'].play();
 												meshes['models/Meatman.glb'].animations['Start'].play();
-												meshes['models/Grill.glb'].animations.Grill_Start.play();
+												meshes['models/Grill.glb'].animations['Grill_Start'].play();
 
 												scene.visible = true;
 											},
@@ -1273,9 +1346,9 @@ window.addEventListener(
 							}
 
 							const s = Math.cos(plane_material.uniforms.time.value * 30.0);
-							// const sc = (1 + ((s + 1) / 2)) * zoom;
+							const sc = (1 + ((s + 1) / 2)) * zoom;
 
-							// _camera.position.set(0, 3, 3);
+							// _camera.position.set(0, 8, 8);
 							// _camera.lookAt(xz_plane_intersection);
 							// _camera.updateMatrix();
 							// _camera.updateMatrixWorld();
@@ -1287,6 +1360,7 @@ window.addEventListener(
 							if (meat)
 							{
 								meat.position.y = xz_plane_intersection.y + (((trans2 * 0.8) + (s * trans2 * 0.1)) * zoom);
+								// meat.scale.set(sc, sc, sc);
 							}
 						}
 
