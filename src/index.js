@@ -1257,9 +1257,9 @@ window.addEventListener(
 										meshes['models/Sauces.glb'].visible = false;
 										meshes['models/Spices.glb'].visible = false;
 
-										window._Q = meshes['models/Scene.glb'].children[0].children;
+										window._Q = meshes['models/Meatman.glb'].children[0].children;
 
-										// LOG(meshes['models/Scene.glb'].children[0].children)
+										// LOG(meshes['models/Meatman.glb'].children[0].children)
 
 										meshes['models/Kupaty_Extra.glb'].__test = meshes['models/Scene.glb'].children[0].children[29];
 										meshes['models/Bacon.glb'].__test = meshes['models/Scene.glb'].children[0].children[25];
@@ -1348,7 +1348,7 @@ window.addEventListener(
 							const s = Math.cos(plane_material.uniforms.time.value * 30.0);
 							const sc = (1 + ((s + 1) / 2)) * zoom;
 
-							// _camera.position.set(0, 8, 8);
+							// _camera.position.set(0, 3, 3);
 							// _camera.lookAt(xz_plane_intersection);
 							// _camera.updateMatrix();
 							// _camera.updateMatrixWorld();
