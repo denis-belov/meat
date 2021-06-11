@@ -1183,16 +1183,7 @@ window.addEventListener(
 											LOG('play', elm)
 
 											meshes['models/Meatman.glb'].animations['Idle_Marinade&Spices'].stop();
-
-											setTimeout(
-
-												() =>
-												{
-													meshes['models/Meatman.glb'].animations[elm].play();
-												},
-
-												0,
-											);
+											meshes['models/Meatman.glb'].animations[elm].play();
 										},
 									);
 								},
