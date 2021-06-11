@@ -520,7 +520,7 @@ window.addEventListener(
 					{
 						const { renderer, camera, scene } = XR8.Threejs.xrScene();
 
-						camera.matrixAutoUpdate = false;
+						// camera.matrixAutoUpdate = false;
 
 						// _renderer = renderer;
 						_camera = camera;
@@ -1368,7 +1368,7 @@ window.addEventListener(
 
 										grid_mesh = null;
 
-										xz_plane_intersection.set(0, 0, 0);
+										// xz_plane_intersection.set(0, 0, 0);
 
 										plane.scale.set(zoom, zoom, zoom);
 										plane.position.copy(xz_plane_intersection);
@@ -1495,10 +1495,10 @@ window.addEventListener(
 							const s = Math.cos(plane_material.uniforms.time.value * 30.0);
 							const sc = (1 + ((s + 1) / 2)) * zoom;
 
-							_camera.position.set(0, 3, 3);
-							_camera.lookAt(xz_plane_intersection);
-							_camera.updateMatrix();
-							_camera.updateMatrixWorld();
+							// _camera.position.set(0, 3, 3);
+							// _camera.lookAt(xz_plane_intersection);
+							// _camera.updateMatrix();
+							// _camera.updateMatrixWorld();
 
 							plane.lookAt(_camera.position);
 							plane.position.y = xz_plane_intersection.y + 0.760915 + (((trans2 * 0.8) + (s * trans2 * 0.1)) * zoom);
