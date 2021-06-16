@@ -533,35 +533,35 @@ window.addEventListener(
 
 						const paths_audio =
 						[
-							'audio/Start.wav',
-							'audio/Food.wav',
-							'audio/Barbecue.wav',
+							// 'audio/Start.wav',
+							// 'audio/Food.wav',
+							// 'audio/Barbecue.wav',
 
-							'audio/Marinade_Mayonnaise.wav',
-							'audio/Marinade_SoySauce.wav',
-							'audio/Marinade_Vinegar.wav',
-							'audio/Marinade_Correct.wav',
-							'audio/Marinade_Correct (Short).wav',
+							// 'audio/Marinade_Mayonnaise.wav',
+							// 'audio/Marinade_SoySauce.wav',
+							// 'audio/Marinade_Vinegar.wav',
+							// 'audio/Marinade_Correct.wav',
+							// 'audio/Marinade_Correct (Short).wav',
 
-							'audio/Bacon.wav',
-							'audio/Barbecue_Classic.wav',
-							'audio/Barbecue_Traditional.wav',
-							'audio/Barbecue_Selected.wav',
-							'audio/Barbecue_Pig.wav',
+							// 'audio/Bacon.wav',
+							// 'audio/Barbecue_Classic.wav',
+							// 'audio/Barbecue_Traditional.wav',
+							// 'audio/Barbecue_Selected.wav',
+							// 'audio/Barbecue_Pig.wav',
 
-							'audio/Bazilik.wav',
-							'audio/Chesnok.wav',
-							'audio/Coriander_Perec white.wav',
-							'audio/Luk.wav',
-							'audio/Paprika.wav',
-							'audio/Perec Black peppercorns.wav',
-							'audio/Perec black.wav',
-							'audio/Perec red sladkiy.wav',
-							'audio/Perec.wav',
-							'audio/Petrushka.wav',
-							'audio/Salt.wav',
-							'audio/Tmin.wav',
-							'audio/Tomat.wav',
+							// 'audio/Bazilik.wav',
+							// 'audio/Chesnok.wav',
+							// 'audio/Coriander_Perec white.wav',
+							// 'audio/Luk.wav',
+							// 'audio/Paprika.wav',
+							// 'audio/Perec Black peppercorns.wav',
+							// 'audio/Perec black.wav',
+							// 'audio/Perec red sladkiy.wav',
+							// 'audio/Perec.wav',
+							// 'audio/Petrushka.wav',
+							// 'audio/Salt.wav',
+							// 'audio/Tmin.wav',
+							// 'audio/Tomat.wav',
 						];
 
 						[
@@ -799,7 +799,7 @@ window.addEventListener(
 												meshes['models/Scene.glb'].animations['Scene_Idle_Food'].stop();
 												meshes['models/Scene.glb'].animations['Scene_GetBarbecue'].play();
 
-												audio['audio/Barbecue.wav'].play();
+												// audio['audio/Barbecue.wav'].play();
 											},
 										);
 									}
@@ -871,7 +871,7 @@ window.addEventListener(
 												meshes['models/Scene.glb'].animations['Scene_Idle_Food'].stop();
 												meshes['models/Scene.glb'].animations['Scene_GetFood'].play();
 
-												audio['audio/Food.wav'].play();
+												// audio['audio/Food.wav'].play();
 											},
 										);
 									}
@@ -1091,7 +1091,7 @@ window.addEventListener(
 											LOG(spice_set.match)
 											if (spice_set.match.audio)
 											{
-												spice_set.match.audio.play();
+												// spice_set.match.audio.play();
 											}
 										}
 										else
@@ -1156,7 +1156,7 @@ window.addEventListener(
 											meshes['models/Meatman.glb'].animations[elm.meatman].play();
 											elm.sauce_a.play();
 
-											elm.sauce_au.play();
+											// elm.sauce_au.play();
 										},
 									);
 								},
@@ -1190,11 +1190,11 @@ window.addEventListener(
 
 								if (marinade_try === 0)
 								{
-									audio['audio/Marinade_Correct.wav'].play();
+									// audio['audio/Marinade_Correct.wav'].play();
 								}
 								else
 								{
-									audio['audio/Marinade_Correct (Short).wav'].play();
+									// audio['audio/Marinade_Correct (Short).wav'].play();
 								}
 							},
 						);
@@ -1361,7 +1361,7 @@ window.addEventListener(
 											meshes['models/Meatman.glb'].animations['Idle_Marinade&Spices'].stop();
 											meshes['models/Meatman.glb'].animations[elm].play();
 
-											spice_audio[elm_index].play();
+											// spice_audio[elm_index].play();
 										},
 									);
 								},
@@ -1426,7 +1426,7 @@ window.addEventListener(
 								meshes['models/Grill.glb'].animations['Grill_Start'].play();
 
 								// LOG(audio['audio/Start.wav'])
-								audio['audio/Start.wav'].play();
+								// audio['audio/Start.wav'].play();
 							},
 						);
 
@@ -1656,7 +1656,7 @@ window.addEventListener(
 												meshes['models/Meatman.glb'].animations['Start'].play();
 												meshes['models/Grill.glb'].animations['Grill_Start'].play();
 
-												audio['audio/Start.wav'].play();
+												// audio['audio/Start.wav'].play();
 
 												scene.visible = true;
 											},
@@ -1718,6 +1718,8 @@ window.addEventListener(
 									change_trans = false;
 								}
 							}
+
+							trans2 = 0.95;
 
 							const s = Math.cos(plane_material.uniforms.time.value * 30.0);
 							const sc = (1 + ((s + 1) / 2)) * zoom;
