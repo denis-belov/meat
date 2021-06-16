@@ -104,6 +104,7 @@ module.exports = (env) => ({
 				{ from: 'src/images', to: 'images' },
 				{ from: 'src/models', to: 'models' },
 				{ from: 'src/textures', to: 'textures' },
+				{ from: 'src/audio', to: 'audio' },
 			],
 		}),
 
