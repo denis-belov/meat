@@ -478,7 +478,7 @@ window.addEventListener(
 					{
 						const { renderer, camera, scene } = XR8.Threejs.xrScene();
 
-						// camera.matrixAutoUpdate = false;
+						camera.matrixAutoUpdate = false;
 
 						// _renderer = renderer;
 						_camera = camera;
@@ -1199,26 +1199,6 @@ window.addEventListener(
 							},
 						);
 
-						// /* salt */ 0,
-						// /* perec */ 1,
-						// /* luk */ 2,
-						// /* paprika */ 3,
-						// /* petrushka */ 4,
-						// /* bazilik */ 5,
-						// /* chabrec */ 6,
-						// /* coriander */ 7,
-						// /* perec gor */ 8,
-						// /* chesnok */ 9,
-						// /* perec bel */ 10,
-						// /* perec slad kras */ 11,
-						// /* tmin */ 12,
-						// /* tomat */ 13,
-						// /* oreagano */ 14,
-						// /* mayoran */ 15,
-						// /* imbir */ 16,
-						// /* ukrop */ 17,
-						// /* pazit */ 18,
-
 						const spice_audio =
 						[
 							audio['audio/Salt.wav'],
@@ -1241,6 +1221,26 @@ window.addEventListener(
 							audio['audio/Perec black.wav'],
 							audio['audio/Perec black.wav'],
 						];
+
+						// /* salt */ 0,
+						// /* perec */ 1,
+						// /* luk */ 2,
+						// /* paprika */ 3,
+						// /* petrushka */ 4,
+						// /* bazilik */ 5,
+						// /* chabrec */ 6,
+						// /* coriander */ 7,
+						// /* perec gor */ 8,
+						// /* chesnok */ 9,
+						// /* perec bel */ 10,
+						// /* perec slad kras */ 11,
+						// /* tmin */ 12,
+						// /* tomat */ 13,
+						// /* oreagano */ 14,
+						// /* mayoran */ 15,
+						// /* imbir */ 16,
+						// /* ukrop */ 17,
+						// /* pazit */ 18,
 
 						[
 							// 'Get_Spices_Perec',
@@ -1265,23 +1265,23 @@ window.addEventListener(
 
 							'Get_Spices_Perec',
 							'Get_Spices_Perec',
-							'Get_Spices_Perec',
-							'Get_Spices_Perec',
-							'Get_Spices_Perec',
-							'Get_Spices_Perec',
-							'Get_Spices_Perec',
-							'Get_Spices_Perec',
-							'Get_Spices_Perec',
-							'Get_Spices_Perec',
-							'Get_Spices_Perec',
-							'Get_Spices_Perec',
-							'Get_Spices_Perec',
-							'Get_Spices_Perec',
-							'Get_Spices_Perec',
-							'Get_Spices_Perec',
-							'Get_Spices_Perec',
-							'Get_Spices_Perec',
-							'Get_Spices_Perec',
+							'Get_Spices_Luk',
+							'Get_Spices_Paprika',
+							'Get_Spices_Petrushka',
+							'Get_Spices_Bazilik',
+							'Get_Spices_Chabrec',
+							'Get_Spices_Coriander',
+							'Get_Spices_Perec Black peppercorns',
+							'Get_Spices_Chesnok',
+							'Get_Spices_Perec White',
+							'Get_Spices_Perec Red',
+							'Get_Spices_Tmin',
+							'Get_Spices_Tomat',
+							'Get_Spices_Oregano',
+							'Get_Spices_Maioran',
+							'Get_Spices_Imbir',
+							'Get_Spices_Ukrop',
+							'Get_Spices_Pazhitnik',
 						]
 							.forEach(
 
@@ -1540,7 +1540,7 @@ window.addEventListener(
 
 										grid_mesh = null;
 
-										// xz_plane_intersection.set(0, 0, 0);
+										xz_plane_intersection.set(0, 0, 0);
 
 										plane.scale.set(zoom, zoom, zoom);
 										plane.position.copy(xz_plane_intersection);
@@ -1556,8 +1556,8 @@ window.addEventListener(
 											},
 										);
 
-										tray = meshes['models/Meatman.glb'].children[0].children[15];
-										tray_barbecue = meshes['models/Meatman.glb'].children[0].children[16];
+										tray = meshes['models/Meatman.glb'].children[0].children[25];
+										tray_barbecue = meshes['models/Meatman.glb'].children[0].children[26];
 
 										// meshes['models/Sauces.glb'].visible = false;
 										meshes['models/Mayonnaise.glb'].visible = false;
@@ -1565,9 +1565,9 @@ window.addEventListener(
 										meshes['models/Vinegar.glb'].visible = false;
 										// meshes['models/Spices.glb'].visible = false;
 
-										// window._Q = meshes['models/Meatman.glb'].children[0].children;
+										window._Q = meshes['models/Meatman.glb'].children[0].children;
 
-										// LOG(meshes['models/Scene.glb'].children[0].children)
+										LOG(window._Q)
 
 										meshes['models/Scene.glb'].children[0].children.slice(25).forEach(
 
@@ -1695,20 +1695,37 @@ window.addEventListener(
 						{
 							plane_material.uniforms.time.value += clock_delta * 0.1;
 
-							if (change_trans && trans < 1)
+							// if (change_trans && trans2 < 0.95)
+							// {
+							// 	plane_material.uniforms.time.value = 0;
+							// 	trans += clock_delta;
+							// 	trans2 += Math.sin(trans * Math.PI) * 0.05;
+							// 	LOG('trans2', trans2)
+							// }
+
+							if (change_trans)
 							{
-								plane_material.uniforms.time.value = 0;
-								trans += clock_delta;
-								trans2 += Math.sin(trans * Math.PI) * 0.05;
+								if (trans2 < 0.95)
+								{
+									plane_material.uniforms.time.value = 0;
+									trans += clock_delta;
+									trans2 += Math.sin(trans * Math.PI) * 0.05;
+									// LOG('trans2', trans2)
+								}
+								else
+								{
+									trans2 = 0.95;
+									change_trans = false;
+								}
 							}
 
 							const s = Math.cos(plane_material.uniforms.time.value * 30.0);
 							const sc = (1 + ((s + 1) / 2)) * zoom;
 
-							// _camera.position.set(0, 3, 3);
-							// _camera.lookAt(xz_plane_intersection);
-							// _camera.updateMatrix();
-							// _camera.updateMatrixWorld();
+							_camera.position.set(0, 3, 3);
+							_camera.lookAt(xz_plane_intersection);
+							_camera.updateMatrix();
+							_camera.updateMatrixWorld();
 
 							plane.lookAt(_camera.position);
 							plane.position.y = xz_plane_intersection.y + 0.760915 + (((trans2 * 0.8) + (s * trans2 * 0.1)) * zoom);
