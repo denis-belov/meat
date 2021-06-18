@@ -563,19 +563,17 @@ window.addEventListener(
 							// 'audio/Barbecue_Selected.wav',
 							// 'audio/Barbecue_Pig.wav',
 
-							// 'audio/Bazilik.wav',
-							// 'audio/Chesnok.wav',
-							// 'audio/Coriander_Perec white.wav',
-							// 'audio/Luk.wav',
-							// 'audio/Paprika.wav',
-							// 'audio/Perec Black peppercorns.wav',
-							// 'audio/Perec black.wav',
-							// 'audio/Perec red sladkiy.wav',
-							// 'audio/Perec.wav',
-							// 'audio/Petrushka.wav',
-							// 'audio/Salt.wav',
-							// 'audio/Tmin.wav',
-							// 'audio/Tomat.wav',
+							'audio/salt.wav',
+							'audio/Perec.wav',
+							'audio/Luk.wav',
+							'audio/Paprika.wav',
+							'audio/Zelen.wav',
+							'audio/bazilik.wav',
+							'audio/originalno.wav',
+							'audio/Chesnok.wav',
+							'audio/PerecSweet.wav',
+							'audio/Tmin.wav',
+							'audio/Tomat.wav',
 						];
 
 						[
@@ -629,29 +627,35 @@ window.addEventListener(
 
 							switch (paths_audio[i])
 							{
-							case 'audio/Start.wav':
-							case 'audio/Food.wav':
-							case 'audio/Barbecue.wav':
+							// case 'audio/Start.wav':
+							// case 'audio/Food.wav':
+							// case 'audio/Barbecue.wav':
 
-							case 'audio/Marinade_Mayonnaise.wav':
-							case 'audio/Marinade_SoySauce.wav':
-							case 'audio/Marinade_Vinegar.wav':
-							case 'audio/Marinade_Correct.wav':
-							case 'audio/Marinade_Correct (Short).wav':
+							// case 'audio/Marinade_Mayonnaise.wav':
+							// case 'audio/Marinade_SoySauce.wav':
+							// case 'audio/Marinade_Vinegar.wav':
+							// case 'audio/Marinade_Correct.wav':
+							// case 'audio/Marinade_Correct (Short).wav':
 
-							case 'audio/Bazilik.wav':
-							case 'audio/Chesnok.wav':
-							case 'audio/Coriander_Perec white.wav':
+							case 'audio/salt.wav':
+							case 'audio/Perec.wav':
 							case 'audio/Luk.wav':
 							case 'audio/Paprika.wav':
-							case 'audio/Perec Black peppercorns.wav':
-							case 'audio/Perec black.wav':
-							case 'audio/Perec red sladkiy.wav':
-							case 'audio/Perec.wav':
-							case 'audio/Petrushka.wav':
-							case 'audio/Salt.wav':
+							case 'audio/Zelen.wav':
+							case 'audio/bazilik.wav':
+							case 'audio/originalno.wav':
+							// case 'audio/originalno.wav':
+							// null,
+							case 'audio/Chesnok.wav':
+							// case 'audio/originalno.wav':
+							case 'audio/PerecSweet.wav':
 							case 'audio/Tmin.wav':
 							case 'audio/Tomat.wav':
+							// case 'audio/originalno.wav':
+							// case 'audio/originalno.wav':
+							// null,
+							// null,
+							// case 'audio/originalno.wav':
 							{
 								audio[paths_audio[i]] = document.createElement('audio');
 
@@ -952,6 +956,9 @@ window.addEventListener(
 									if (action._clip.name === 'Sauces_Mayonnaise')
 									{
 										meshes['models/Mayonnaise.glb'].visible = false;
+
+										// document.getElementsByClassName('camera-section')[3].style.pointerEvents = 'initial';
+										// LOG(888777)
 									}
 
 									// document.getElementsByClassName('camera-section')[3].style.display = 'block';
@@ -972,6 +979,9 @@ window.addEventListener(
 									if (action._clip.name === 'Sauces_SoySauce')
 									{
 										meshes['models/SoySauce.glb'].visible = false;
+
+										// document.getElementsByClassName('camera-section')[3].style.pointerEvents = 'initial';
+										// LOG(888777)
 									}
 
 									// document.getElementsByClassName('camera-section')[3].style.display = 'block';
@@ -992,6 +1002,9 @@ window.addEventListener(
 									if (action._clip.name === 'Sauces_Vinegar')
 									{
 										meshes['models/Vinegar.glb'].visible = false;
+
+										// document.getElementsByClassName('camera-section')[3].style.pointerEvents = 'initial';
+										// LOG(888777)
 									}
 
 									// document.getElementsByClassName('camera-section')[3].style.display = 'block';
@@ -1059,6 +1072,9 @@ window.addEventListener(
 									case 'Marinade_Wrong02':
 									case 'Marinade_Wrong03':
 
+										document.getElementsByClassName('camera-section')[3].style.pointerEvents = 'initial';
+										// LOG(888777)
+
 										meshes['models/Meatman.glb'].animations['Idle_Marinade'].play();
 
 										break;
@@ -1082,6 +1098,8 @@ window.addEventListener(
 									case 'Get_Spices_Imbir':
 									case 'Get_Spices_Ukrop':
 									case 'Get_Spices_Pazhitnik':
+
+										document.getElementsByClassName('camera-section')[4].style.pointerEvents = 'initial';
 
 										if (spice_set.match && selected_spice_set.length === spice_set.match.length)
 										{
@@ -1157,6 +1175,8 @@ window.addEventListener(
 
 								(elm, elm_index) =>
 								{
+									// sauce_buttons[elm_index].style.pointerEvents = 'none';
+
 									sauce_buttons[elm_index].addEventListener(
 
 										'click',
@@ -1164,6 +1184,8 @@ window.addEventListener(
 										() =>
 										{
 											++marinade_try;
+
+											document.getElementsByClassName('camera-section')[3].style.pointerEvents = 'none';
 
 											sauce_buttons[elm_index].style.display = 'none';
 
@@ -1220,25 +1242,25 @@ window.addEventListener(
 
 						const spice_audio =
 						[
-							audio['audio/Salt.wav'],
-							audio['audio/Perec black.wav'],
+							audio['audio/salt.wav'],
+							audio['audio/Perec.wav'],
 							audio['audio/Luk.wav'],
 							audio['audio/Paprika.wav'],
-							audio['audio/Petrushka.wav'],
-							audio['audio/Bazilik.wav'],
-							audio['audio/Perec black.wav'],
-							audio['audio/Coriander_Perec white.wav'],
-							audio['audio/Perec black.wav'],
+							audio['audio/Zelen.wav'],
+							audio['audio/bazilik.wav'],
+							audio['audio/originalno.wav'],
+							audio['audio/originalno.wav'],
+							null,
 							audio['audio/Chesnok.wav'],
-							audio['audio/Coriander_Perec white.wav'],
-							audio['audio/Perec red sladkiy.wav'],
+							audio['audio/originalno.wav'],
+							audio['audio/PerecSweet.wav'],
 							audio['audio/Tmin.wav'],
 							audio['audio/Tomat.wav'],
-							audio['audio/Perec black.wav'],
-							audio['audio/Perec black.wav'],
-							audio['audio/Perec black.wav'],
-							audio['audio/Perec black.wav'],
-							audio['audio/Perec black.wav'],
+							audio['audio/originalno.wav'],
+							audio['audio/originalno.wav'],
+							null,
+							null,
+							audio['audio/originalno.wav'],
 						];
 
 						// /* salt */ 0,
@@ -1294,6 +1316,8 @@ window.addEventListener(
 
 										() =>
 										{
+											document.getElementsByClassName('camera-section')[4].style.pointerEvents = 'none';
+
 											selected_spice_set.push(elm_index);
 											selected_spice_set = selected_spice_set.sort((a, b) => (a - b));
 
@@ -1346,7 +1370,7 @@ window.addEventListener(
 											meshes['models/Meatman.glb'].animations['Idle_Spices'].stop();
 											meshes['models/Meatman.glb'].animations[elm].play();
 
-											// spice_audio[elm_index].play();
+											spice_audio[elm_index] && spice_audio[elm_index].play();
 										},
 									);
 								},
