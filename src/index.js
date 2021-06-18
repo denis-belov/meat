@@ -411,7 +411,9 @@ const parseGlb = (arraybuffer) =>
 									animation.name !== 'Idle_Food' &&
 									animation.name !== 'Final_Idle' &&
 									animation.name !== 'Scene_Idle_Food' &&
-									animation.name !== 'Scene_Marinade&Spices'
+									// animation.name !== 'Scene_Marinade&Spices'
+									animation.name !== 'SceneFood_Marinade&Spices' &&
+									animation.name !== 'SceneBarbecue_Marinade&Spices'
 								)
 								{
 									action.loop = THREE.LoopOnce;
@@ -664,16 +666,12 @@ window.addEventListener(
 							{
 								set = spice_sets['models/Bacon.glb']['models/Bacon.glb'];
 
-								// LOG(set)
-
 								break;
 							}
 
 							case 'audio/Barbecue_Classic.wav':
 							{
 								set = spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Classic.glb'];
-
-								// LOG(set)
 
 								break;
 							}
@@ -682,8 +680,6 @@ window.addEventListener(
 							{
 								set = spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Traditional.glb'];
 
-								// LOG(set)
-
 								break;
 							}
 
@@ -691,16 +687,12 @@ window.addEventListener(
 							{
 								set = spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Selected.glb'];
 
-								// LOG(set)
-
 								break;
 							}
 
 							case 'audio/Barbecue_Pig.wav':
 							{
 								set = spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Pig.glb'];
-
-								// LOG(set)
 
 								break;
 							}
@@ -754,8 +746,6 @@ window.addEventListener(
 											{
 												spice_set = spice_sets[elm];
 
-												LOG(spice_set)
-
 												spice_set.name = null;
 
 												spice_set.match = null;
@@ -780,14 +770,11 @@ window.addEventListener(
 
 												if (count === 4)
 												{
-													LOG(spice_sets, spice_set[_key])
 													spice_set.match = spice_set[_key];
 													spice_set.match.audio = spice_set[_key].audio;
 												}
 
 												spice_set.unique = Array.from(new Set(spice_set.unique)).sort((a, b) => (a - b));
-
-												// LOG(spice_set.unique)
 
 												spice_set.unique.forEach(
 
@@ -825,8 +812,6 @@ window.addEventListener(
 											{
 												spice_set = spice_sets[elm];
 
-												LOG(spice_set)
-
 												spice_set.name = null;
 
 												spice_set.match = null;
@@ -851,15 +836,11 @@ window.addEventListener(
 
 												if (count === 4)
 												{
-													LOG(_key)
-													LOG(spice_sets, spice_set[_key])
 													spice_set.match = spice_set[_key];
 													spice_set.match.audio = spice_set[_key].audio;
 												}
 
 												spice_set.unique = Array.from(new Set(spice_set.unique)).sort((a, b) => (a - b));
-
-												// LOG(spice_set.unique)
 
 												spice_set.unique.forEach(
 
@@ -909,9 +890,17 @@ window.addEventListener(
 									break;
 
 								case 'Scene_GetFood':
+								// case 'Scene_GetBarbecue':
+
+									// meshes['models/Scene.glb'].animations['Scene_Marinade&Spices'].play();
+									meshes['models/Scene.glb'].animations['SceneFood_Marinade&Spices'].play();
+
+									break;
+
+								// case 'Scene_GetFood':
 								case 'Scene_GetBarbecue':
 
-									meshes['models/Scene.glb'].animations['Scene_Marinade&Spices'].play();
+									meshes['models/Scene.glb'].animations['SceneBarbecue_Marinade&Spices'].play();
 
 									break;
 
@@ -1094,12 +1083,8 @@ window.addEventListener(
 									case 'Get_Spices_Ukrop':
 									case 'Get_Spices_Pazhitnik':
 
-										LOG(spice_set.match, selected_spice_set)
-
 										if (spice_set.match && selected_spice_set.length === spice_set.match.length)
 										{
-											// LOG('!!!!!', spice_set.name)
-
 											change_trans = true;
 											change_trans2 = true;
 
@@ -1116,7 +1101,6 @@ window.addEventListener(
 											// meshes['models/Meatman.glb'].animations['Idle_Marinade&Spices'].stop();
 											meshes['models/Meatman.glb'].animations['Final'].play();
 
-											LOG(spice_set.match)
 											if (spice_set.match.audio)
 											{
 												// spice_set.match.audio.play();
@@ -1310,12 +1294,8 @@ window.addEventListener(
 
 										() =>
 										{
-											LOG('elm_index', elm_index)
-											LOG('push', elm_index)
 											selected_spice_set.push(elm_index);
 											selected_spice_set = selected_spice_set.sort((a, b) => (a - b));
-
-											LOG(selected_spice_set, spice_set.match)
 
 											if (!spice_set.match)
 											{
@@ -1325,30 +1305,23 @@ window.addEventListener(
 
 												for (const key in spice_set)
 												{
-													LOG(111, key, elm_index, spice_set[key], spice_set[key].includes(elm_index))
 													if (key !== 'match' && key !== 'unique' && key !== 'name' && spice_set[key].includes(elm_index))
 													{
-														// LOG(222, key, elm_index, spice_set[key], spice_set[key].includes(elm_index))
 														++count;
 														// spice_set.match = spice_set[key];
 														// spice_set.name = key;
 
-														LOG(spice_set[key])
 														match = spice_set[key];
 														match.audio = spice_set[key].audio;
 														name = key;
 													}
 												}
 
-												LOG(count, spice_set)
-
 												if (count < (Object.keys(spice_set).length - 3))
 												{
 													spice_set.match = match;
 													spice_set.match.audio = match.audio;
 													spice_set.name = name;
-
-													LOG(777, spice_set.match)
 
 													spices_buttons.forEach(
 
@@ -1364,14 +1337,10 @@ window.addEventListener(
 															}
 														},
 													);
-
-													// LOG(spice_set.match)
 												}
 											}
 
 											spices_buttons[elm_index].style.display = 'none';
-
-											LOG('play', elm)
 
 											// meshes['models/Meatman.glb'].animations['Idle_Marinade&Spices'].stop();
 											meshes['models/Meatman.glb'].animations['Idle_Spices'].stop();
@@ -1436,13 +1405,14 @@ window.addEventListener(
 								change_trans = false;
 								change_trans2 = false;
 
-								meshes['models/Scene.glb'].animations['Scene_Marinade&Spices'].stop();
+								// meshes['models/Scene.glb'].animations['Scene_Marinade&Spices'].stop();
+								meshes['models/Scene.glb'].animations['SceneFood_Marinade&Spices'].stop();
+								meshes['models/Scene.glb'].animations['SceneBarbecue_Marinade&Spices'].stop();
 								meshes['models/Scene.glb'].animations['Scene_Start'].play();
 								meshes['models/Meatman.glb'].animations['Final_Idle'].stop();
 								meshes['models/Meatman.glb'].animations['Start'].play();
 								meshes['models/Grill.glb'].animations['Grill_Start'].play();
 
-								// LOG(audio['audio/Start.wav'])
 								// audio['audio/Start.wav'].play();
 							},
 						);
@@ -1504,9 +1474,9 @@ window.addEventListener(
 										texture2D(noise, vUv1 - time + asin((vUv2.t - 0.5))).rgb +
 										texture2D(noise, vUv1 - time + asin((vUv2.s - 0.5))).rgb;
 
-									gl_FragColor.rgb /= 4.0;
+									gl_FragColor.rgb *= 0.25;
 
-									gl_FragColor.a = 1.0;
+									// gl_FragColor.a = 1.0;
 
 									gl_FragColor.rgb += smoothstep(0.0, 1.0, 1.0 - length(vUv1)) * 3.0 * (1.0 + sin(time * 50.0) * 0.1);
 
@@ -1582,22 +1552,22 @@ window.addEventListener(
 										meshes['models/Vinegar.glb'].visible = false;
 										// meshes['models/Spices.glb'].visible = false;
 
-										window._Q = meshes['models/Meatman.glb'].children[0].children;
+										// window._Q = meshes['models/Meatman.glb'].children[0].children;
 
-										LOG(window._Q)
+										// LOG(meshes['models/Scene.glb'].children[0].children);
 
-										meshes['models/Scene.glb'].children[0].children.slice(25).forEach(
+										meshes['models/Scene.glb'].children[0].children.forEach(
 
 											(elm) =>
 											{
-												elm.visible = false;
-
-												// elm.geometry.translate(0, -0.760915, 0);
+												// LOG(elm)
 
 												switch (elm.name)
 												{
 												case 'Barbecue':
 												{
+													elm.visible = false;
+
 													meshes['models/Barbecue_Classic.glb'].__test = elm;
 
 													break;
@@ -1605,6 +1575,8 @@ window.addEventListener(
 
 												case 'Kupaty':
 												{
+													elm.visible = false;
+
 													meshes['models/Kupaty_Extra.glb'].__test = elm;
 
 													break;
@@ -1612,17 +1584,44 @@ window.addEventListener(
 
 												case 'Sausages':
 												{
+													elm.visible = false;
+
 													meshes['models/Sausages_Barbecue.glb'].__test = elm;
 
 													break;
 												}
 
-												case 'Bacon':
-												case 'Steak':
-												case 'Burger':
-												case 'Chevapchichi':
+												case 'Bacon004':
 												{
-													meshes[`models/${ elm.name }.glb`].__test = elm;
+													elm.visible = false;
+
+													meshes['models/Bacon.glb'].__test = elm;
+
+													break;
+												}
+
+												case 'Steak':
+												{
+													elm.visible = false;
+
+													meshes['models/Steak.glb'].__test = elm;
+
+													break;
+												}
+
+												case 'Burger003':
+												{
+													elm.visible = false;
+
+													meshes['models/Burger.glb'].__test = elm;
+
+													break;
+												}
+												case 'Chevapchichi004':
+												{
+													elm.visible = false;
+
+													meshes['models/Chevapchichi.glb'].__test = elm;
 
 													break;
 												}
@@ -1741,7 +1740,6 @@ window.addEventListener(
 							const s = Math.sin(plane_material.uniforms.time.value * 30.0);
 							const sc = (s + 1) * 0.5 * 0.25;
 							// const sc = Math.sin(plane_material.uniforms.time.value);
-							// LOG(sc)
 
 							plane.lookAt(_camera.position);
 							plane.position.y = xz_plane_intersection.y + 0.760915 + (((trans2 * 0.8) + (s * 0.1)) * zoom);
@@ -1749,9 +1747,14 @@ window.addEventListener(
 							plane.scale.set(trans2 * (zoom + sc), trans2 * (zoom + sc), trans2 * (zoom + sc));
 
 							// meat.position.y = xz_plane_intersection.y + (((trans2 * 0.8) + (s * 0.1)) * zoom);
-							meat.position.set(0, xz_plane_intersection.y + (((trans2 * 0.8) + (s * 0.1)) * zoom), 0).sub(meat_position2.copy(meat_position).multiplyScalar(zoom + sc - 1));
+							// meat.position.set(0, xz_plane_intersection.y + (((trans2 * 0.8) + (s * 0.1)) * zoom), 0).sub(meat_position2.copy(meat_position).multiplyScalar(zoom + sc - 1));
+							meat.position
+								.copy(xz_plane_intersection)
+								.setY(meat.position.y + ((trans2 * 0.8) + (s * 0.1)) * zoom)
+								.sub(meat_position2.copy(meat_position).multiplyScalar(zoom + sc - 1));
 							// meat.position.y = plane.position.y;
 							meat.scale.set(zoom + sc, zoom + sc, zoom + sc);
+							// LOG(meat.position.x, meat.position.y, meat.position.z)
 						}
 
 						meshes['models/Scene.glb']?.visible && meshes['models/Scene.glb'].mixer.update(clock_delta);
