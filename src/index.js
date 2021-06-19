@@ -604,7 +604,7 @@ window.addEventListener(
 
 							'audio/Nachalo.wav',
 
-							'audio/uksus.wav',
+							'audio/Marinade_Vinegar.wav',
 							'audio/mazik.wav',
 							'audio/soy.wav',
 							'audio/Marinade_Correct.wav',
@@ -621,6 +621,7 @@ window.addEventListener(
 							'audio/PerecSweet.wav',
 							'audio/Tmin.wav',
 							'audio/Tomat.wav',
+							'audio/PerecBlackGoroshek.wav',
 						];
 
 						[
@@ -681,7 +682,7 @@ window.addEventListener(
 
 							case 'audio/Nachalo.wav':
 
-							case 'audio/uksus.wav':
+							case 'audio/Marinade_Vinegar.wav':
 							case 'audio/mazik.wav':
 							case 'audio/soy.wav':
 							case 'audio/Marinade_Correct.wav':
@@ -698,6 +699,7 @@ window.addEventListener(
 							case 'audio/PerecSweet.wav':
 							case 'audio/Tmin.wav':
 							case 'audio/Tomat.wav':
+							case 'audio/PerecBlackGoroshek.wav':
 							{
 								audio[paths_audio[i]] = document.createElement('audio');
 
@@ -1277,7 +1279,7 @@ window.addEventListener(
 						// 	'Marinade_Wrong03',
 						// ]
 						[
-							{ meatman: 'Marinade_Vinegar', sauce_a: meshes['models/Vinegar.glb'].animations['Sauces_Vinegar'], sauce_au: audio['audio/uksus.wav'] },
+							{ meatman: 'Marinade_Vinegar', sauce_a: meshes['models/Vinegar.glb'].animations['Sauces_Vinegar'], sauce_au: audio['audio/Marinade_Vinegar.wav'] },
 							{ meatman: 'Marinade_Mayonnaise', sauce_a: meshes['models/Mayonnaise.glb'].animations['Sauces_Mayonnaise'], sauce_au: audio['audio/mazik.wav'] },
 							{ meatman: 'Marinade_SoySauce', sauce_a: meshes['models/SoySauce.glb'].animations['Sauces_SoySauce'], sauce_au: audio['audio/soy.wav'] },
 						]
