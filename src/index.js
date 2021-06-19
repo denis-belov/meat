@@ -262,6 +262,19 @@ const spice_sets =
 
 			/* tomat */ 13,
 		].sort((a, b) => (a - b)),
+
+		'models/Sausages_Bavarian.glb':
+		[
+			/* salt */ 0,
+
+			/* luk */ 2,
+
+			/* paprika */ 3,
+
+			/* coriander */ 7,
+
+			/* chesnok */ 9,
+		].sort((a, b) => (a - b)),
 	},
 };
 
@@ -374,6 +387,27 @@ let zoom = 1;
 					},
 				);
 			}
+		},
+	);
+
+	window.addEventListener(
+
+		'wheel',
+
+		() =>
+		{
+			zoom -= 0.01;
+
+			_scene.children.forEach(
+
+				(elm) =>
+				{
+					if (elm?.scale?.set?.call)
+					{
+						elm.scale.set(zoom, zoom, zoom);
+					}
+				},
+			);
 		},
 	);
 }
@@ -547,21 +581,31 @@ window.addEventListener(
 
 						const paths_audio =
 						[
-							// 'audio/Start.wav',
-							// 'audio/Food.wav',
-							// 'audio/Barbecue.wav',
+							'audio/Svinina1.wav',
+							'audio/lenta.wav',
 
-							// 'audio/Marinade_Mayonnaise.wav',
-							// 'audio/Marinade_SoySauce.wav',
-							// 'audio/Marinade_Vinegar.wav',
-							// 'audio/Marinade_Correct.wav',
-							// 'audio/Marinade_Correct (Short).wav',
+							'audio/Bacon.wav',
+							'audio/SashlikKass.wav',
+							'audio/ShashlikTradic.wav',
+							'audio/SashlikOtborniy.wav',
+							'audio/ShaslikPig.wav',
+							'audio/Chevapchichi.wav',
+							'audio/Burger.wav',
+							'audio/Kupati.wav',
+							'audio/KupatiPig.wav',
+							'audio/Steak.wav',
+							'audio/Kotleti.wav',
+							'audio/KolbaskiDom.wav',
+							'audio/BBQ.wav',
+							'audio/Bavarskie.wav',
 
-							// 'audio/Bacon.wav',
-							// 'audio/Barbecue_Classic.wav',
-							// 'audio/Barbecue_Traditional.wav',
-							// 'audio/Barbecue_Selected.wav',
-							// 'audio/Barbecue_Pig.wav',
+							'audio/Nachalo.wav',
+
+							'audio/uksus.wav',
+							'audio/mazik.wav',
+							'audio/soy.wav',
+							'audio/Marinade_Correct.wav',
+							'audio/Marinade_Correct (Short).wav',
 
 							'audio/salt.wav',
 							'audio/Perec.wav',
@@ -628,14 +672,16 @@ window.addEventListener(
 							switch (paths_audio[i])
 							{
 							// case 'audio/Start.wav':
-							// case 'audio/Food.wav':
-							// case 'audio/Barbecue.wav':
+							case 'audio/Svinina1.wav':
+							case 'audio/lenta.wav':
 
-							// case 'audio/Marinade_Mayonnaise.wav':
-							// case 'audio/Marinade_SoySauce.wav':
-							// case 'audio/Marinade_Vinegar.wav':
-							// case 'audio/Marinade_Correct.wav':
-							// case 'audio/Marinade_Correct (Short).wav':
+							case 'audio/Nachalo.wav':
+
+							case 'audio/uksus.wav':
+							case 'audio/mazik.wav':
+							case 'audio/soy.wav':
+							case 'audio/Marinade_Correct.wav':
+							case 'audio/Marinade_Correct (Short).wav':
 
 							case 'audio/salt.wav':
 							case 'audio/Perec.wav':
@@ -644,18 +690,10 @@ window.addEventListener(
 							case 'audio/Zelen.wav':
 							case 'audio/bazilik.wav':
 							case 'audio/originalno.wav':
-							// case 'audio/originalno.wav':
-							// null,
 							case 'audio/Chesnok.wav':
-							// case 'audio/originalno.wav':
 							case 'audio/PerecSweet.wav':
 							case 'audio/Tmin.wav':
 							case 'audio/Tomat.wav':
-							// case 'audio/originalno.wav':
-							// case 'audio/originalno.wav':
-							// null,
-							// null,
-							// case 'audio/originalno.wav':
 							{
 								audio[paths_audio[i]] = document.createElement('audio');
 
@@ -673,30 +711,93 @@ window.addEventListener(
 								break;
 							}
 
-							case 'audio/Barbecue_Classic.wav':
+							case 'audio/SashlikKass.wav':
 							{
 								set = spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Classic.glb'];
 
 								break;
 							}
 
-							case 'audio/Barbecue_Traditional.wav':
+							case 'audio/ShashlikTradic.wav':
 							{
 								set = spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Traditional.glb'];
 
 								break;
 							}
 
-							case 'audio/Barbecue_Selected.wav':
+							case 'audio/SashlikOtborniy.wav':
 							{
 								set = spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Selected.glb'];
 
 								break;
 							}
 
-							case 'audio/Barbecue_Pig.wav':
+							case 'audio/ShashlikPig.wav':
 							{
 								set = spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Pig.glb'];
+
+								break;
+							}
+
+							case 'audio/Chevapchichi.wav':
+							{
+								set = spice_sets['models/Chevapchichi.glb']['models/Chevapchichi.glb'];
+
+								break;
+							}
+
+							case 'audio/Burger.wav':
+							{
+								set = spice_sets['models/Burger.glb']['models/Burger.glb'];
+
+								break;
+							}
+
+							case 'audio/Kupati.wav':
+							{
+								set = spice_sets['models/Kupaty_Extra.glb']['models/Kupaty_Extra.glb'];
+
+								break;
+							}
+
+							case 'audio/KupatiPig.wav':
+							{
+								set = spice_sets['models/Kupaty_Extra.glb']['models/Kupaty_Pig.glb'];
+
+								break;
+							}
+
+							case 'audio/Steak.wav':
+							{
+								set = spice_sets['models/Steak.glb']['models/Steak.glb'];
+
+								break;
+							}
+
+							case 'audio/Kotleti.wav':
+							{
+								set = spice_sets['models/Steak.glb']['models/Steak_Neck.glb'];
+
+								break;
+							}
+
+							case 'audio/kolbaskiDom.wav':
+							{
+								set = spice_sets['models/Sausages_Barbecue.glb']['models/Sausages_Home.glb'];
+
+								break;
+							}
+
+							case 'audio/BBQ.wav':
+							{
+								set = spice_sets['models/Sausages_Barbecue.glb']['models/Sausages_Barbecue.glb'];
+
+								break;
+							}
+
+							case 'audio/Bavarskie.wav':
+							{
+								set = spice_sets['models/Sausages_Barbecue.glb']['models/Sausages_Bavarian.glb'];
 
 								break;
 							}
@@ -708,13 +809,9 @@ window.addEventListener(
 							{
 								set.audio = document.createElement('audio');
 
-								// set.audio.style.display = 'none';
-
 								const blob = new Blob([ external_data_loader.content[paths_audio[i]] ], { type: "audio/wav" });
 
 								set.audio.src = window.URL.createObjectURL(blob);
-
-								// document.body.appendChild(set.audio);
 							}
 						}
 
@@ -802,7 +899,7 @@ window.addEventListener(
 												meshes['models/Scene.glb'].animations['Scene_Idle_Food'].stop();
 												meshes['models/Scene.glb'].animations['Scene_GetBarbecue'].play();
 
-												// audio['audio/Barbecue.wav'].play();
+												audio['audio/lenta.wav'].play();
 											},
 										);
 									}
@@ -868,7 +965,7 @@ window.addEventListener(
 												meshes['models/Scene.glb'].animations['Scene_Idle_Food'].stop();
 												meshes['models/Scene.glb'].animations['Scene_GetFood'].play();
 
-												// audio['audio/Food.wav'].play();
+												audio['audio/Svinina1.wav'].play();
 											},
 										);
 									}
@@ -1121,7 +1218,7 @@ window.addEventListener(
 
 											if (spice_set.match.audio)
 											{
-												// spice_set.match.audio.play();
+												spice_set.match.audio.play();
 											}
 										}
 										else
@@ -1167,9 +1264,9 @@ window.addEventListener(
 						// 	'Marinade_Wrong03',
 						// ]
 						[
-							{ meatman: 'Marinade_Wrong01', sauce_a: meshes['models/Vinegar.glb'].animations['Sauces_Vinegar'], sauce_au: audio['audio/Marinade_Vinegar.wav'] },
-							{ meatman: 'Marinade_Wrong02', sauce_a: meshes['models/Mayonnaise.glb'].animations['Sauces_Mayonnaise'], sauce_au: audio['audio/Marinade_Mayonnaise.wav'] },
-							{ meatman: 'Marinade_Wrong03', sauce_a: meshes['models/SoySauce.glb'].animations['Sauces_SoySauce'], sauce_au: audio['audio/Marinade_SoySauce.wav'] },
+							{ meatman: 'Marinade_Wrong01', sauce_a: meshes['models/Vinegar.glb'].animations['Sauces_Vinegar'], sauce_au: audio['audio/uksus.wav'] },
+							{ meatman: 'Marinade_Wrong02', sauce_a: meshes['models/Mayonnaise.glb'].animations['Sauces_Mayonnaise'], sauce_au: audio['audio/mazik.wav'] },
+							{ meatman: 'Marinade_Wrong03', sauce_a: meshes['models/SoySauce.glb'].animations['Sauces_SoySauce'], sauce_au: audio['audio/soy.wav'] },
 						]
 							.forEach(
 
@@ -1194,7 +1291,7 @@ window.addEventListener(
 											meshes['models/Meatman.glb'].animations[elm.meatman].play();
 											elm.sauce_a.play();
 
-											// elm.sauce_au.play();
+											elm.sauce_au.play();
 										},
 									);
 								},
@@ -1230,12 +1327,12 @@ window.addEventListener(
 								if (marinade_try === 0)
 								{
 									meshes['models/Meatman.glb'].animations['Marinade_Correct'].play();
-									// audio['audio/Marinade_Correct.wav'].play();
+									audio['audio/Marinade_Correct.wav'].play();
 								}
 								else
 								{
 									meshes['models/Meatman.glb'].animations['Marinade_Correct(Short)'].play();
-									// audio['audio/Marinade_Correct (Short).wav'].play();
+									audio['audio/Marinade_Correct (Short).wav'].play();
 								}
 							},
 						);
@@ -1250,7 +1347,7 @@ window.addEventListener(
 							audio['audio/bazilik.wav'],
 							audio['audio/originalno.wav'],
 							audio['audio/originalno.wav'],
-							null,
+							audio['audio/PerecBlackGoroshek.wav'],
 							audio['audio/Chesnok.wav'],
 							audio['audio/originalno.wav'],
 							audio['audio/PerecSweet.wav'],
@@ -1258,8 +1355,8 @@ window.addEventListener(
 							audio['audio/Tomat.wav'],
 							audio['audio/originalno.wav'],
 							audio['audio/originalno.wav'],
-							null,
-							null,
+							audio['audio/originalno.wav'],
+							audio['audio/Zelen.wav'],
 							audio['audio/originalno.wav'],
 						];
 
@@ -1437,7 +1534,7 @@ window.addEventListener(
 								meshes['models/Meatman.glb'].animations['Start'].play();
 								meshes['models/Grill.glb'].animations['Grill_Start'].play();
 
-								// audio['audio/Start.wav'].play();
+								audio['audio/Nachalo.wav'].play();
 							},
 						);
 
@@ -1698,7 +1795,7 @@ window.addEventListener(
 												meshes['models/Meatman.glb'].animations['Start'].play();
 												meshes['models/Grill.glb'].animations['Grill_Start'].play();
 
-												// audio['audio/Start.wav'].play();
+												audio['audio/Nachalo.wav'].play();
 
 												scene.visible = true;
 											},
@@ -1768,7 +1865,7 @@ window.addEventListener(
 							plane.lookAt(_camera.position);
 							plane.position.y = xz_plane_intersection.y + 0.760915 + (((trans2 * 0.8) + (s * 0.1)) * zoom);
 							// plane.scale.set(trans2 * (zoom + (s * 0.1)), trans2 * (zoom + (s * 0.1)), trans2 * (zoom + (s * 0.1)));
-							plane.scale.set(trans2 * (zoom + sc), trans2 * (zoom + sc), trans2 * (zoom + sc));
+							plane.scale.set(trans2 * (zoom + sc * zoom), trans2 * (zoom + sc * zoom), trans2 * (zoom + sc * zoom));
 
 							// meat.position.y = xz_plane_intersection.y + (((trans2 * 0.8) + (s * 0.1)) * zoom);
 							// meat.position.set(0, xz_plane_intersection.y + (((trans2 * 0.8) + (s * 0.1)) * zoom), 0).sub(meat_position2.copy(meat_position).multiplyScalar(zoom + sc - 1));
@@ -1777,7 +1874,7 @@ window.addEventListener(
 								.setY(meat.position.y + ((trans2 * 0.8) + (s * 0.1)) * zoom)
 								.sub(meat_position2.copy(meat_position).multiplyScalar(zoom + sc - 1));
 							// meat.position.y = plane.position.y;
-							meat.scale.set(zoom + sc, zoom + sc, zoom + sc);
+							meat.scale.set(zoom + sc * zoom, zoom + sc * zoom, zoom + sc * zoom);
 							// LOG(meat.position.x, meat.position.y, meat.position.z)
 						}
 
@@ -1795,641 +1892,3 @@ window.addEventListener(
 		XR8.run({ canvas });
 	},
 );
-
-
-
-
-
-// /*
-// global
-
-// XR8,
-// */
-
-// /*
-// eslint-disable
-
-// max-statements,
-// */
-
-
-
-// // import * as THREE from 'three';
-// import * as THREE from 'three/src/Three.js';
-// import ExternalDataLoader from 'external-data-loader';
-// import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
-// import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-// import './index.scss';
-// import './style.css';
-// import '@babel/polyfill';
-
-
-
-// // const _try = (_function) =>
-// // {
-// // 	try
-// // 	{
-// // 		_function();
-// // 	}
-// // 	catch (_error)
-// // 	{
-// // 		alert(_error);
-// // 	}
-// // };
-
-
-
-// // 0: Bone {uuid: "C031C906-524A-4328-BCEB-C9F0E5E44EAB", name: "Koriandr", type: "Bone", parent: Object3D, children: Array(1), …}
-// // 1: Bone {uuid: "CE636593-433D-4DD7-942C-516EB5B5DD62", name: "DEF-forearmL001", type: "Bone", parent: Object3D, children: Array(2), …}
-// // 2: Bone {uuid: "BCA2F448-ED01-425D-A82F-7E81377E25C0", name: "Chesnok", type: "Bone", parent: Object3D, children: Array(1), …}
-// // 3: Bone {uuid: "DF8DB5FA-77BD-4B6D-AD71-0C217CFC7572", name: "FXLight", type: "Bone", parent: Object3D, children: Array(1), …}
-// // 4: Bone {uuid: "705AD819-962F-403D-98A9-5B884F8FEA12", name: "Tray", type: "Bone", parent: Object3D, children: Array(1), …}
-// // 5: Bone {uuid: "341E66AC-CB89-4A29-BC0D-A81B4418EA10", name: "Wood_Plate", type: "Bone", parent: Object3D, children: Array(1), …}
-// // 6: Bone {uuid: "A297F8FD-B14C-4E09-9C6A-87DA2985AD47", name: "Chabrec", type: "Bone", parent: Object3D, children: Array(1), …}
-// // 7: Bone {uuid: "4F6C01B5-D9BA-449F-8A84-622F493D4114", name: "root", type: "Bone", parent: Object3D, children: Array(1), …}
-// // 8: Bone {uuid: "E1EA8112-2742-4C79-AE0E-E95C72644E1C", name: "Bazilik", type: "Bone", parent: Object3D, children: Array(1), …}
-// // 9: Bone {uuid: "0414392B-F8AB-43AB-A7EA-48F43C524D41", name: "Luk", type: "Bone", parent: Object3D, children: Array(1), …}
-// // 10: Bone {uuid: "9F9CE3F5-8B4F-4745-9FBB-767F53EF1790", name: "Paprika", type: "Bone", parent: Object3D, children: Array(1), …}
-// // 11: Bone {uuid: "C6D41D40-89AD-44D1-B04A-F38915F61952", name: "Petrushka", type: "Bone", parent: Object3D, children: Array(1), …}
-// // 12: Bone {uuid: "6D26CFD8-8692-4568-B222-89E9A8190455", name: "DEF-forearmR001", type: "Bone", parent: Object3D, children: Array(2), …}
-// // 13: Bone {uuid: "917362E1-33ED-41FE-8975-48DA7EF42B1B", name: "Perec", type: "Bone", parent: Object3D, children: Array(1), …}
-// // 14: Bone {uuid: "5595A46B-9B1C-4F3D-BEDF-8EA98BA3D552", name: "Salt", type: "Bone", parent: Object3D, children: Array(1), …}
-// // 15: SkinnedMesh {uuid: "8C5DFF70-4FBB-4707-99E5-E89ADBBB4070", name: "Tray_1", type: "SkinnedMesh", parent: Object3D, children: Array(0), …}
-// // 16: SkinnedMesh {uuid: "66769C95-4CF4-4D61-B7F7-42687215FFB0", name: "Tray_Barbecue", type: "SkinnedMesh", parent: Object3D, children: Array(0), …}
-// // 17: SkinnedMesh {uuid: "71812605-24D5-45EC-A26D-ED78C3089DF6", name: "Meatman_Head", type: "SkinnedMesh", parent: Object3D, children: Array(0), …}
-// // 18: Group {uuid: "D8F2DF33-FE19-430A-8724-447D0A00B272", name: "Meatman_Body", type:
-
-
-
-// // /* salt */ 0,
-// // /* perec */ 1,
-// // /* luk */ 2,
-// // /* paprika */ 3,
-// // /* petrushka */ 4,
-// // /* bazilik */ 5,
-// // /* chabrec */ 6,
-// // /* coriander */ 7,
-// // /* perec gor */ 8,
-// // /* chesnok */ 9,
-// // /* perec bel */ 10,
-// // /* perec slad kras */ 11,
-// // /* tmin */ 12,
-// // /* tomat */ 13,
-// // /* oreagano */ 14,
-// // /* mayoran */ 15,
-// // /* imbir */ 16,
-// // /* ukrop */ 17,
-// // /* pazit */ 18,
-
-
-
-// // [
-// // 	'models/Kupaty_Extra.glb',
-// // 	'models/Bacon.glb',
-// // 	'models/Sausages_Barbecue.glb',
-// // 	'models/Burger.glb',
-// // 	'models/Barbecue_Classic.glb',
-// // 	'models/Steak.glb',
-// // 	'models/Chevapchichi.glb',
-// // ]
-
-
-
-// // remove sort
-// const spice_sets =
-// {
-// 	// kupaty
-// 	'models/Kupaty_Extra.glb':
-// 	{
-// 		'models/Kupaty_Pig.glb':
-// 		[
-// 			/* salt */ 0,
-
-// 			/* chesnok */ 9,
-
-// 			/* perec */ 1,
-
-// 			/* perec bel */ 10,
-
-// 			/* perec slad kras */ 11,
-// 		].sort((a, b) => (a - b)),
-
-// 		'models/Kupaty_Extra.glb':
-// 		[
-// 			/* salt */ 0,
-
-// 			/* luk */ 2,
-
-// 			/* perec */ 1,
-
-// 			/* chesnok */ 9,
-
-// 			/* tmin */ 12,
-// 		].sort((a, b) => (a - b)),
-// 	},
-
-// 	// barbecue
-// 	'models/Barbecue_Classic.glb':
-// 	{
-// 		'models/Barbecue_Classic.glb':
-// 		[
-// 			/* salt */ 0,
-
-// 			/* luk */ 2,
-
-// 			/* paprika */ 3,
-
-// 			/* perec gor */ 8,
-// 		].sort((a, b) => (a - b)),
-
-// 		'models/Barbecue_Traditional.glb':
-// 		[
-// 			/* salt */ 0,
-
-// 			/* bazilik */ 5,
-
-// 			/* perec */ 1,
-
-// 			/* petrushka */ 4,
-// 		].sort((a, b) => (a - b)),
-
-// 		'models/Barbecue_Pig.glb':
-// 		[
-// 			/* salt */ 0,
-
-// 			/* luk */ 2,
-
-// 			/* paprika */ 3,
-
-// 			/* perec */ 1,
-
-// 			/* petrushka */ 4,
-// 		],
-
-// 		'models/Barbecue_Selected.glb':
-// 		[
-// 			/* salt */ 0,
-
-// 			/* chesnok */ 9,
-
-// 			/* coriander */ 7,
-
-// 			/* chabrec */ 6,
-
-// 			/* perec */ 1,
-// 		].sort((a, b) => (a - b)),
-// 	},
-
-// 	// steak
-// 	'models/Steak.glb':
-// 	{
-// 		'models/Steak.glb':
-// 		[
-// 			/* salt */ 0,
-
-// 			/* luk */ 2,
-
-// 			/* paprika */ 3,
-
-// 			/* tomat */ 13,
-
-// 			/* tmin */ 12,
-
-// 			/* coriander */ 7,
-
-// 			/* perec */ 1,
-
-// 			/* mayoran */ 15,
-// 		].sort((a, b) => (a - b)),
-
-// 		'models/Steak_Neck.glb':
-// 		[
-// 			/* salt */ 0,
-
-// 			/* luk */ 2,
-
-// 			/* paprika */ 3,
-
-// 			/* tomat */ 13,
-
-// 			/* chesnok */ 9,
-
-// 			/* perec */ 1,
-
-// 			/* perec slad kras */ 11,
-
-// 			/* oreagano */ 14,
-// 		].sort((a, b) => (a - b)),
-// 	},
-
-// 	// burger
-// 	'models/Burger.glb':
-// 	{
-// 		'models/Burger.glb':
-// 		[
-// 			/* salt */ 0,
-
-// 			/* paprika */ 3,
-
-// 			/* perec */ 1,
-// 		].sort((a, b) => (a - b)),
-// 	},
-
-// 	// chevapchichi
-// 	'models/Chevapchichi.glb':
-// 	{
-// 		'models/Chevapchichi.glb':
-// 		[
-// 			/* salt */ 0,
-
-// 			/* paprika */ 3,
-
-// 			/* perec */ 1,
-
-// 			/* perec slad kras */ 11,
-
-// 			/* coriander */ 7,
-
-// 			/* bazilik */ 5,
-
-// 			/* ukrop */ 17,
-
-// 			/* pazit */ 18,
-
-// 			/* tomat */ 13,
-// 		].sort((a, b) => (a - b)),
-// 	},
-
-// 	// bacon
-// 	'models/Bacon.glb':
-// 	{
-// 		'models/Bacon.glb':
-// 		[
-// 			/* salt */ 0,
-
-// 			/* imbir */ 16,
-// 		].sort((a, b) => (a - b)),
-// 	},
-
-// 	// sausages
-// 	'models/Sausages_Barbecue.glb':
-// 	{
-// 		'models/Sausages_Home.glb':
-// 		[
-// 			/* salt */ 0,
-
-// 			/* luk */ 2,
-
-// 			/* chesnok */ 9,
-
-// 			/* perec */ 1,
-
-// 			/* perec bel */ 10,
-
-// 			/* perec slad kras */ 11,
-// 		].sort((a, b) => (a - b)),
-
-// 		'models/Sausages_Barbecue.glb':
-// 		[
-// 			/* salt */ 0,
-
-// 			/* perec */ 1,
-
-// 			/* paprika */ 3,
-
-// 			/* coriander */ 7,
-
-// 			/* bazilik */ 5,
-
-// 			/* tomat */ 13,
-// 		].sort((a, b) => (a - b)),
-// 	},
-// };
-
-// let spice_set = null;
-
-// let selected_spice_set = [];
-
-// // let count = 0;
-
-
-
-// window.THREE = THREE;
-
-
-
-// const [ canvas ] = document.getElementsByTagName('canvas');
-
-
-
-// const draco_loader = new DRACOLoader();
-// draco_loader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
-
-// const gltf_loader = new GLTFLoader();
-// gltf_loader.setDRACOLoader(draco_loader);
-
-// const clock = new THREE.Clock();
-
-// const external_data_loader = new ExternalDataLoader();
-// const CubeTextureLoader = new THREE.CubeTextureLoader();
-// CubeTextureLoader.setPath('textures/cubemap/');
-
-// let cube_map = null;
-
-
-
-// const ambient_light = new THREE.AmbientLight(0xFFFFFF, 1);
-
-
-
-// const raycaster = new THREE.Raycaster();
-// const screen_center = new THREE.Vector2();
-// const xz_plane = new THREE.Plane(new THREE.Vector3(0, 1, 0));
-// const xz_plane_intersection = new THREE.Vector3();
-// let _renderer = null;
-// let _camera = null;
-// let _scene = null;
-
-
-
-// const touch_start1 = new THREE.Vector2();
-// const touch_start2 = new THREE.Vector2();
-// let touch_distance_start = 0;
-// const touch_move1 = new THREE.Vector2();
-// const touch_move2 = new THREE.Vector2();
-// let zoom = 1;
-
-// let trans = 0;
-// let trans2 = 0;
-// let change_trans = false;
-
-// window.addEventListener(
-
-// 	'touchstart',
-
-// 	(evt) =>
-// 	{
-// 		if (evt.touches.length === 2)
-// 		{
-// 			touch_start1.set(evt.touches[0].clientX / window.innerWidth, evt.touches[0].clientY / window.innerHeight);
-// 			touch_start2.set(evt.touches[1].clientX / window.innerWidth, evt.touches[1].clientY / window.innerHeight);
-
-// 			touch_distance_start = touch_start1.distanceTo(touch_start2);
-// 		}
-// 	},
-// );
-
-// window.addEventListener(
-
-// 	'touchmove',
-
-// 	(evt) =>
-// 	{
-// 		if (evt.touches.length === 2)
-// 		{
-// 			touch_move1.set(evt.touches[0].clientX / window.innerWidth, evt.touches[0].clientY / window.innerHeight);
-// 			touch_move2.set(evt.touches[1].clientX / window.innerWidth, evt.touches[1].clientY / window.innerHeight);
-
-// 			zoom += (touch_move1.distanceTo(touch_move2) - touch_distance_start) * 2;
-
-// 			if (zoom <= 0.1)
-// 			{
-// 				zoom = 0.1;
-// 			}
-
-// 			touch_distance_start = touch_move1.distanceTo(touch_move2);
-
-// 			_scene.children.forEach(
-
-// 				(elm) =>
-// 				{
-// 					if (elm?.scale?.set?.call)
-// 					{
-// 						elm.scale.set(zoom, zoom, zoom);
-// 					}
-// 				},
-// 			);
-// 		}
-// 	},
-// );
-
-// const parseGlb = (arraybuffer) =>
-// 	new Promise(
-
-// 		(resolve) =>
-// 		{
-// 			gltf_loader.parse(
-
-// 				arraybuffer,
-
-// 				'/',
-
-// 				(gltf) =>
-// 				{
-// 					if (gltf.animations.length > 0)
-// 					{
-// 						gltf.scene.animations = {};
-
-// 						gltf.scene.mixer = new THREE.AnimationMixer(gltf.scene);
-
-// 						gltf.animations.forEach(
-
-// 							(animation) =>
-// 							{
-// 								const action = gltf.scene.mixer.clipAction(animation);
-
-// 								if (
-
-// 									animation.name !== 'Idle_Marinade&Spices' &&
-// 									animation.name !== 'Idle_Food' &&
-// 									animation.name !== 'Final_Idle' &&
-// 									animation.name !== 'Scene_Idle_Food' &&
-// 									animation.name !== 'Scene_Marinade&Spices'
-// 								)
-// 								{
-// 									action.loop = THREE.LoopOnce;
-
-// 									action.clampWhenFinished = true;
-// 								}
-
-// 								gltf.scene.animations[animation.name] = action;
-// 							},
-// 						);
-// 					}
-
-// 					gltf.scene.traverse(
-
-// 						(elm) =>
-// 						{
-// 							if (elm.isMesh)
-// 							{
-// 								if (Array.isArray(elm.material))
-// 								{
-// 									elm.material.forEach(
-
-// 										(_elm) =>
-// 										{
-// 											_elm.envMap = cube_map;
-// 											_elm.transparent2 = _elm.transparent;
-// 										},
-// 									);
-// 								}
-// 								else
-// 								{
-// 									elm.material.envMap = cube_map;
-// 									elm.material.transparent2 = elm.material.transparent;
-// 								}
-// 							}
-// 						},
-// 					);
-
-// 					resolve(gltf.scene);
-// 				},
-// 			);
-// 		},
-// 	);
-
-
-
-// let grid_mesh = null;
-// const meshes = {};
-
-// let plane_material = null;
-// let plane = null;
-// let tray = null;
-// let tray_barbecue = null;
-// let meat = null;
-
-
-
-// window.addEventListener(
-
-// 	'xrloaded',
-
-// 	() =>
-// 	{
-// 		XR8.addCameraPipelineModules(
-
-// 			[
-// 				XR8.GlTextureRenderer.pipelineModule(),
-// 				XR8.Threejs.pipelineModule(),
-// 				XR8.XrController.pipelineModule(),
-
-// 				{
-// 					name: 'threejsinitscene',
-
-// 					onStart: async () =>
-// 					{
-// 						const { renderer, camera, scene } = XR8.Threejs.xrScene();
-
-// 						camera.matrixAutoUpdate = false;
-
-// 						// _renderer = renderer;
-// 						_camera = camera;
-// 						_scene = scene;
-
-// 						renderer.setSize(window.innerWidth, window.innerHeight);
-
-// 						renderer.outputEncoding = THREE.sRGBEncoding;
-// 						renderer.sortObjects = false;
-
-// 						XR8.XrController.updateCameraProjectionMatrix(
-
-// 							{
-// 								cam:
-// 								{
-// 									pixelRectWidth: window.innerWidth,
-// 									pixelRectHeight: window.innerHeight,
-// 									nearClipPlane: 0.1,
-// 									farClipPlane: 1000,
-// 								},
-
-// 								origin: camera.position,
-// 								facing: camera.quaternion,
-// 							},
-// 						);
-
-// 						scene.add(ambient_light);
-
-// 						const [ scale_item ] = document.getElementsByClassName('scale-item');
-// 						const [ percent ] = document.getElementsByClassName('percent');
-
-// 						const sources = {};
-
-// 						const paths =
-// 						[
-// 							'models/Meatman.glb',
-// 						];
-
-// 						paths
-// 							.forEach(
-
-// 								(elm) =>
-// 								{
-// 									sources[elm] =
-// 									{
-// 										source: elm,
-// 										type: 'arraybuffer',
-// 									};
-// 								},
-// 							);
-
-// 						await external_data_loader.load(
-
-// 							{
-// 								sources,
-
-// 								progress:
-
-// 								() =>
-// 								{
-// 									const percent_loaded =
-// 										`${ Math.round(external_data_loader.loaded / external_data_loader.length * 100) }%`;
-
-// 									percent.innerHTML = percent_loaded;
-
-// 									scale_item.style.width = percent_loaded;
-// 								},
-// 							},
-// 						);
-
-// 						cube_map =
-// 							await CubeTextureLoader.load([ 'posx.jpg', 'negx.jpg', 'posy.jpg', 'negy.jpg', 'posz.jpg', 'negz.jpg' ]);
-
-// 						for (let i = 0; i < paths.length; ++i)
-// 						{
-// 							meshes[paths[i]] = await parseGlb(external_data_loader.content[paths[i]]);
-// 						}
-
-// 						Object.keys(meshes).forEach(
-
-// 							(elm) =>
-// 							{
-// 								meshes[elm].scale.set(zoom, zoom, zoom);
-// 								meshes[elm].position.set(0, 0, 0);
-// 							},
-// 						);
-
-// 						scene.add(meshes['models/Meatman.glb']);
-
-// 						meshes['models/Meatman.glb'].animations['Get_Spices_Perec'].play();
-// 					},
-
-// 					onUpdate: () =>
-// 					{
-// 						_camera.position.set(0, 1.5, 1.5);
-// 						_camera.lookAt(xz_plane_intersection);
-// 						_camera.updateMatrix();
-// 						_camera.updateMatrixWorld();
-
-// 						const clock_delta = clock.getDelta();
-
-// 						meshes['models/Meatman.glb'] && meshes['models/Meatman.glb'].mixer.update(clock_delta);
-// 					},
-// 				},
-// 			],
-// 		);
-
-// 		XR8.run({ canvas });
-// 	},
-// );
