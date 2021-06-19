@@ -284,6 +284,8 @@ let selected_spice_set = [];
 
 let marinade_try = 0;
 
+let meat_try = 0;
+
 
 
 window.THREE = THREE;
@@ -582,6 +584,7 @@ window.addEventListener(
 						const paths_audio =
 						[
 							'audio/Svinina1.wav',
+							'audio/Svinina2.wav',
 							'audio/lenta.wav',
 
 							'audio/Bacon.wav',
@@ -673,6 +676,7 @@ window.addEventListener(
 							{
 							// case 'audio/Start.wav':
 							case 'audio/Svinina1.wav':
+							case 'audio/Svinina2.wav':
 							case 'audio/lenta.wav':
 
 							case 'audio/Nachalo.wav':
@@ -899,7 +903,16 @@ window.addEventListener(
 												meshes['models/Scene.glb'].animations['Scene_Idle_Food'].stop();
 												meshes['models/Scene.glb'].animations['Scene_GetBarbecue'].play();
 
-												audio['audio/lenta.wav'].play();
+												if (meat_try === 0)
+												{
+													// LOG('lenta')
+													audio['audio/lenta.wav'].play();
+												}
+												else
+												{
+													// LOG('Svinina2')
+													audio['audio/Svinina2.wav'].play();
+												}
 											},
 										);
 									}
@@ -1165,9 +1178,9 @@ window.addEventListener(
 										break;
 
 
-									case 'Marinade_Wrong01':
-									case 'Marinade_Wrong02':
-									case 'Marinade_Wrong03':
+									case 'Marinade_Vinegar':
+									case 'Marinade_Mayonnaise':
+									case 'Marinade_SoySauce':
 
 										document.getElementsByClassName('camera-section')[3].style.pointerEvents = 'initial';
 										// LOG(888777)
@@ -1264,9 +1277,9 @@ window.addEventListener(
 						// 	'Marinade_Wrong03',
 						// ]
 						[
-							{ meatman: 'Marinade_Wrong01', sauce_a: meshes['models/Vinegar.glb'].animations['Sauces_Vinegar'], sauce_au: audio['audio/uksus.wav'] },
-							{ meatman: 'Marinade_Wrong02', sauce_a: meshes['models/Mayonnaise.glb'].animations['Sauces_Mayonnaise'], sauce_au: audio['audio/mazik.wav'] },
-							{ meatman: 'Marinade_Wrong03', sauce_a: meshes['models/SoySauce.glb'].animations['Sauces_SoySauce'], sauce_au: audio['audio/soy.wav'] },
+							{ meatman: 'Marinade_Vinegar', sauce_a: meshes['models/Vinegar.glb'].animations['Sauces_Vinegar'], sauce_au: audio['audio/uksus.wav'] },
+							{ meatman: 'Marinade_Mayonnaise', sauce_a: meshes['models/Mayonnaise.glb'].animations['Sauces_Mayonnaise'], sauce_au: audio['audio/mazik.wav'] },
+							{ meatman: 'Marinade_SoySauce', sauce_a: meshes['models/SoySauce.glb'].animations['Sauces_SoySauce'], sauce_au: audio['audio/soy.wav'] },
 						]
 							.forEach(
 
@@ -1482,6 +1495,8 @@ window.addEventListener(
 							() =>
 							{
 								// count = 0;
+
+								++meat_try;
 
 								document.getElementsByClassName('camera-section')[5].style.display = 'none';
 
@@ -1817,7 +1832,7 @@ window.addEventListener(
 
 					onUpdate: () =>
 					{
-						// _camera.position.set(0, 3, 3);
+						// _camera.position.set(0, 6, 6);
 						// _camera.lookAt(xz_plane_intersection);
 						// _camera.updateMatrix();
 						// _camera.updateMatrixWorld();
