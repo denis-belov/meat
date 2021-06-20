@@ -693,3 +693,8 @@ a.slider-link:hover {
 .slider-content {
     padding-left: 10px;
 }
+
+.slider-block-item:active {
+    background-image: url("./img/active.png");
+    background-repeat: no-repeat;
+}
