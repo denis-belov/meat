@@ -698,3 +698,14 @@ a.slider-link:hover {
     background-image: url("./img/active.png");
     background-repeat: no-repeat;
 }
+
+.camera-section {
+    opacity: 1;
+    pointer-events: initial;
+    transition: opacity 0.3s;
+}
+
+.camera-section.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
