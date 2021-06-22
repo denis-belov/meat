@@ -23,6 +23,10 @@ import '@babel/polyfill';
 
 
 
+const dpr = confirm('Use device pixel ratio?') ? (window.devicePixelRatio || 1) : 1;
+
+
+
 // /* salt */ 0,
 // /* perec */ 1,
 // /* luk */ 2,
@@ -468,6 +472,40 @@ let meat = null;
 
 
 
+{
+	let muted = false;
+
+	document.getElementById('sound').addEventListener(
+
+		'click',
+
+		() =>
+		{
+			// evt.stopImmediatePropagation();
+
+			muted = !muted;
+
+			if (muted)
+			{
+				document.getElementById('sound').classList.remove('sound-off');
+				document.getElementById('sound').classList.add('sound-on');
+			}
+			else
+			{
+				document.getElementById('sound').classList.remove('sound-on');
+				document.getElementById('sound').classList.add('sound-off');
+			}
+
+			for (const key in audio)
+			{
+				audio[key].muted = muted;
+			}
+		},
+	);
+}
+
+
+
 window.addEventListener(
 
 	'xrloaded',
@@ -488,16 +526,24 @@ window.addEventListener(
 					{
 						const { renderer, camera, scene } = XR8.Threejs.xrScene();
 
-						// camera.matrixAutoUpdate = false;
+						// alert(window.devicePixelRatio)
+						// alert(renderer.setPixelRatio(window.devicePixelRatio))
 
 						// _renderer = renderer;
 						_camera = camera;
 						_scene = scene;
 
-						renderer.setSize(window.innerWidth, window.innerHeight);
+						renderer.setSize(window.innerWidth * dpr, window.innerHeight * dpr);
 
 						renderer.outputEncoding = THREE.sRGBEncoding;
 						renderer.sortObjects = false;
+
+						canvas.width = window.innerWidth * dpr;
+						canvas.height = window.innerHeight * dpr;
+						// canvas.style.width = `${ window.innerWidth }px!important`;
+						// canvas.style.height = `${ window.innerHeight }px!important`;
+
+						LOG(window.innerWidth)
 
 						XR8.XrController.updateCameraProjectionMatrix(
 
@@ -792,6 +838,8 @@ window.addEventListener(
 								const blob = new Blob([ external_data_loader.content[paths_audio[i]] ], { type: "audio/wav" });
 
 								set.audio.src = window.URL.createObjectURL(blob);
+
+								audio[paths_audio[i]] = set.audio;
 
 								// set.audio.load();
 
@@ -1220,13 +1268,20 @@ window.addEventListener(
 
 											document.getElementsByClassName('camera-section')[3].classList.add('disabled');
 
-											sauce_buttons[elm_index].style.display = 'none';
+											// sauce_buttons[elm_index].style.display = 'none';
+											sauce_buttons[0].style.display = 'none';
+											sauce_buttons[1].style.display = 'none';
+											sauce_buttons[2].style.display = 'none';
+
+											scene_objects['models/Mayonnaise.glb'].animations['Sauces_Mayonnaise'].play();
+											scene_objects['models/SoySauce.glb'].animations['Sauces_SoySauce'].play();
+											scene_objects['models/Vinegar.glb'].animations['Sauces_Vinegar'].play();
 
 											scene_objects['models/Meatman.glb'].animations['Idle_Marinade'].stop();
 											scene_objects['models/Meatman.glb'].animations[elm.meatman].play();
 
 											elm.sauce_au.play();
-											elm.sauce_a.play();
+											// elm.sauce_a.play();
 										},
 									);
 								},
@@ -1240,20 +1295,20 @@ window.addEventListener(
 							{
 								document.getElementsByClassName('camera-section')[3].style.display = 'none';
 
-								if (scene_objects['models/Mayonnaise.glb'].visible)
-								{
+								// if (scene_objects['models/Mayonnaise.glb'].visible)
+								// {
 									scene_objects['models/Mayonnaise.glb'].animations['Sauces_Mayonnaise'].play();
-								}
+								// }
 
-								if (scene_objects['models/SoySauce.glb'].visible)
-								{
+								// if (scene_objects['models/SoySauce.glb'].visible)
+								// {
 									scene_objects['models/SoySauce.glb'].animations['Sauces_SoySauce'].play();
-								}
+								// }
 
-								if (scene_objects['models/Vinegar.glb'].visible)
-								{
+								// if (scene_objects['models/Vinegar.glb'].visible)
+								// {
 									scene_objects['models/Vinegar.glb'].animations['Sauces_Vinegar'].play();
-								}
+								// }
 
 								scene_objects['models/Meatman.glb'].animations['Idle_Marinade'].stop();
 
@@ -1560,8 +1615,6 @@ window.addEventListener(
 
 										grid_mesh = null;
 
-										// xz_plane_intersection.set(0, 0, 0);
-
 										plane.scale.set(zoom, zoom, zoom);
 										plane.position.copy(xz_plane_intersection);
 										plane.position.add(meat_position);
@@ -1573,13 +1626,9 @@ window.addEventListener(
 											{
 												scene_objects[elm].scale.set(zoom, zoom, zoom);
 												scene_objects[elm].position.copy(xz_plane_intersection);
+												scene_objects[elm].lookAt(_camera.position.clone().projectOnPlane(new THREE.Vector3(0, 1, 0)));
 											},
 										);
-
-										// LOG(scene_objects['models/Meatman.glb'])
-
-										// tray = scene_objects['models/Meatman.glb'].children[0].children[25];
-										// tray_barbecue = scene_objects['models/Meatman.glb'].children[0].children[26];
 
 										scene_objects['models/Meatman.glb'].children[0].children.forEach(
 
@@ -1750,6 +1799,8 @@ window.addEventListener(
 							raycaster.ray.intersectPlane(xz_plane, xz_plane_intersection);
 
 							grid_mesh.position.copy(xz_plane_intersection);
+
+							// grid_mesh.lookAt(_camera.position);
 
 							return;
 						}

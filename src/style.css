@@ -245,7 +245,7 @@ body {
     padding-right: 24px;
     padding-top: 24px;
 }
-.camera-header a {
+.camera-header a.sound {
     width: 40px;
     height: 40px;
     background: #373456;
@@ -256,6 +256,20 @@ body {
     border-radius: 50%;
     outline: none;
     -webkit-tap-highlight-color: transparent;
+    position: absolute;
+    top: 24px;
+}
+.camera-header a.logo {
+    /* width: 40px;
+    height: 40px;
+    background: #373456;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none; */
+    border-radius: 50%;
+    /* outline: none;
+    -webkit-tap-highlight-color: transparent; */
     position: absolute;
     top: 24px;
 }
@@ -278,13 +292,13 @@ body {
     left: 50%;
     transform: translateX(-50%);
 }
-.camera-header #sound.sound-on svg.cross {
+.camera-header #sound.sound-on .cross {
     display: none;
 }
 .camera-header #sound {
-    right: 24px;
+    /* right: 24px; */
 }
-.camera-header #sound.sound-off svg.cross {
+.camera-header #sound.sound-off .cross {
     display: block;
 }
 .camera-section .manual-control {
