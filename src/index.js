@@ -225,6 +225,9 @@ let marinade_try = 0;
 
 let meat_try = 0;
 
+let current_spice_animation = null;
+let current_spice_audio = null;
+
 
 
 window.THREE = THREE;
@@ -553,7 +556,7 @@ window.addEventListener(
 									pixelRectWidth: window.innerWidth,
 									pixelRectHeight: window.innerHeight,
 									nearClipPlane: 0.1,
-									farClipPlane: 100,
+									farClipPlane: 1000,
 								},
 
 								origin: camera.position,
@@ -1195,7 +1198,7 @@ window.addEventListener(
 									case 'Get_Spices_Ukrop':
 									case 'Get_Spices_Pazhitnik':
 
-										document.getElementsByClassName('camera-section')[4].classList.remove('disabled');
+										// document.getElementsByClassName('camera-section')[4].classList.remove('disabled');
 
 										if (spice_set.match && selected_spice_set.length === spice_set.match.length)
 										{
@@ -1395,6 +1398,11 @@ window.addEventListener(
 								{
 									spices_buttons[elm_index].style.display = 'none';
 
+									// if (current_spice_animation)
+									// {
+									// 	current_spice_animation.stop();
+									// }
+
 									spices_buttons[elm_index].addEventListener(
 
 										'click',
@@ -1402,7 +1410,7 @@ window.addEventListener(
 										() =>
 										{
 											// document.getElementsByClassName('camera-section')[4].style.pointerEvents = 'none';
-											document.getElementsByClassName('camera-section')[4].classList.add('disabled');
+											// document.getElementsByClassName('camera-section')[4].classList.add('disabled');
 
 											selected_spice_set.push(elm_index);
 											selected_spice_set = selected_spice_set.sort((a, b) => (a - b));
@@ -1446,10 +1454,21 @@ window.addEventListener(
 
 											spices_buttons[elm_index].style.display = 'none';
 
-											scene_objects['models/Meatman.glb'].animations['Idle_Spices'].stop();
-											scene_objects['models/Meatman.glb'].animations[elm].play();
+											// LOG(current_spice_animation)
 
-											spice_audio[elm_index].play();
+											if (current_spice_animation)
+											{
+												current_spice_animation.stop();
+												current_spice_audio.pause();
+											}
+
+											scene_objects['models/Meatman.glb'].animations['Idle_Spices'].stop();
+
+											current_spice_animation = scene_objects['models/Meatman.glb'].animations[elm];
+											current_spice_audio = spice_audio[elm_index];
+
+											current_spice_animation.play();
+											current_spice_audio.play();
 										},
 									);
 								},
@@ -1616,8 +1635,10 @@ window.addEventListener(
 										grid_mesh = null;
 
 										plane.scale.set(zoom, zoom, zoom);
-										plane.position.copy(xz_plane_intersection);
-										plane.position.add(meat_position);
+										// plane.position.copy(xz_plane_intersection);
+										// plane.position.add(meat_position.clone().applyMatrix4(new THREE.Matrix4().extractRotation(_camera.matrix)));
+										// LOG(meat_position, meat_position.clone().applyMatrix4(new THREE.Matrix4().extractRotation(_camera.matrix)))
+										// plane.position.applyMatrix4(new THREE.Matrix4().extractRotation(_camera.matrix));
 										plane.visible = false;
 
 										Object.keys(scene_objects).forEach(
@@ -1787,7 +1808,7 @@ window.addEventListener(
 
 					onUpdate: () =>
 					{
-						// _camera.position.set(0, 3, 3);
+						// _camera.position.set(0, 1, 8);
 						// _camera.lookAt(xz_plane_intersection);
 						// _camera.updateMatrix();
 						// _camera.updateMatrixWorld();
@@ -1835,7 +1856,9 @@ window.addEventListener(
 
 							meat.position
 								.copy(xz_plane_intersection)
-								.setY(meat.position.y + ((trans2 * 0.8) + (s * 0.1)) * zoom);
+								.setY(meat.position.y + ((trans2 * 0.8) + (s * 0.2)) * zoom - meat_position.y * sc);
+
+							// LOG(((trans2 * 0.8) + (s * 0.1)) * zoom, meat_position.y, meat_position.y * ((trans2 * 0.8) + (s * 0.1)) * zoom)
 
 							meat.scale.set(zoom + sc * zoom, zoom + sc * zoom, zoom + sc * zoom);
 
@@ -1843,8 +1866,8 @@ window.addEventListener(
 
 							plane.position
 								.copy(xz_plane_intersection)
-								.add(meat_position2.copy(meat_position).multiplyScalar(zoom))
-								.setY(plane.position.y + ((trans2 * 0.8) + (s * 0.1)) * zoom);
+								.add(meat_position2.copy(meat_position).multiplyScalar(zoom).applyQuaternion(meat.quaternion))
+								.setY(plane.position.y + ((trans2 * 0.8) + (s * 0.2)) * zoom);
 
 							plane.scale.set(trans2 * (zoom + sc * zoom), trans2 * (zoom + sc * zoom), trans2 * (zoom + sc * zoom));
 						}
