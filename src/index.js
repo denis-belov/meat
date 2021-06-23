@@ -275,6 +275,10 @@ let change_trans2 = false;
 
 
 
+// const _audio = document.createElement('audio');
+
+
+
 let zoom = 1;
 
 {
@@ -713,7 +717,7 @@ window.addEventListener(
 
 								audio[paths_audio[i]].src = window.URL.createObjectURL(blob);
 
-								audio[paths_audio[i]].load();
+								// audio[paths_audio[i]].load();
 
 								// await new Promise(
 
@@ -840,11 +844,13 @@ window.addEventListener(
 
 								const blob = new Blob([ external_data_loader.content[paths_audio[i]] ], { type: "audio/wav" });
 
+								// set.audio = window.URL.createObjectURL(blob);
+
 								set.audio.src = window.URL.createObjectURL(blob);
 
 								audio[paths_audio[i]] = set.audio;
 
-								set.audio.load();
+								// set.audio.load();
 
 								// await new Promise(
 
@@ -1134,7 +1140,7 @@ window.addEventListener(
 
 							'finished',
 
-							({ action }) =>
+							async ({ action }) =>
 							{
 								if (action?._clip?.name)
 								{
@@ -1202,6 +1208,55 @@ window.addEventListener(
 
 										if (spice_set.match && selected_spice_set.length === spice_set.match.length)
 										{
+											// setTimeout(
+
+											// 	() =>
+											// 	{
+											// 		change_trans = true;
+											// 		change_trans2 = true;
+
+											// 		tray.visible = false;
+											// 		tray_barbecue.visible = false;
+
+											// 		meat._corresponding_scene_object.visible = false;
+
+											// 		plane.visible = true;
+
+											// 		meat.visible = true;
+
+											// 		spice_set.match.audio.play();
+											// 		scene_objects['models/Meatman.glb'].animations['Final'].play();
+											// 	},
+
+											// 	1000,
+											// );
+
+
+											// audio[paths_audio[i]] = document.createElement('audio');
+
+											// audio[paths_audio[i]].addEventListener('ended', () => audio[paths_audio[i]].pause());
+
+											// const blob = new Blob([ external_data_loader.content[paths_audio[i]] ], { type: "audio/wav" });
+
+											// _audio.src = spice_set.match.audio;
+
+											spice_set.match.audio.load();
+
+											await new Promise(
+
+												(resolve) =>
+												{
+													spice_set.match.audio.addEventListener(
+
+														'canplaythrough',
+
+														resolve,
+													);
+												},
+											);
+
+
+
 											change_trans = true;
 											change_trans2 = true;
 
@@ -1214,7 +1269,12 @@ window.addEventListener(
 
 											meat.visible = true;
 
+
+
+											current_spice_audio.pause();
+											// spice_set.match.audio.pause()
 											spice_set.match.audio.play();
+											// _audio.play();
 											scene_objects['models/Meatman.glb'].animations['Final'].play();
 										}
 										else
