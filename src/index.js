@@ -713,7 +713,7 @@ window.addEventListener(
 
 								audio[paths_audio[i]].src = window.URL.createObjectURL(blob);
 
-								// audio[paths_audio[i]].load();
+								audio[paths_audio[i]].load();
 
 								// await new Promise(
 
@@ -844,7 +844,7 @@ window.addEventListener(
 
 								audio[paths_audio[i]] = set.audio;
 
-								// set.audio.load();
+								set.audio.load();
 
 								// await new Promise(
 
