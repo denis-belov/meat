@@ -594,45 +594,45 @@ window.addEventListener(
 
 						const paths_audio =
 						[
-							'audio/Nachalo.wav',
+							'audio/mp3/Nachalo.mp3',
 
-							'audio/Svinina1.wav',
-							'audio/Svinina2.wav',
-							'audio/lenta.wav',
+							'audio/mp3/Svinina1.mp3',
+							'audio/mp3/Svinina2.mp3',
+							'audio/mp3/lenta.mp3',
 
-							'audio/Bacon.wav',
-							'audio/SashlikKass.wav',
-							'audio/ShashlikTradic.wav',
-							'audio/SashlikOtborniy.wav',
-							'audio/ShaslikPig.wav',
-							'audio/Chevapchichi.wav',
-							'audio/Burger.wav',
-							'audio/Kupati.wav',
-							'audio/KupatiPig.wav',
-							'audio/Steak.wav',
-							'audio/Kotleti.wav',
-							'audio/KolbaskiDom.wav',
-							'audio/BBQ.wav',
-							'audio/Bavarskie.wav',
+							'audio/mp3/Bacon.mp3',
+							'audio/mp3/SashlikKass.mp3',
+							'audio/mp3/ShashlikTradic.mp3',
+							'audio/mp3/SashlikOtborniy.mp3',
+							'audio/mp3/ShaslikPig.mp3',
+							'audio/mp3/Chevapchichi.mp3',
+							'audio/mp3/Burger.mp3',
+							'audio/mp3/Kupati.mp3',
+							'audio/mp3/KupatiPig.mp3',
+							'audio/mp3/Steak.mp3',
+							'audio/mp3/Kotleti.mp3',
+							'audio/mp3/KolbaskiDom.mp3',
+							'audio/mp3/BBQ.mp3',
+							'audio/mp3/Bavarskie.mp3',
 
-							'audio/Marinade_Vinegar.wav',
-							'audio/mazik.wav',
-							'audio/soy.wav',
-							'audio/Marinade_Correct.wav',
-							'audio/Marinade_Correct (Short).wav',
+							'audio/mp3/Marinade_Vinegar.mp3',
+							'audio/mp3/mazik.mp3',
+							'audio/mp3/soy.mp3',
+							'audio/mp3/Marinade_Correct.mp3',
+							'audio/mp3/Marinade_Correct (Short).mp3',
 
-							'audio/salt.wav',
-							'audio/Perec.wav',
-							'audio/Luk.wav',
-							'audio/Paprika.wav',
-							'audio/Zelen.wav',
-							'audio/bazilik.wav',
-							'audio/originalno.wav',
-							'audio/Chesnok.wav',
-							'audio/PerecSweet.wav',
-							'audio/Tmin.wav',
-							'audio/Tomat.wav',
-							'audio/PerecBlackGoroshek.wav',
+							'audio/mp3/salt.mp3',
+							'audio/mp3/Perec.mp3',
+							'audio/mp3/Luk.mp3',
+							'audio/mp3/Paprika.mp3',
+							'audio/mp3/Zelen.mp3',
+							'audio/mp3/bazilik.mp3',
+							'audio/mp3/originalno.mp3',
+							'audio/mp3/Chesnok.mp3',
+							'audio/mp3/PerecSweet.mp3',
+							'audio/mp3/Tmin.mp3',
+							'audio/mp3/Tomat.mp3',
+							'audio/mp3/PerecBlackGoroshek.mp3',
 						];
 
 						[
@@ -684,40 +684,40 @@ window.addEventListener(
 
 							switch (paths_audio[i])
 							{
-							case 'audio/Nachalo.wav':
+							case 'audio/mp3/Nachalo.mp3':
 
-							case 'audio/Svinina1.wav':
-							case 'audio/Svinina2.wav':
-							case 'audio/lenta.wav':
+							case 'audio/mp3/Svinina1.mp3':
+							case 'audio/mp3/Svinina2.mp3':
+							case 'audio/mp3/lenta.mp3':
 
-							case 'audio/Marinade_Vinegar.wav':
-							case 'audio/mazik.wav':
-							case 'audio/soy.wav':
-							case 'audio/Marinade_Correct.wav':
-							case 'audio/Marinade_Correct (Short).wav':
+							case 'audio/mp3/Marinade_Vinegar.mp3':
+							case 'audio/mp3/mazik.mp3':
+							case 'audio/mp3/soy.mp3':
+							case 'audio/mp3/Marinade_Correct.mp3':
+							case 'audio/mp3/Marinade_Correct (Short).mp3':
 
-							case 'audio/salt.wav':
-							case 'audio/Perec.wav':
-							case 'audio/Luk.wav':
-							case 'audio/Paprika.wav':
-							case 'audio/Zelen.wav':
-							case 'audio/bazilik.wav':
-							case 'audio/originalno.wav':
-							case 'audio/Chesnok.wav':
-							case 'audio/PerecSweet.wav':
-							case 'audio/Tmin.wav':
-							case 'audio/Tomat.wav':
-							case 'audio/PerecBlackGoroshek.wav':
+							case 'audio/mp3/salt.mp3':
+							case 'audio/mp3/Perec.mp3':
+							case 'audio/mp3/Luk.mp3':
+							case 'audio/mp3/Paprika.mp3':
+							case 'audio/mp3/Zelen.mp3':
+							case 'audio/mp3/bazilik.mp3':
+							case 'audio/mp3/originalno.mp3':
+							case 'audio/mp3/Chesnok.mp3':
+							case 'audio/mp3/PerecSweet.mp3':
+							case 'audio/mp3/Tmin.mp3':
+							case 'audio/mp3/Tomat.mp3':
+							case 'audio/mp3/PerecBlackGoroshek.mp3':
 							{
 								audio[paths_audio[i]] = document.createElement('audio');
 
 								// audio[paths_audio[i]].addEventListener('ended', () => audio[paths_audio[i]].pause());
 
-								const blob = new Blob([ external_data_loader.content[paths_audio[i]] ], { type: "audio/wav" });
+								const blob = new Blob([ external_data_loader.content[paths_audio[i]] ], { type: "audio/mpeg" });
 
 								audio[paths_audio[i]].src = window.URL.createObjectURL(blob);
 
-								// audio[paths_audio[i]].load();
+								audio[paths_audio[i]].load();
 
 								// await new Promise(
 
@@ -735,98 +735,98 @@ window.addEventListener(
 								break;
 							}
 
-							case 'audio/Bacon.wav':
+							case 'audio/mp3/Bacon.mp3':
 							{
 								set = spice_sets['models/Bacon.glb']['models/Bacon.glb'];
 
 								break;
 							}
 
-							case 'audio/SashlikKass.wav':
+							case 'audio/mp3/SashlikKass.mp3':
 							{
 								set = spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Classic.glb'];
 
 								break;
 							}
 
-							case 'audio/ShashlikTradic.wav':
+							case 'audio/mp3/ShashlikTradic.mp3':
 							{
 								set = spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Traditional.glb'];
 
 								break;
 							}
 
-							case 'audio/SashlikOtborniy.wav':
+							case 'audio/mp3/SashlikOtborniy.mp3':
 							{
 								set = spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Selected.glb'];
 
 								break;
 							}
 
-							case 'audio/ShashlikPig.wav':
+							case 'audio/mp3/ShashlikPig.mp3':
 							{
 								set = spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Pig.glb'];
 
 								break;
 							}
 
-							case 'audio/Chevapchichi.wav':
+							case 'audio/mp3/Chevapchichi.mp3':
 							{
 								set = spice_sets['models/Chevapchichi.glb']['models/Chevapchichi.glb'];
 
 								break;
 							}
 
-							case 'audio/Burger.wav':
+							case 'audio/mp3/Burger.mp3':
 							{
 								set = spice_sets['models/Burger.glb']['models/Burger.glb'];
 
 								break;
 							}
 
-							case 'audio/Kupati.wav':
+							case 'audio/mp3/Kupati.mp3':
 							{
 								set = spice_sets['models/Kupaty_Extra.glb']['models/Kupaty_Extra.glb'];
 
 								break;
 							}
 
-							case 'audio/KupatiPig.wav':
+							case 'audio/mp3/KupatiPig.mp3':
 							{
 								set = spice_sets['models/Kupaty_Extra.glb']['models/Kupaty_Pig.glb'];
 
 								break;
 							}
 
-							case 'audio/Steak.wav':
+							case 'audio/mp3/Steak.mp3':
 							{
 								set = spice_sets['models/Steak.glb']['models/Steak.glb'];
 
 								break;
 							}
 
-							case 'audio/Kotleti.wav':
+							case 'audio/mp3/Kotleti.mp3':
 							{
 								set = spice_sets['models/Steak.glb']['models/Steak_Neck.glb'];
 
 								break;
 							}
 
-							case 'audio/kolbaskiDom.wav':
+							case 'audio/mp3/kolbaskiDom.mp3':
 							{
 								set = spice_sets['models/Sausages_Barbecue.glb']['models/Sausages_Home.glb'];
 
 								break;
 							}
 
-							case 'audio/BBQ.wav':
+							case 'audio/mp3/BBQ.mp3':
 							{
 								set = spice_sets['models/Sausages_Barbecue.glb']['models/Sausages_Barbecue.glb'];
 
 								break;
 							}
 
-							case 'audio/Bavarskie.wav':
+							case 'audio/mp3/Bavarskie.mp3':
 							{
 								set = spice_sets['models/Sausages_Barbecue.glb']['models/Sausages_Bavarian.glb'];
 
@@ -842,7 +842,7 @@ window.addEventListener(
 
 								// set.audio.addEventListener('ended', () => set.audio.pause());
 
-								const blob = new Blob([ external_data_loader.content[paths_audio[i]] ], { type: "audio/wav" });
+								const blob = new Blob([ external_data_loader.content[paths_audio[i]] ], { type: "audio/mpeg" });
 
 								// set.audio = window.URL.createObjectURL(blob);
 
@@ -850,7 +850,7 @@ window.addEventListener(
 
 								audio[paths_audio[i]] = set.audio;
 
-								// set.audio.load();
+								set.audio.load();
 
 								// await new Promise(
 
@@ -952,11 +952,11 @@ window.addEventListener(
 
 												if (meat_try === 0)
 												{
-													audio['audio/lenta.wav'].play();
+													audio['audio/mp3/lenta.mp3'].play();
 												}
 												else
 												{
-													audio['audio/Svinina2.wav'].play();
+													audio['audio/mp3/Svinina2.mp3'].play();
 												}
 
 												scene_objects['models/Scene.glb'].animations['Scene_GetBarbecue'].play();
@@ -1024,7 +1024,7 @@ window.addEventListener(
 
 												scene_objects['models/Scene.glb'].animations['Scene_Idle_Food'].stop();
 
-												audio['audio/Svinina1.wav'].play();
+												audio['audio/mp3/Svinina1.mp3'].play();
 												scene_objects['models/Scene.glb'].animations['Scene_GetFood'].play();
 											},
 										);
@@ -1208,6 +1208,7 @@ window.addEventListener(
 
 										if (spice_set.match && selected_spice_set.length === spice_set.match.length)
 										{
+											scene_objects['models/Meatman.glb'].animations['Idle_Spices'].play();
 											// setTimeout(
 
 											// 	() =>
@@ -1236,7 +1237,7 @@ window.addEventListener(
 
 											// audio[paths_audio[i]].addEventListener('ended', () => audio[paths_audio[i]].pause());
 
-											// const blob = new Blob([ external_data_loader.content[paths_audio[i]] ], { type: "audio/wav" });
+											// const blob = new Blob([ external_data_loader.content[paths_audio[i]] ], { type: "audio/mp3" });
 
 											// _audio.src = spice_set.match.audio;
 
@@ -1271,6 +1272,7 @@ window.addEventListener(
 
 
 
+											scene_objects['models/Meatman.glb'].animations['Idle_Spices'].stop();
 											current_spice_audio.pause();
 											// spice_set.match.audio.pause()
 											spice_set.match.audio.play();
@@ -1313,9 +1315,9 @@ window.addEventListener(
 						);
 
 						[
-							{ meatman: 'Marinade_Vinegar', sauce_a: scene_objects['models/Vinegar.glb'].animations['Sauces_Vinegar'], sauce_au: audio['audio/Marinade_Vinegar.wav'] },
-							{ meatman: 'Marinade_Mayonnaise', sauce_a: scene_objects['models/Mayonnaise.glb'].animations['Sauces_Mayonnaise'], sauce_au: audio['audio/mazik.wav'] },
-							{ meatman: 'Marinade_SoySauce', sauce_a: scene_objects['models/SoySauce.glb'].animations['Sauces_SoySauce'], sauce_au: audio['audio/soy.wav'] },
+							{ meatman: 'Marinade_Vinegar', sauce_a: scene_objects['models/Vinegar.glb'].animations['Sauces_Vinegar'], sauce_au: audio['audio/mp3/Marinade_Vinegar.mp3'] },
+							{ meatman: 'Marinade_Mayonnaise', sauce_a: scene_objects['models/Mayonnaise.glb'].animations['Sauces_Mayonnaise'], sauce_au: audio['audio/mp3/mazik.mp3'] },
+							{ meatman: 'Marinade_SoySauce', sauce_a: scene_objects['models/SoySauce.glb'].animations['Sauces_SoySauce'], sauce_au: audio['audio/mp3/soy.mp3'] },
 						]
 							.forEach(
 
@@ -1377,12 +1379,12 @@ window.addEventListener(
 
 								if (marinade_try === 0)
 								{
-									audio['audio/Marinade_Correct.wav'].play();
+									audio['audio/mp3/Marinade_Correct.mp3'].play();
 									scene_objects['models/Meatman.glb'].animations['Marinade_Correct'].play();
 								}
 								else
 								{
-									audio['audio/Marinade_Correct (Short).wav'].play();
+									audio['audio/mp3/Marinade_Correct (Short).mp3'].play();
 									scene_objects['models/Meatman.glb'].animations['Marinade_Correct(Short)'].play();
 								}
 							},
@@ -1390,25 +1392,25 @@ window.addEventListener(
 
 						const spice_audio =
 						[
-							audio['audio/salt.wav'],
-							audio['audio/Perec.wav'],
-							audio['audio/Luk.wav'],
-							audio['audio/Paprika.wav'],
-							audio['audio/Zelen.wav'],
-							audio['audio/bazilik.wav'],
-							audio['audio/originalno.wav'],
-							audio['audio/originalno.wav'],
-							audio['audio/PerecBlackGoroshek.wav'],
-							audio['audio/Chesnok.wav'],
-							audio['audio/originalno.wav'],
-							audio['audio/PerecSweet.wav'],
-							audio['audio/Tmin.wav'],
-							audio['audio/Tomat.wav'],
-							audio['audio/originalno.wav'],
-							audio['audio/originalno.wav'],
-							audio['audio/originalno.wav'],
-							audio['audio/Zelen.wav'],
-							audio['audio/originalno.wav'],
+							audio['audio/mp3/salt.mp3'],
+							audio['audio/mp3/Perec.mp3'],
+							audio['audio/mp3/Luk.mp3'],
+							audio['audio/mp3/Paprika.mp3'],
+							audio['audio/mp3/Zelen.mp3'],
+							audio['audio/mp3/bazilik.mp3'],
+							audio['audio/mp3/originalno.mp3'],
+							audio['audio/mp3/originalno.mp3'],
+							audio['audio/mp3/PerecBlackGoroshek.mp3'],
+							audio['audio/mp3/Chesnok.mp3'],
+							audio['audio/mp3/originalno.mp3'],
+							audio['audio/mp3/PerecSweet.mp3'],
+							audio['audio/mp3/Tmin.mp3'],
+							audio['audio/mp3/Tomat.mp3'],
+							audio['audio/mp3/originalno.mp3'],
+							audio['audio/mp3/originalno.mp3'],
+							audio['audio/mp3/originalno.mp3'],
+							audio['audio/mp3/Zelen.mp3'],
+							audio['audio/mp3/originalno.mp3'],
 						];
 
 						// /* salt */ 0,
@@ -1585,7 +1587,7 @@ window.addEventListener(
 								scene_objects['models/Meatman.glb'].animations['Start'].play();
 								scene_objects['models/Grill.glb'].animations['Grill_Start'].play();
 
-								audio['audio/Nachalo.wav'].play();
+								audio['audio/mp3/Nachalo.mp3'].play();
 							},
 						);
 
@@ -1846,7 +1848,7 @@ window.addEventListener(
 												scene_objects['models/Meatman.glb'].animations['Start'].play();
 												scene_objects['models/Grill.glb'].animations['Grill_Start'].play();
 
-												audio['audio/Nachalo.wav'].play();
+												audio['audio/mp3/Nachalo.mp3'].play();
 
 												scene.visible = true;
 											},
