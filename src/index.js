@@ -21,6 +21,10 @@ import './index.scss';
 import './style.css';
 import '@babel/polyfill';
 
+import bubbles from './bubbles.json';
+
+LOG(bubbles)
+
 
 
 const dpr = confirm('Use device pixel ratio?') ? (window.devicePixelRatio || 1) : 1;
@@ -467,7 +471,7 @@ const parseGlb = (arraybuffer) =>
 
 
 
-let grid_mesh = null;
+let grid_mesh = { visible: false };
 const scene_objects = {};
 const audio = {};
 
@@ -711,6 +715,18 @@ window.addEventListener(
 							{
 								audio[paths_audio[i]] = document.createElement('audio');
 
+								audio[paths_audio[i]].bubble = bubbles[paths_audio[i]];
+
+								audio[paths_audio[i]].addEventListener(
+
+									'ended',
+
+									() =>
+									{
+										document.getElementById('bubble').style.display = 'none';
+									},
+								);
+
 								// audio[paths_audio[i]].addEventListener('ended', () => audio[paths_audio[i]].pause());
 
 								const blob = new Blob([ external_data_loader.content[paths_audio[i]] ], { type: "audio/mpeg" });
@@ -840,6 +856,18 @@ window.addEventListener(
 							{
 								set.audio = document.createElement('audio');
 
+								set.audio.bubble = bubbles[paths_audio[i]];
+
+								set.audio.addEventListener(
+
+									'ended',
+
+									() =>
+									{
+										document.getElementById('bubble').style.display = 'none';
+									},
+								);
+
 								// set.audio.addEventListener('ended', () => set.audio.pause());
 
 								const blob = new Blob([ external_data_loader.content[paths_audio[i]] ], { type: "audio/mpeg" });
@@ -953,10 +981,14 @@ window.addEventListener(
 												if (meat_try === 0)
 												{
 													audio['audio/mp3/lenta.mp3'].play();
+													document.getElementById('bubble-text').innerHTML = audio['audio/mp3/lenta.mp3'].bubble;
+													document.getElementById('bubble').style.display = 'block';
 												}
 												else
 												{
 													audio['audio/mp3/Svinina2.mp3'].play();
+													document.getElementById('bubble-text').innerHTML = audio['audio/mp3/Svinina2.mp3'].bubble;
+													document.getElementById('bubble').style.display = 'block';
 												}
 
 												scene_objects['models/Scene.glb'].animations['Scene_GetBarbecue'].play();
@@ -1025,6 +1057,8 @@ window.addEventListener(
 												scene_objects['models/Scene.glb'].animations['Scene_Idle_Food'].stop();
 
 												audio['audio/mp3/Svinina1.mp3'].play();
+												document.getElementById('bubble-text').innerHTML = audio['audio/mp3/Svinina1.mp3'].bubble;
+												document.getElementById('bubble').style.display = 'block';
 												scene_objects['models/Scene.glb'].animations['Scene_GetFood'].play();
 											},
 										);
@@ -1153,6 +1187,7 @@ window.addEventListener(
 										scene_objects['models/Meatman.glb'].animations['Idle_Food'].play();
 
 										document.getElementsByClassName('camera-section')[2].style.display = 'block';
+										document.getElementsByClassName('camera-section')[1].style.display = 'none';
 
 										break;
 
@@ -1276,6 +1311,8 @@ window.addEventListener(
 											current_spice_audio.pause();
 											// spice_set.match.audio.pause()
 											spice_set.match.audio.play();
+											document.getElementById('bubble-text').innerHTML = spice_set.match.audio.bubble;
+											document.getElementById('bubble').style.display = 'block';
 											// _audio.play();
 											scene_objects['models/Meatman.glb'].animations['Final'].play();
 										}
@@ -1346,6 +1383,8 @@ window.addEventListener(
 											scene_objects['models/Meatman.glb'].animations[elm.meatman].play();
 
 											elm.sauce_au.play();
+											document.getElementById('bubble-text').innerHTML = elm.sauce_au.bubble;
+											document.getElementById('bubble').style.display = 'block';
 											// elm.sauce_a.play();
 										},
 									);
@@ -1380,11 +1419,15 @@ window.addEventListener(
 								if (marinade_try === 0)
 								{
 									audio['audio/mp3/Marinade_Correct.mp3'].play();
+									document.getElementById('bubble-text').innerHTML = audio['audio/mp3/Marinade_Correct.mp3'].bubble;
+									document.getElementById('bubble').style.display = 'block';
 									scene_objects['models/Meatman.glb'].animations['Marinade_Correct'].play();
 								}
 								else
 								{
 									audio['audio/mp3/Marinade_Correct (Short).mp3'].play();
+									document.getElementById('bubble-text').innerHTML = audio['audio/mp3/Marinade_Correct (Short).mp3'].bubble;
+									document.getElementById('bubble').style.display = 'block';
 									scene_objects['models/Meatman.glb'].animations['Marinade_Correct(Short)'].play();
 								}
 							},
@@ -1531,6 +1574,8 @@ window.addEventListener(
 
 											current_spice_animation.play();
 											current_spice_audio.play();
+											document.getElementById('bubble-text').innerHTML = current_spice_audio.bubble;
+											document.getElementById('bubble').style.display = 'block';
 										},
 									);
 								},
@@ -1562,7 +1607,23 @@ window.addEventListener(
 								// scene_objects['models/SoySauce.glb'].visible = false;
 								// scene_objects['models/Vinegar.glb'].visible = false;
 
-								scene_objects['models/Grill.glb'].visible = true;
+								// scene_objects['models/Grill.glb'].visible = true;
+
+								scene_objects['models/Scene.glb'].visible = false;
+								scene_objects['models/Meatman.glb'].visible = false;
+								scene_objects['models/Grill.glb'].visible = false;
+
+								scene_objects['models/Mayonnaise.glb'].visible = false;
+								scene_objects['models/SoySauce.glb'].visible = false;
+								scene_objects['models/Vinegar.glb'].visible = false;
+
+								scene_objects['models/Kupaty_Extra.glb'].visible = false;
+								scene_objects['models/Bacon.glb'].visible = false;
+								scene_objects['models/Sausages_Barbecue.glb'].visible = false;
+								scene_objects['models/Burger.glb'].visible = false;
+								scene_objects['models/Barbecue_Classic.glb'].visible = false;
+								scene_objects['models/Steak.glb'].visible = false;
+								scene_objects['models/Chevapchichi.glb'].visible = false;
 
 								tray.visible = true;
 								tray_barbecue.visible = true;
@@ -1582,12 +1643,19 @@ window.addEventListener(
 
 								scene_objects['models/Scene.glb'].animations['SceneFood_Marinade&Spices'].stop();
 								scene_objects['models/Scene.glb'].animations['SceneBarbecue_Marinade&Spices'].stop();
-								scene_objects['models/Scene.glb'].animations['Scene_Start'].play();
+								// scene_objects['models/Scene.glb'].animations['Scene_Start'].play();
 								scene_objects['models/Meatman.glb'].animations['Final_Idle'].stop();
-								scene_objects['models/Meatman.glb'].animations['Start'].play();
-								scene_objects['models/Grill.glb'].animations['Grill_Start'].play();
+								// scene_objects['models/Meatman.glb'].animations['Start'].play();
+								// scene_objects['models/Grill.glb'].animations['Grill_Start'].play();
 
-								audio['audio/mp3/Nachalo.mp3'].play();
+								// audio['audio/mp3/Nachalo.mp3'].play();
+								// document.getElementById('bubble-text').innerHTML = audio['audio/mp3/Nachalo.mp3'].bubble;
+								// document.getElementById('bubble').style.display = 'block';
+
+								document.getElementsByClassName('camera-section')[0].style.display = 'block';
+								grid_mesh.visible = true;
+
+								// LOG(document.getElementsByClassName('camera-section')[0])
 							},
 						);
 
@@ -1684,17 +1752,21 @@ window.addEventListener(
 
 							() =>
 							{
-								document.getElementsByClassName('camera-section')[1].addEventListener(
+								// document.getElementsByClassName('camera-section')[1].addEventListener(
 
-									'click',
+								// 	'click',
 
-									() =>
-									{
+								// 	() =>
+								// 	{
 										scene.visible = false;
+
+										scene_objects['models/Scene.glb'].visible = true;
+										scene_objects['models/Meatman.glb'].visible = true;
+										scene_objects['models/Grill.glb'].visible = true;
 
 										grid_mesh.visible = false;
 
-										grid_mesh = null;
+										// grid_mesh = null;
 
 										plane.scale.set(zoom, zoom, zoom);
 										// plane.position.copy(xz_plane_intersection);
@@ -1838,7 +1910,7 @@ window.addEventListener(
 										scene.add(scene_objects['models/Steak.glb']);
 										scene.add(scene_objects['models/Chevapchichi.glb']);
 
-										document.getElementsByClassName('camera-section')[1].style.display = 'none';
+										// document.getElementsByClassName('camera-section')[1].style.display = 'none';
 
 										setTimeout(
 
@@ -1849,14 +1921,16 @@ window.addEventListener(
 												scene_objects['models/Grill.glb'].animations['Grill_Start'].play();
 
 												audio['audio/mp3/Nachalo.mp3'].play();
+												document.getElementById('bubble-text').innerHTML = audio['audio/mp3/Nachalo.mp3'].bubble;
+												document.getElementById('bubble').style.display = 'block';
 
 												scene.visible = true;
 											},
 
 											500,
 										);
-									},
-								);
+								// 	},
+								// );
 
 								document.getElementsByClassName('camera-section')[0].style.display = 'none';
 								document.getElementsByClassName('camera-section')[1].style.display = 'block';
@@ -1875,8 +1949,9 @@ window.addEventListener(
 						// _camera.updateMatrix();
 						// _camera.updateMatrixWorld();
 
-						if (grid_mesh)
+						if (grid_mesh.visible)
 						{
+							// LOG(1)
 							raycaster.setFromCamera(screen_center, _camera);
 
 							raycaster.ray.intersectPlane(xz_plane, xz_plane_intersection);
@@ -1913,12 +1988,12 @@ window.addEventListener(
 							}
 
 
-							const s = Math.sin(plane_material.uniforms.time.value * 30.0);
+							const s = Math.sin(plane_material.uniforms.time.value * 20.0);
 							const sc = (s + 1) * 0.5 * 0.25;
 
 							meat.position
 								.copy(xz_plane_intersection)
-								.setY(meat.position.y + ((trans2 * 0.8) + (s * 0.2)) * zoom - meat_position.y * sc);
+								.setY(meat.position.y + ((trans2 * 0.8) + (s * 0.1)) * zoom - meat_position.y * sc);
 
 							// LOG(((trans2 * 0.8) + (s * 0.1)) * zoom, meat_position.y, meat_position.y * ((trans2 * 0.8) + (s * 0.1)) * zoom)
 
@@ -1929,7 +2004,7 @@ window.addEventListener(
 							plane.position
 								.copy(xz_plane_intersection)
 								.add(meat_position2.copy(meat_position).multiplyScalar(zoom).applyQuaternion(meat.quaternion))
-								.setY(plane.position.y + ((trans2 * 0.8) + (s * 0.2)) * zoom);
+								.setY(plane.position.y + ((trans2 * 0.8) + (s * 0.1)) * zoom);
 
 							plane.scale.set(trans2 * (zoom + sc * zoom), trans2 * (zoom + sc * zoom), trans2 * (zoom + sc * zoom));
 						}

@@ -293,13 +293,13 @@ body {
     transform: translateX(-50%);
 }
 .camera-header #sound.sound-on .cross {
-    display: none;
+    display: block;
 }
 .camera-header #sound {
     /* right: 24px; */
 }
 .camera-header #sound.sound-off .cross {
-    display: block;
+    display: none;
 }
 .camera-section .manual-control {
     text-align: center;
@@ -370,15 +370,15 @@ body {
     height: 355px;
     margin-bottom: 40px;
 }
-.camera-section .camera-logo-block {
+/* .camera-section .camera-logo-block {
     width: calc(100% - 20px);
     position: absolute;
     top: 136px;
     left: 50%;
     transform: translateX(-50%);
     text-align: center;
-}
-.camera-section .text-block {
+} */
+/* .camera-section .text-block {
     width: 100%;
     padding: 15px 20px;
     text-align: center;
@@ -395,7 +395,7 @@ body {
     color: #FFFFFF;
     text-shadow: 1px 1px 0 #181716;
     box-sizing: border-box;
-}
+} */
 .camera-section .ellipse {
     position: absolute;
     width: 321px;
@@ -722,4 +722,32 @@ a.slider-link:hover {
 .camera-section.disabled {
     opacity: 0.5;
     pointer-events: none;
+}
+
+.camera-logo-block {
+    width: calc(100% - 20px);
+    position: absolute;
+    top: 136px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+}
+
+.text-block {
+    width: 100%;
+    padding: 15px 20px;
+    text-align: center;
+    border-radius: 6px;
+    background-color: #373456;
+    margin-bottom: 68px;
+    /* border: 2px solid; */
+    border-image-source: linear-gradient(180deg, #CEA8FF 0%, #6029A6 100%);
+    font-family: 'PT Sans', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 18px;
+    color: #FFFFFF;
+    text-shadow: 1px 1px 0 #181716;
+    box-sizing: border-box;
 }
