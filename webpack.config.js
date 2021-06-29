@@ -73,6 +73,11 @@ module.exports = (env) => ({
 				test: /\.(svg|png|jpg|jpeg)$/,
 				use: 'base64-inline-loader',
 			},
+
+			// {
+			// 	test: /\.mp3$/,
+			// 	loader: 'file-loader',
+			// },
 		],
 	},
 

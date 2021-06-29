@@ -23,11 +23,13 @@ import '@babel/polyfill';
 
 import bubbles from './bubbles.json';
 
-LOG(bubbles)
+
+// LOG(bubbles)
+// document.getElementById('./audio/mp3/Nachalo.mp3').play();
 
 
-
-const dpr = confirm('Use device pixel ratio?') ? (window.devicePixelRatio || 1) : 1;
+// const dpr = confirm('Use device pixel ratio?') ? (window.devicePixelRatio || 1) : 1;
+const dpr = 1;
 
 
 
@@ -515,6 +517,41 @@ let meat = null;
 	);
 }
 
+{
+	let bubbles_off = false;
+
+	document.getElementById('bubbles').addEventListener(
+
+		'click',
+
+		() =>
+		{
+			// LOG(888)
+			// evt.stopImmediatePropagation();
+
+			bubbles_off = !bubbles_off;
+
+			if (bubbles_off)
+			{
+				document.getElementById('bubbles').classList.remove('sound-off');
+				document.getElementById('bubbles').classList.add('sound-on');
+			}
+			else
+			{
+				document.getElementById('bubbles').classList.remove('sound-on');
+				document.getElementById('bubbles').classList.add('sound-off');
+			}
+
+			// for (const key in audio)
+			// {
+			// 	audio[key].muted = muted;
+			// }
+
+			document.getElementById('bubble').style.visibility = bubbles_off ? 'hidden' : 'visible';
+		},
+	);
+}
+
 
 
 window.addEventListener(
@@ -641,7 +678,7 @@ window.addEventListener(
 
 						[
 							...paths,
-							...paths_audio,
+							// ...paths_audio,
 						]
 							.forEach(
 
@@ -681,6 +718,8 @@ window.addEventListener(
 						{
 							scene_objects[paths[i]] = await parseGlb(external_data_loader.content[paths[i]]);
 						}
+
+						const prom_aud = [];
 
 						for (let i = 0; i < paths_audio.length; ++i)
 						{
@@ -729,125 +768,39 @@ window.addEventListener(
 
 								// audio[paths_audio[i]].addEventListener('ended', () => audio[paths_audio[i]].pause());
 
-								const blob = new Blob([ external_data_loader.content[paths_audio[i]] ], { type: "audio/mpeg" });
+								// const blob = new Blob([ external_data_loader.content[paths_audio[i]] ], { type: "audio/mpeg" });
 
-								audio[paths_audio[i]].src = window.URL.createObjectURL(blob);
+								// audio[paths_audio[i]].src = window.URL.createObjectURL(blob);
+								audio[paths_audio[i]].src = paths_audio[i];
+								audio[paths_audio[i]].type = 'audio/mpeg';
 
 								audio[paths_audio[i]].load();
 
-								// await new Promise(
+								prom_aud.push(
 
-								// 	(resolve) =>
-								// 	{
-								// 		audio[paths_audio[i]].addEventListener(
+									new Promise(
 
-								// 			'canplaythrough',
-
-								// 			resolve,
-								// 		);
-								// 	},
-								// );
+										(resolve) => audio[paths_audio[i]].addEventListener('canplaythrough', resolve),
+									),
+								);
 
 								break;
 							}
 
-							case 'audio/mp3/Bacon.mp3':
-							{
-								set = spice_sets['models/Bacon.glb']['models/Bacon.glb'];
-
-								break;
-							}
-
-							case 'audio/mp3/SashlikKass.mp3':
-							{
-								set = spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Classic.glb'];
-
-								break;
-							}
-
-							case 'audio/mp3/ShashlikTradic.mp3':
-							{
-								set = spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Traditional.glb'];
-
-								break;
-							}
-
-							case 'audio/mp3/SashlikOtborniy.mp3':
-							{
-								set = spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Selected.glb'];
-
-								break;
-							}
-
-							case 'audio/mp3/ShashlikPig.mp3':
-							{
-								set = spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Pig.glb'];
-
-								break;
-							}
-
-							case 'audio/mp3/Chevapchichi.mp3':
-							{
-								set = spice_sets['models/Chevapchichi.glb']['models/Chevapchichi.glb'];
-
-								break;
-							}
-
-							case 'audio/mp3/Burger.mp3':
-							{
-								set = spice_sets['models/Burger.glb']['models/Burger.glb'];
-
-								break;
-							}
-
-							case 'audio/mp3/Kupati.mp3':
-							{
-								set = spice_sets['models/Kupaty_Extra.glb']['models/Kupaty_Extra.glb'];
-
-								break;
-							}
-
-							case 'audio/mp3/KupatiPig.mp3':
-							{
-								set = spice_sets['models/Kupaty_Extra.glb']['models/Kupaty_Pig.glb'];
-
-								break;
-							}
-
-							case 'audio/mp3/Steak.mp3':
-							{
-								set = spice_sets['models/Steak.glb']['models/Steak.glb'];
-
-								break;
-							}
-
-							case 'audio/mp3/Kotleti.mp3':
-							{
-								set = spice_sets['models/Steak.glb']['models/Steak_Neck.glb'];
-
-								break;
-							}
-
-							case 'audio/mp3/kolbaskiDom.mp3':
-							{
-								set = spice_sets['models/Sausages_Barbecue.glb']['models/Sausages_Home.glb'];
-
-								break;
-							}
-
-							case 'audio/mp3/BBQ.mp3':
-							{
-								set = spice_sets['models/Sausages_Barbecue.glb']['models/Sausages_Barbecue.glb'];
-
-								break;
-							}
-
-							case 'audio/mp3/Bavarskie.mp3':
-							{
-								set = spice_sets['models/Sausages_Barbecue.glb']['models/Sausages_Bavarian.glb'];
-
-								break;
-							}
+							case 'audio/mp3/Bacon.mp3':           { set = spice_sets['models/Bacon.glb']['models/Bacon.glb']; break; }
+							case 'audio/mp3/SashlikKass.mp3':     { set = spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Classic.glb']; break; }
+							case 'audio/mp3/ShashlikTradic.mp3':  { set = spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Traditional.glb']; break; }
+							case 'audio/mp3/SashlikOtborniy.mp3': { set = spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Selected.glb']; break; }
+							case 'audio/mp3/ShashlikPig.mp3':     { set = spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Pig.glb']; break; }
+							case 'audio/mp3/Chevapchichi.mp3':    { set = spice_sets['models/Chevapchichi.glb']['models/Chevapchichi.glb']; break; }
+							case 'audio/mp3/Burger.mp3':          { set = spice_sets['models/Burger.glb']['models/Burger.glb']; break; }
+							case 'audio/mp3/Kupati.mp3':          { set = spice_sets['models/Kupaty_Extra.glb']['models/Kupaty_Extra.glb']; break; }
+							case 'audio/mp3/KupatiPig.mp3':       { set = spice_sets['models/Kupaty_Extra.glb']['models/Kupaty_Pig.glb']; break; }
+							case 'audio/mp3/Steak.mp3':           { set = spice_sets['models/Steak.glb']['models/Steak.glb']; break; }
+							case 'audio/mp3/Kotleti.mp3':         { set = spice_sets['models/Steak.glb']['models/Steak_Neck.glb']; break; }
+							case 'audio/mp3/kolbaskiDom.mp3':     { set = spice_sets['models/Sausages_Barbecue.glb']['models/Sausages_Home.glb']; break; }
+							case 'audio/mp3/BBQ.mp3':             { set = spice_sets['models/Sausages_Barbecue.glb']['models/Sausages_Barbecue.glb']; break; }
+							case 'audio/mp3/Bavarskie.mp3':       { set = spice_sets['models/Sausages_Barbecue.glb']['models/Sausages_Bavarian.glb']; break; }
 
 							default:
 							}
@@ -856,9 +809,33 @@ window.addEventListener(
 							{
 								set.audio = document.createElement('audio');
 
-								set.audio.bubble = bubbles[paths_audio[i]];
+								// set.audio.bubble = bubbles[paths_audio[i]];
 
-								set.audio.addEventListener(
+								// set.audio.addEventListener(
+
+								// 	'ended',
+
+								// 	() =>
+								// 	{
+								// 		document.getElementById('bubble').style.display = 'none';
+								// 	},
+								// );
+
+								// set.audio.addEventListener('ended', () => set.audio.pause());
+
+								// const blob = new Blob([ external_data_loader.content[paths_audio[i]] ], { type: "audio/mpeg" });
+
+								// set.audio = window.URL.createObjectURL(blob);
+
+								// set.audio.src = window.URL.createObjectURL(blob);
+								// set.audio.src = paths_audio[i];
+								// set.audio.type = 'audio/mpeg';
+
+								audio[paths_audio[i]] = set.audio;
+
+								audio[paths_audio[i]].bubble = bubbles[paths_audio[i]];
+
+								audio[paths_audio[i]].addEventListener(
 
 									'ended',
 
@@ -868,32 +845,24 @@ window.addEventListener(
 									},
 								);
 
-								// set.audio.addEventListener('ended', () => set.audio.pause());
+								audio[paths_audio[i]].src = paths_audio[i];
+								audio[paths_audio[i]].type = 'audio/mpeg';
 
-								const blob = new Blob([ external_data_loader.content[paths_audio[i]] ], { type: "audio/mpeg" });
+								// audio[paths_audio[i]].load();
 
-								// set.audio = window.URL.createObjectURL(blob);
+								// alert(paths_audio[i])
 
-								set.audio.src = window.URL.createObjectURL(blob);
+								// prom_aud.push(
 
-								audio[paths_audio[i]] = set.audio;
+								// 	new Promise(
 
-								set.audio.load();
-
-								// await new Promise(
-
-								// 	(resolve) =>
-								// 	{
-								// 		set.audio.addEventListener(
-
-								// 			'canplaythrough',
-
-								// 			resolve,
-								// 		);
-								// 	},
+								// 		(resolve) => audio[paths_audio[i]].addEventListener('canplaythrough', resolve),
+								// 	),
 								// );
 							}
 						}
+
+						await Promise.resolve(prom_aud);
 
 						const meat_buttons =
 							Array.from(document.getElementsByClassName('camera-section')[2].getElementsByClassName('slider-block-item'));
@@ -1576,6 +1545,12 @@ window.addEventListener(
 											current_spice_audio.play();
 											document.getElementById('bubble-text').innerHTML = current_spice_audio.bubble;
 											document.getElementById('bubble').style.display = 'block';
+
+											// if (spice_set.match && selected_spice_set.length === spice_set.match.length)
+											// {
+											// 	LOG(spice_set.match.audio)
+											// 	spice_set.match.audio.load();
+											// }
 										},
 									);
 								},
@@ -1590,6 +1565,8 @@ window.addEventListener(
 							() =>
 							{
 								++meat_try;
+
+								marinade_try = 0;
 
 								document.getElementsByClassName('camera-section')[5].style.display = 'none';
 
@@ -1609,9 +1586,9 @@ window.addEventListener(
 
 								// scene_objects['models/Grill.glb'].visible = true;
 
-								scene_objects['models/Scene.glb'].visible = false;
-								scene_objects['models/Meatman.glb'].visible = false;
-								scene_objects['models/Grill.glb'].visible = false;
+								// scene_objects['models/Scene.glb'].visible = false;
+								// scene_objects['models/Meatman.glb'].visible = false;
+								// scene_objects['models/Grill.glb'].visible = false;
 
 								scene_objects['models/Mayonnaise.glb'].visible = false;
 								scene_objects['models/SoySauce.glb'].visible = false;
@@ -1648,12 +1625,15 @@ window.addEventListener(
 								// scene_objects['models/Meatman.glb'].animations['Start'].play();
 								// scene_objects['models/Grill.glb'].animations['Grill_Start'].play();
 
+								scene_objects['models/Scene.glb'].animations['Scene_Idle_Food'].play();
+								scene_objects['models/Meatman.glb'].animations['Idle_Food'].play();
+
 								// audio['audio/mp3/Nachalo.mp3'].play();
 								// document.getElementById('bubble-text').innerHTML = audio['audio/mp3/Nachalo.mp3'].bubble;
 								// document.getElementById('bubble').style.display = 'block';
 
-								document.getElementsByClassName('camera-section')[0].style.display = 'block';
-								grid_mesh.visible = true;
+								document.getElementsByClassName('camera-section')[2].style.display = 'block';
+								// grid_mesh.visible = true;
 
 								// LOG(document.getElementsByClassName('camera-section')[0])
 							},
@@ -1937,14 +1917,22 @@ window.addEventListener(
 							},
 						);
 
-						document.getElementsByClassName('load-section')[0].style.display = 'none';
-						document.getElementsByClassName('camera-header')[0].style.display = '';
-						document.getElementsByClassName('camera-section')[0].style.display = 'block';
+						setTimeout(
+
+							() =>
+							{
+								document.getElementsByClassName('load-section')[0].style.display = 'none';
+								document.getElementsByClassName('camera-header')[0].style.display = '';
+								document.getElementsByClassName('camera-section')[0].style.display = 'block';
+							},
+
+							0,
+						);
 					},
 
 					onUpdate: () =>
 					{
-						// _camera.position.set(0, 1, 8);
+						// _camera.position.set(0, 3, 3);
 						// _camera.lookAt(xz_plane_intersection);
 						// _camera.updateMatrix();
 						// _camera.updateMatrixWorld();
@@ -1993,9 +1981,7 @@ window.addEventListener(
 
 							meat.position
 								.copy(xz_plane_intersection)
-								.setY(meat.position.y + ((trans2 * 0.8) + (s * 0.1)) * zoom - meat_position.y * sc);
-
-							// LOG(((trans2 * 0.8) + (s * 0.1)) * zoom, meat_position.y, meat_position.y * ((trans2 * 0.8) + (s * 0.1)) * zoom)
+								.setY(meat.position.y + ((trans2 * 0.8) + (s * 0.1)) * zoom - meat_position.y * sc * zoom);
 
 							meat.scale.set(zoom + sc * zoom, zoom + sc * zoom, zoom + sc * zoom);
 

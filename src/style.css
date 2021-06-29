@@ -751,3 +751,13 @@ a.slider-link:hover {
     text-shadow: 1px 1px 0 #181716;
     box-sizing: border-box;
 }
+
+.camera-header #bubbles.sound-on .cross {
+    display: block;
+}
+.camera-header #bubbles {
+    /* right: 24px; */
+}
+.camera-header #bubbles.sound-off .cross {
+    display: none;
+}
