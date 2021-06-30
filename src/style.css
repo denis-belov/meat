@@ -296,7 +296,7 @@ body {
     display: block;
 }
 .camera-header #sound {
-    /* right: 24px; */
+    right: 24px;
 }
 .camera-header #sound.sound-off .cross {
     display: none;
@@ -760,4 +760,42 @@ a.slider-link:hover {
 }
 .camera-header #bubbles.sound-off .cross {
     display: none;
+}
+
+/* .camera-header #subtitles.subtitles-on .cross {
+    display: block;
+} */
+.camera-header #subtitles {
+    width: 40px;
+    height: 40px;
+    background: #373456;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border-radius: 50%;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    position: absolute;
+    top: 24px;
+    right: 73px;
+}
+/* .camera-header #subtitles.subtitles-off .cross {
+    display: none;
+} */
+
+.camera-header #subtitles svg.subtitles-of {
+    display: none;
+}
+.camera-header #subtitles.subtitles-of svg.subtitles-of {
+    display: block;
+}
+.camera-header #subtitles.subtitles-on svg.subtitles-of {
+    display: none;
+}
+.camera-header #subtitles.subtitles-of svg.subtitles-on {
+    display: none;
+}
+.camera-header #subtitles.subtitles-on svg.subtitles-on {
+    display: block;
 }

@@ -517,10 +517,45 @@ let meat = null;
 	);
 }
 
-{
-	let bubbles_off = false;
+// {
+// 	let bubbles_off = false;
 
-	document.getElementById('bubbles').addEventListener(
+// 	document.getElementById('bubbles').addEventListener(
+
+// 		'click',
+
+// 		() =>
+// 		{
+// 			// LOG(888)
+// 			// evt.stopImmediatePropagation();
+
+// 			bubbles_off = !bubbles_off;
+
+// 			if (bubbles_off)
+// 			{
+// 				document.getElementById('bubbles').classList.remove('sound-off');
+// 				document.getElementById('bubbles').classList.add('sound-on');
+// 			}
+// 			else
+// 			{
+// 				document.getElementById('bubbles').classList.remove('sound-on');
+// 				document.getElementById('bubbles').classList.add('sound-off');
+// 			}
+
+// 			// for (const key in audio)
+// 			// {
+// 			// 	audio[key].muted = muted;
+// 			// }
+
+// 			document.getElementById('bubble').style.visibility = bubbles_off ? 'hidden' : 'visible';
+// 		},
+// 	);
+// }
+
+{
+	let subtitles_off = false;
+
+	document.getElementById('subtitles').addEventListener(
 
 		'click',
 
@@ -529,17 +564,17 @@ let meat = null;
 			// LOG(888)
 			// evt.stopImmediatePropagation();
 
-			bubbles_off = !bubbles_off;
+			subtitles_off = !subtitles_off;
 
-			if (bubbles_off)
+			if (!subtitles_off)
 			{
-				document.getElementById('bubbles').classList.remove('sound-off');
-				document.getElementById('bubbles').classList.add('sound-on');
+				document.getElementById('subtitles').classList.remove('subtitles-of');
+				document.getElementById('subtitles').classList.add('subtitles-on');
 			}
 			else
 			{
-				document.getElementById('bubbles').classList.remove('sound-on');
-				document.getElementById('bubbles').classList.add('sound-off');
+				document.getElementById('subtitles').classList.remove('subtitles-on');
+				document.getElementById('subtitles').classList.add('subtitles-of');
 			}
 
 			// for (const key in audio)
@@ -547,7 +582,7 @@ let meat = null;
 			// 	audio[key].muted = muted;
 			// }
 
-			document.getElementById('bubble').style.visibility = bubbles_off ? 'hidden' : 'visible';
+			document.getElementById('bubble').style.visibility = subtitles_off ? 'hidden' : 'visible';
 		},
 	);
 }
