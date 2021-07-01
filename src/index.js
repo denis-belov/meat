@@ -826,7 +826,7 @@ window.addEventListener(
 							case 'audio/mp3/SashlikKass.mp3':     { set = spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Classic.glb']; break; }
 							case 'audio/mp3/ShashlikTradic.mp3':  { set = spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Traditional.glb']; break; }
 							case 'audio/mp3/SashlikOtborniy.mp3': { set = spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Selected.glb']; break; }
-							case 'audio/mp3/ShashlikPig.mp3':     { set = spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Pig.glb']; break; }
+							case 'audio/mp3/ShaslikPig.mp3':      { set = spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Pig.glb']; break; }
 							case 'audio/mp3/Chevapchichi.mp3':    { set = spice_sets['models/Chevapchichi.glb']['models/Chevapchichi.glb']; break; }
 							case 'audio/mp3/Burger.mp3':          { set = spice_sets['models/Burger.glb']['models/Burger.glb']; break; }
 							case 'audio/mp3/Kupati.mp3':          { set = spice_sets['models/Kupaty_Extra.glb']['models/Kupaty_Extra.glb']; break; }
@@ -842,6 +842,7 @@ window.addEventListener(
 
 							if (set)
 							{
+								// LOG(paths_audio[i])
 								set.audio = document.createElement('audio');
 
 								// set.audio.bubble = bubbles[paths_audio[i]];
@@ -1332,9 +1333,9 @@ window.addEventListener(
 
 										document.getElementsByClassName('camera-section')[4].style.display = 'block';
 
-										scene_objects['models/Mayonnaise.glb'].visible = false;
-										scene_objects['models/SoySauce.glb'].visible = false;
-										scene_objects['models/Vinegar.glb'].visible = false;
+										// scene_objects['models/Mayonnaise.glb'].visible = false;
+										// scene_objects['models/SoySauce.glb'].visible = false;
+										// scene_objects['models/Vinegar.glb'].visible = false;
 
 										scene_objects['models/Meatman.glb'].animations['Idle_Spices'].play();
 
@@ -1403,20 +1404,20 @@ window.addEventListener(
 							{
 								document.getElementsByClassName('camera-section')[3].style.display = 'none';
 
-								// if (scene_objects['models/Mayonnaise.glb'].visible)
-								// {
+								if (scene_objects['models/Mayonnaise.glb'].visible)
+								{
 									scene_objects['models/Mayonnaise.glb'].animations['Sauces_Mayonnaise'].play();
-								// }
+								}
 
-								// if (scene_objects['models/SoySauce.glb'].visible)
-								// {
+								if (scene_objects['models/SoySauce.glb'].visible)
+								{
 									scene_objects['models/SoySauce.glb'].animations['Sauces_SoySauce'].play();
-								// }
+								}
 
-								// if (scene_objects['models/Vinegar.glb'].visible)
-								// {
+								if (scene_objects['models/Vinegar.glb'].visible)
+								{
 									scene_objects['models/Vinegar.glb'].animations['Sauces_Vinegar'].play();
-								// }
+								}
 
 								scene_objects['models/Meatman.glb'].animations['Idle_Marinade'].stop();
 
@@ -1967,7 +1968,7 @@ window.addEventListener(
 
 					onUpdate: () =>
 					{
-						// _camera.position.set(0, 3, 3);
+						// _camera.position.set(0, 1, 5);
 						// _camera.lookAt(xz_plane_intersection);
 						// _camera.updateMatrix();
 						// _camera.updateMatrixWorld();
