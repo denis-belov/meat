@@ -466,6 +466,7 @@ const parseGlb = (arraybuffer) =>
 									animation.name !== 'Final_Idle' &&
 									animation.name !== 'Scene_Idle_Food' &&
 									animation.name !== 'SceneFood_Marinade&Spices' &&
+									animation.name !== 'SceneBacon_Marinade&Spices' &&
 									animation.name !== 'SceneBarbecue_Marinade&Spices'
 								)
 								{
@@ -862,6 +863,7 @@ window.addEventListener
 			},
 		);
 
+		// LOG(scene_objects['models/Scene.glb'].children[0].children)
 		scene_objects['models/Scene.glb'].children[0].children.forEach
 		(
 			(elm) =>
@@ -1096,6 +1098,80 @@ window.addEventListener
 											},
 										);
 									}
+									else if (elm === 'models/Bacon.glb')
+									{
+										meat_buttons[elm_index].addEventListener
+										(
+											'click',
+
+											() =>
+											{
+												document.getElementById('back').style.display = 'none';
+
+												spice_set = spice_sets[elm];
+
+												spice_set.name = null;
+
+												spice_set.match = null;
+
+												spice_set.unique = [];
+
+												let count = 0;
+
+												let key = null;
+												let _key = null;
+
+												for (key in spice_set)
+												{
+													if (key !== 'match' && key !== 'unique' && key !== 'name')
+													{
+														spice_set.unique.push(...spice_set[key]);
+														_key = key;
+													}
+
+													++count;
+												}
+
+												if (count === 4)
+												{
+													spice_set.match = spice_set[_key];
+													spice_set.match.audio = spice_set[_key].audio;
+												}
+
+												spice_set.unique = Array.from(new Set(spice_set.unique)).sort((a, b) => (a - b));
+
+												spice_set.unique.forEach
+												(
+													(_elm) =>
+													{
+														spices_buttons[_elm].style.display = 'block';
+													},
+												);
+
+												meat = scene_objects[elm];
+
+												meat._corresponding_scene_object.visible = true;
+
+												tray_barbecue.visible = false;
+
+												document.getElementsByClassName('camera-section')[2].style.display = 'none';
+
+												scene_objects['models/Meatman.glb'].animations['Idle_Food'].stop();
+												scene_objects['models/Meatman.glb'].animations['Get_Food'].play();
+
+												scene_objects['models/Scene.glb'].animations['Scene_Idle_Food'].stop();
+
+												audios['audio/mp3/Svinina1.mp3'].playWithBubble();
+
+												scene_objects['models/Scene.glb'].animations['Scene_GetBacon'].play();
+
+												if (elm === 'models/Chevapchichi.glb')
+												{
+													chev = true;
+												}
+											},
+										);
+									}
 									else
 									{
 										meat_buttons[elm_index].addEventListener
@@ -1194,6 +1270,12 @@ window.addEventListener
 								case 'Scene_GetFood':
 
 									scene_objects['models/Scene.glb'].animations['SceneFood_Marinade&Spices'].play();
+
+									break;
+
+								case 'Scene_GetBacon':
+
+									scene_objects['models/Scene.glb'].animations['SceneBacon_Marinade&Spices'].play();
 
 									break;
 
@@ -1769,6 +1851,7 @@ window.addEventListener
 								document.getElementById('slider-link').style.display = 'none';
 
 								scene_objects['models/Scene.glb'].animations['SceneFood_Marinade&Spices'].stop();
+								scene_objects['models/Scene.glb'].animations['SceneBacon_Marinade&Spices'].stop();
 								scene_objects['models/Scene.glb'].animations['SceneBarbecue_Marinade&Spices'].stop();
 								scene_objects['models/Meatman.glb'].animations['Final_Idle'].stop();
 
@@ -1845,7 +1928,7 @@ window.addEventListener
 
 					onUpdate: () =>
 					{
-						// _camera.position.set(0, 1, 5);
+						// _camera.position.set(0, 3, 3);
 						// _camera.lookAt(xz_plane_intersection);
 						// _camera.updateMatrix();
 						// _camera.updateMatrixWorld();
