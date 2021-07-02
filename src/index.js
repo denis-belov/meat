@@ -613,7 +613,7 @@ document.getElementById('slider-link').addEventListener(
 
 			audio['audio/mp3/Chevapchichi_Wrong.mp3'].pause();
 			audio['audio/mp3/Chevapchichi_Wrong.mp3'].currentTime = 0;
-			document.getElementsByClassName('camera-section')[3].style.display = 'none';
+			document.getElementsByClassName('camera-section')[4].style.display = 'none';
 			audio['audio/mp3/Chevapchichi_Correct.mp3'].play();
 			document.getElementById('bubble-text').innerHTML = audio['audio/mp3/Chevapchichi_Correct.mp3'].bubble;
 			document.getElementById('bubble').style.display = 'block';
@@ -1233,16 +1233,27 @@ window.addEventListener(
 												document.getElementById('bubble-text').innerHTML = audio['audio/mp3/Svinina1.mp3'].bubble;
 												document.getElementById('bubble').style.display = 'block';
 												scene_objects['models/Scene.glb'].animations['Scene_GetFood'].play();
+
+												if (elm === 'models/Chevapchichi.glb')
+												{
+													chev = true;
+
+													// LOG('chev', chev)
+
+													// document.getElementById('slider-link').style.display = 'flex';
+												}
 											},
 										);
 									}
 
-									if (elm === 'models/Chevapchichi.glb')
-									{
-										chev = true;
+									// if (elm === 'models/Chevapchichi.glb')
+									// {
+									// 	chev = true;
 
-										// document.getElementById('slider-link').style.display = 'flex';
-									}
+									// 	LOG('chev', chev)
+
+									// 	// document.getElementById('slider-link').style.display = 'flex';
+									// }
 								},
 							);
 
