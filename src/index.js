@@ -38,8 +38,17 @@ Audio.prototype.playWithBubble =
 
 
 
-// const dpr = confirm('Use device pixel ratio?') ? (window.devicePixelRatio || 1) : 1;
-const dpr = 1;
+const CubeTextureLoader = new THREE.CubeTextureLoader();
+
+CubeTextureLoader.setPath('textures/cubemap/');
+
+const cube_map =
+	CubeTextureLoader.load
+	(
+		[ 'posx.jpg', 'negx.jpg', 'posy.jpg', 'negy.jpg', 'posz.jpg', 'negz.jpg' ],
+	);
+
+const plane_noise_texture = new THREE.TextureLoader().load('textures/smooth-noise.jpg');
 
 
 
@@ -62,13 +71,6 @@ const dpr = 1;
 // /* imbir */ 16,
 // /* ukrop */ 17,
 // /* pazit */ 18,
-
-
-
-const meat_position = new THREE.Vector3(0.030909, 0.760915, 0.520341);
-const meat_position2 = new THREE.Vector3();
-
-
 
 const spice_sets =
 {
@@ -234,37 +236,6 @@ const spice_sets =
 
 
 
-const paths =
-[
-	'models/Scene.glb',
-	'models/Meatman.glb',
-	'models/Grill.glb',
-	'models/Kupaty_Extra.glb',
-	'models/Bacon.glb',
-	'models/Sausages_Barbecue.glb',
-	'models/Burger.glb',
-	'models/Barbecue_Classic.glb',
-	'models/Steak.glb',
-	'models/Chevapchichi.glb',
-	'models/Mayonnaise.glb',
-	'models/SoySauce.glb',
-	'models/Vinegar.glb',
-];
-
-const sources = {};
-
-paths.forEach
-(
-	(elm) =>
-	{
-		sources[elm] =
-		{
-			source: elm,
-			type: 'arraybuffer',
-		};
-	},
-);
-
 const paths_audio =
 [
 	'audio/mp3/Nachalo.mp3',
@@ -366,6 +337,46 @@ for (let i = 0; i < paths_audio.length; ++i)
 	}
 }
 
+
+
+const meat_position = new THREE.Vector3(0.030909, 0.760915, 0.520341);
+const meat_position2 = new THREE.Vector3();
+
+
+
+const paths =
+[
+	'models/Scene.glb',
+	'models/Meatman.glb',
+	'models/Grill.glb',
+	'models/Kupaty_Extra.glb',
+	'models/Bacon.glb',
+	'models/Sausages_Barbecue.glb',
+	'models/Burger.glb',
+	'models/Barbecue_Classic.glb',
+	'models/Steak.glb',
+	'models/Chevapchichi.glb',
+	'models/Mayonnaise.glb',
+	'models/SoySauce.glb',
+	'models/Vinegar.glb',
+];
+
+const sources = {};
+
+paths.forEach
+(
+	(elm) =>
+	{
+		sources[elm] =
+		{
+			source: elm,
+			type: 'arraybuffer',
+		};
+	},
+);
+
+
+
 let spice_set = null;
 
 let selected_spice_set = [];
@@ -387,22 +398,122 @@ const [ canvas ] = document.getElementsByTagName('canvas');
 
 
 
+const [ scale_item ] = document.getElementsByClassName('scale-item');
+const [ percent ] = document.getElementsByClassName('percent');
+
+const external_data_loader = new ExternalDataLoader();
+
+const models_loaded_promise =
+	external_data_loader.load
+	(
+		{
+			sources,
+
+			progress:
+
+			() =>
+			{
+				const percent_loaded =
+					`${
+						Math.round(external_data_loader.loaded / external_data_loader.length * 100)
+					}%`;
+
+				percent.innerHTML = percent_loaded;
+
+				scale_item.style.width = percent_loaded;
+			},
+		},
+	);
+
+
+
 const draco_loader = new DRACOLoader();
 draco_loader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
 
 const gltf_loader = new GLTFLoader();
 gltf_loader.setDRACOLoader(draco_loader);
 
+const parseGlb = (arraybuffer) =>
+	new Promise
+	(
+		(resolve) =>
+		{
+			gltf_loader.parse
+			(
+				arraybuffer,
+
+				'/',
+
+				(gltf) =>
+				{
+					if (gltf.animations.length > 0)
+					{
+						gltf.scene.animations = {};
+
+						gltf.scene.mixer = new THREE.AnimationMixer(gltf.scene);
+
+						gltf.animations.forEach
+						(
+							(animation) =>
+							{
+								const action = gltf.scene.mixer.clipAction(animation);
+
+								if
+								(
+									animation.name !== 'Idle_Marinade' &&
+									animation.name !== 'Idle_Spices' &&
+									animation.name !== 'Idle_Food' &&
+									animation.name !== 'Final_Idle' &&
+									animation.name !== 'Scene_Idle_Food' &&
+									animation.name !== 'SceneFood_Marinade&Spices' &&
+									animation.name !== 'SceneBarbecue_Marinade&Spices'
+								)
+								{
+									action.loop = THREE.LoopOnce;
+
+									action.clampWhenFinished = true;
+								}
+
+								gltf.scene.animations[animation.name] = action;
+							},
+						);
+					}
+
+					gltf.scene.traverse
+					(
+						(elm) =>
+						{
+							if (elm.isMesh)
+							{
+								if (Array.isArray(elm.material))
+								{
+									elm.material.forEach
+									(
+										(_elm) =>
+										{
+											_elm.envMap = cube_map;
+											_elm.transparent2 = _elm.transparent;
+										},
+									);
+								}
+								else
+								{
+									elm.material.envMap = cube_map;
+									elm.material.transparent2 = elm.material.transparent;
+								}
+							}
+						},
+					);
+
+					resolve(gltf.scene);
+				},
+			);
+		},
+	);
+
+
+
 const clock = new THREE.Clock();
-
-const external_data_loader = new ExternalDataLoader();
-const CubeTextureLoader = new THREE.CubeTextureLoader();
-CubeTextureLoader.setPath('textures/cubemap/');
-
-let cube_map = null;
-
-
-
 const ambient_light = new THREE.AmbientLight(0xFFFFFF, 1);
 
 
@@ -501,97 +612,17 @@ let zoom = 1;
 	);
 }
 
-const parseGlb = (arraybuffer) =>
-	new Promise
-	(
-		(resolve) =>
-		{
-			gltf_loader.parse
-			(
-				arraybuffer,
 
-				'/',
 
-				(gltf) =>
-				{
-					if (gltf.animations.length > 0)
-					{
-						gltf.scene.animations = {};
+// let plane_material = null;
+// let plane = null;
 
-						gltf.scene.mixer = new THREE.AnimationMixer(gltf.scene);
-
-						gltf.animations.forEach
-						(
-							(animation) =>
-							{
-								const action = gltf.scene.mixer.clipAction(animation);
-
-								if
-								(
-									animation.name !== 'Idle_Marinade' &&
-									animation.name !== 'Idle_Spices' &&
-									animation.name !== 'Idle_Food' &&
-									animation.name !== 'Final_Idle' &&
-									animation.name !== 'Scene_Idle_Food' &&
-									animation.name !== 'SceneFood_Marinade&Spices' &&
-									animation.name !== 'SceneBarbecue_Marinade&Spices'
-								)
-								{
-									action.loop = THREE.LoopOnce;
-
-									action.clampWhenFinished = true;
-								}
-
-								gltf.scene.animations[animation.name] = action;
-							},
-						);
-					}
-
-					gltf.scene.traverse
-					(
-						(elm) =>
-						{
-							if (elm.isMesh)
-							{
-								if (Array.isArray(elm.material))
-								{
-									elm.material.forEach
-									(
-										(_elm) =>
-										{
-											_elm.envMap = cube_map;
-											_elm.transparent2 = _elm.transparent;
-										},
-									);
-								}
-								else
-								{
-									elm.material.envMap = cube_map;
-									elm.material.transparent2 = elm.material.transparent;
-								}
-							}
-						},
-					);
-
-					resolve(gltf.scene);
-				},
-			);
-		},
-	);
+// let meat = null;
+// let chev = false;
 
 
 
-let grid_mesh = { visible: false };
 const scene_objects = {};
-
-let plane_material = null;
-let plane = null;
-let tray = null;
-let tray_barbecue = null;
-let meat = null;
-let chev = false;
-
-
 
 document.getElementById('slider-link').addEventListener
 (
@@ -683,30 +714,90 @@ document.getElementById('slider-link').addEventListener
 
 
 
-const [ scale_item ] = document.getElementsByClassName('scale-item');
-const [ percent ] = document.getElementsByClassName('percent');
-
-const models_loaded_promise =
-	external_data_loader.load
+const grid_mesh =
+	new THREE.Mesh
 	(
-		{
-			sources,
+		new THREE.PlaneGeometry(1, 1, 10, 10),
 
-			progress:
-
-			() =>
-			{
-				const percent_loaded =
-					`${
-						Math.round(external_data_loader.loaded / external_data_loader.length * 100)
-					}%`;
-
-				percent.innerHTML = percent_loaded;
-
-				scale_item.style.width = percent_loaded;
-			},
-		},
+		new THREE.MeshBasicMaterial({ color: 'white', wireframe: true }),
 	);
+
+grid_mesh.rotation.x = -Math.PI * 0.5;
+
+
+
+plane_noise_texture.wrapS = THREE.RepeatWrapping;
+plane_noise_texture.wrapT = THREE.RepeatWrapping;
+
+const plane_material = new THREE.ShaderMaterial
+(
+	{
+		vertexShader:
+
+			`varying vec2 vUv1;
+			varying vec2 vUv2;
+			uniform float time;
+
+			void main ()
+			{
+				vUv1 = vec2(length(position));
+				vUv2 = uv;
+
+				vec4 transformed = modelMatrix * vec4(position, 1.0);
+
+				gl_Position = projectionMatrix * viewMatrix * transformed;
+			}`,
+
+		fragmentShader:
+
+			`uniform sampler2D noise;
+			uniform float time;
+
+			varying vec2 vUv1;
+			varying vec2 vUv2;
+
+			float rand (vec2 co)
+			{
+				return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);
+			}
+
+			void main ()
+			{
+				gl_FragColor.rgb =
+					texture2D(noise, vUv1 - time + acos((vUv2.t - 0.5))).rgb +
+					texture2D(noise, vUv1 - time + acos((vUv2.s - 0.5))).rgb +
+					texture2D(noise, vUv1 - time + asin((vUv2.t - 0.5))).rgb +
+					texture2D(noise, vUv1 - time + asin((vUv2.s - 0.5))).rgb;
+
+				gl_FragColor.rgb *= 0.25;
+
+				gl_FragColor.rgb += smoothstep(0.0, 1.0, 1.0 - length(vUv1)) * 3.0 * (1.0 + sin(time * 50.0) * 0.1);
+
+				gl_FragColor.rgb *= vec3(95.0 / 255.0, 86.0 / 255.0, 175.0 / 255.0);
+
+				gl_FragColor.a = smoothstep(0.5, 1.0, pow(length(gl_FragColor.rgb), 2.0)) * smoothstep(0.0, 1.0, 0.8 - length(vUv1));
+			}`,
+
+		uniforms:
+		{
+			noise: { value: plane_noise_texture },
+
+			time: { value: 0 },
+		},
+
+		transparent: true,
+
+		depthTest: false,
+	},
+);
+
+const plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1, 10, 10), plane_material);
+
+plane.visible = false;
+
+
+
+let meat = null;
 
 window.addEventListener
 (
@@ -714,12 +805,6 @@ window.addEventListener
 
 	async () =>
 	{
-		cube_map =
-			await CubeTextureLoader.load
-			(
-				[ 'posx.jpg', 'negx.jpg', 'posy.jpg', 'negy.jpg', 'posz.jpg', 'negz.jpg' ],
-			);
-
 		await Promise.resolve(models_loaded_promise);
 
 		for (let i = 0; i < paths.length; ++i)
@@ -728,6 +813,127 @@ window.addEventListener
 		}
 
 		await Promise.resolve(audios_loaded_promises);
+
+
+
+		scene_objects['models/Scene.glb'].visible = false;
+		scene_objects['models/Meatman.glb'].visible = false;
+		scene_objects['models/Grill.glb'].visible = false;
+
+		scene_objects['models/Mayonnaise.glb'].visible = false;
+		scene_objects['models/SoySauce.glb'].visible = false;
+		scene_objects['models/Vinegar.glb'].visible = false;
+
+		scene_objects['models/Kupaty_Extra.glb'].visible = false;
+		scene_objects['models/Bacon.glb'].visible = false;
+		scene_objects['models/Sausages_Barbecue.glb'].visible = false;
+		scene_objects['models/Burger.glb'].visible = false;
+		scene_objects['models/Barbecue_Classic.glb'].visible = false;
+		scene_objects['models/Steak.glb'].visible = false;
+		scene_objects['models/Chevapchichi.glb'].visible = false;
+
+
+
+		let tray = null;
+		let tray_barbecue = null;
+
+		scene_objects['models/Meatman.glb'].children[0].children.forEach
+		(
+			(elm) =>
+			{
+				switch (elm.name)
+				{
+				case 'Tray_1':
+				{
+					tray = elm;
+
+					break;
+				}
+
+				case 'Tray_Barbecue':
+				{
+					tray_barbecue = elm;
+
+					break;
+				}
+
+				default:
+				}
+			},
+		);
+
+		scene_objects['models/Scene.glb'].children[0].children.forEach
+		(
+			(elm) =>
+			{
+				switch (elm.name)
+				{
+				case 'Barbecue':
+				{
+					elm.visible = false;
+
+					scene_objects['models/Barbecue_Classic.glb']._corresponding_scene_object = elm;
+
+					break;
+				}
+
+				case 'Kupaty':
+				{
+					elm.visible = false;
+
+					scene_objects['models/Kupaty_Extra.glb']._corresponding_scene_object = elm;
+
+					break;
+				}
+
+				case 'Sausages':
+				{
+					elm.visible = false;
+
+					scene_objects['models/Sausages_Barbecue.glb']._corresponding_scene_object = elm;
+
+					break;
+				}
+
+				case 'Bacon004':
+				{
+					elm.visible = false;
+
+					scene_objects['models/Bacon.glb']._corresponding_scene_object = elm;
+
+					break;
+				}
+
+				case 'Steak':
+				{
+					elm.visible = false;
+
+					scene_objects['models/Steak.glb']._corresponding_scene_object = elm;
+
+					break;
+				}
+
+				case 'Burger003':
+				{
+					elm.visible = false;
+
+					scene_objects['models/Burger.glb']._corresponding_scene_object = elm;
+
+					break;
+				}
+				case 'Chevapchichi004':
+				{
+					elm.visible = false;
+
+					scene_objects['models/Chevapchichi.glb']._corresponding_scene_object = elm;
+
+					break;
+				}
+
+				default:
+				}
+			},
+		);
 
 		XR8.addCameraPipelineModules
 		(
@@ -745,6 +951,9 @@ window.addEventListener
 
 						_camera = camera;
 						_scene = scene;
+
+						// const dpr = confirm('Use device pixel ratio?') ? (window.devicePixelRatio || 1) : 1;
+						const dpr = 1;
 
 						renderer.setSize(window.innerWidth * dpr, window.innerHeight * dpr);
 
@@ -771,6 +980,21 @@ window.addEventListener
 						);
 
 						scene.add(ambient_light);
+						scene.add(grid_mesh);
+						scene.add(scene_objects['models/Scene.glb']);
+						scene.add(scene_objects['models/Meatman.glb']);
+						scene.add(scene_objects['models/Grill.glb']);
+						scene.add(scene_objects['models/Mayonnaise.glb']);
+						scene.add(scene_objects['models/SoySauce.glb']);
+						scene.add(scene_objects['models/Vinegar.glb']);
+						scene.add(plane);
+						scene.add(scene_objects['models/Kupaty_Extra.glb']);
+						scene.add(scene_objects['models/Bacon.glb']);
+						scene.add(scene_objects['models/Sausages_Barbecue.glb']);
+						scene.add(scene_objects['models/Burger.glb']);
+						scene.add(scene_objects['models/Barbecue_Classic.glb']);
+						scene.add(scene_objects['models/Steak.glb']);
+						scene.add(scene_objects['models/Chevapchichi.glb']);
 
 						const meat_buttons =
 							Array.from(document.getElementsByClassName('camera-section')[2].getElementsByClassName('slider-block-item'));
@@ -780,6 +1004,8 @@ window.addEventListener
 
 						const spices_buttons =
 							Array.from(document.getElementsByClassName('camera-section')[4].getElementsByClassName('slider-block-item'));
+
+						let chev = false;
 
 						[
 							'models/Kupaty_Extra.glb',
@@ -1334,26 +1560,6 @@ window.addEventListener
 							audios['audio/mp3/originalno.mp3'],
 						];
 
-						// /* salt */ 0,
-						// /* perec */ 1,
-						// /* luk */ 2,
-						// /* paprika */ 3,
-						// /* petrushka */ 4,
-						// /* bazilik */ 5,
-						// /* chabrec */ 6,
-						// /* coriander */ 7,
-						// /* perec gor */ 8,
-						// /* chesnok */ 9,
-						// /* perec bel */ 10,
-						// /* perec slad kras */ 11,
-						// /* tmin */ 12,
-						// /* tomat */ 13,
-						// /* oreagano */ 14,
-						// /* mayoran */ 15,
-						// /* imbir */ 16,
-						// /* ukrop */ 17,
-						// /* pazit */ 18,
-
 						[
 							'Get_Spices_Salt',
 							'Get_Spices_Perec',
@@ -1457,11 +1663,10 @@ window.addEventListener
 
 												scene_objects['models/Meatman.glb'].animations['Idle_Spices'].stop();
 
-												current_spice_animation = scene_objects['models/Meatman.glb'].animations[elm];
 												current_spice_audio = spice_audios[elm_index];
-
 												current_spice_audio.playWithBubble();
 
+												current_spice_animation = scene_objects['models/Meatman.glb'].animations[elm];
 												current_spice_animation.play();
 											}
 										},
@@ -1551,9 +1756,6 @@ window.addEventListener
 								tray.visible = true;
 								tray_barbecue.visible = true;
 
-								// plane.position.copy(xz_plane_intersection);
-								// plane.position.add(new THREE.Vector3(0.030909, 0.760915, 0.520341));
-
 								meat = null;
 								spice_set = null;
 								selected_spice_set.length = 0;
@@ -1576,90 +1778,6 @@ window.addEventListener
 								document.getElementsByClassName('camera-section')[2].style.display = 'block';
 							},
 						);
-
-
-
-						grid_mesh =
-							new THREE.Mesh
-							(
-								new THREE.PlaneGeometry(1, 1, 10, 10),
-
-								new THREE.MeshBasicMaterial({ color: 'white', wireframe: true }),
-							);
-
-						grid_mesh.rotation.x = -Math.PI * 0.5;
-
-						scene.add(grid_mesh);
-
-
-
-						const plane_noise_texture = new THREE.TextureLoader().load('textures/smooth-noise.jpg');
-						plane_noise_texture.wrapS = THREE.RepeatWrapping;
-						plane_noise_texture.wrapT = THREE.RepeatWrapping;
-
-						plane_material = new THREE.ShaderMaterial
-						(
-							{
-								vertexShader:
-
-									`varying vec2 vUv1;
-									varying vec2 vUv2;
-									uniform float time;
-
-									void main ()
-									{
-										vUv1 = vec2(length(position));
-										vUv2 = uv;
-
-										vec4 transformed = modelMatrix * vec4(position, 1.0);
-
-										gl_Position = projectionMatrix * viewMatrix * transformed;
-									}`,
-
-								fragmentShader:
-
-									`uniform sampler2D noise;
-									uniform float time;
-
-									varying vec2 vUv1;
-									varying vec2 vUv2;
-
-									float rand (vec2 co)
-									{
-										return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);
-									}
-
-									void main ()
-									{
-										gl_FragColor.rgb =
-											texture2D(noise, vUv1 - time + acos((vUv2.t - 0.5))).rgb +
-											texture2D(noise, vUv1 - time + acos((vUv2.s - 0.5))).rgb +
-											texture2D(noise, vUv1 - time + asin((vUv2.t - 0.5))).rgb +
-											texture2D(noise, vUv1 - time + asin((vUv2.s - 0.5))).rgb;
-
-										gl_FragColor.rgb *= 0.25;
-
-										gl_FragColor.rgb += smoothstep(0.0, 1.0, 1.0 - length(vUv1)) * 3.0 * (1.0 + sin(time * 50.0) * 0.1);
-
-										gl_FragColor.rgb *= vec3(95.0 / 255.0, 86.0 / 255.0, 175.0 / 255.0);
-
-										gl_FragColor.a = smoothstep(0.5, 1.0, pow(length(gl_FragColor.rgb), 2.0)) * smoothstep(0.0, 1.0, 0.8 - length(vUv1));
-									}`,
-
-								uniforms:
-								{
-									noise: { value: plane_noise_texture },
-
-									time: { value: 0 },
-								},
-
-								transparent: true,
-
-								depthTest: false,
-							},
-						);
-
-						plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1, 10, 10), plane_material);
 
 
 
@@ -1691,131 +1809,6 @@ window.addEventListener
 									},
 								);
 
-								scene_objects['models/Meatman.glb'].children[0].children.forEach
-								(
-									(elm) =>
-									{
-										switch (elm.name)
-										{
-										case 'Tray_1':
-										{
-											tray = elm;
-
-											break;
-										}
-
-										case 'Tray_Barbecue':
-										{
-											tray_barbecue = elm;
-
-											break;
-										}
-
-										default:
-										}
-									},
-								);
-
-								scene_objects['models/Scene.glb'].children[0].children.forEach
-								(
-									(elm) =>
-									{
-										switch (elm.name)
-										{
-										case 'Barbecue':
-										{
-											elm.visible = false;
-
-											scene_objects['models/Barbecue_Classic.glb']._corresponding_scene_object = elm;
-
-											break;
-										}
-
-										case 'Kupaty':
-										{
-											elm.visible = false;
-
-											scene_objects['models/Kupaty_Extra.glb']._corresponding_scene_object = elm;
-
-											break;
-										}
-
-										case 'Sausages':
-										{
-											elm.visible = false;
-
-											scene_objects['models/Sausages_Barbecue.glb']._corresponding_scene_object = elm;
-
-											break;
-										}
-
-										case 'Bacon004':
-										{
-											elm.visible = false;
-
-											scene_objects['models/Bacon.glb']._corresponding_scene_object = elm;
-
-											break;
-										}
-
-										case 'Steak':
-										{
-											elm.visible = false;
-
-											scene_objects['models/Steak.glb']._corresponding_scene_object = elm;
-
-											break;
-										}
-
-										case 'Burger003':
-										{
-											elm.visible = false;
-
-											scene_objects['models/Burger.glb']._corresponding_scene_object = elm;
-
-											break;
-										}
-										case 'Chevapchichi004':
-										{
-											elm.visible = false;
-
-											scene_objects['models/Chevapchichi.glb']._corresponding_scene_object = elm;
-
-											break;
-										}
-
-										default:
-										}
-									},
-								);
-
-								scene_objects['models/Mayonnaise.glb'].visible = false;
-								scene_objects['models/SoySauce.glb'].visible = false;
-								scene_objects['models/Vinegar.glb'].visible = false;
-
-								scene_objects['models/Kupaty_Extra.glb'].visible = false;
-								scene_objects['models/Bacon.glb'].visible = false;
-								scene_objects['models/Sausages_Barbecue.glb'].visible = false;
-								scene_objects['models/Burger.glb'].visible = false;
-								scene_objects['models/Barbecue_Classic.glb'].visible = false;
-								scene_objects['models/Steak.glb'].visible = false;
-								scene_objects['models/Chevapchichi.glb'].visible = false;
-
-								scene.add(scene_objects['models/Scene.glb']);
-								scene.add(scene_objects['models/Meatman.glb']);
-								scene.add(scene_objects['models/Grill.glb']);
-								scene.add(scene_objects['models/Mayonnaise.glb']);
-								scene.add(scene_objects['models/SoySauce.glb']);
-								scene.add(scene_objects['models/Vinegar.glb']);
-								scene.add(plane);
-								scene.add(scene_objects['models/Kupaty_Extra.glb']);
-								scene.add(scene_objects['models/Bacon.glb']);
-								scene.add(scene_objects['models/Sausages_Barbecue.glb']);
-								scene.add(scene_objects['models/Burger.glb']);
-								scene.add(scene_objects['models/Barbecue_Classic.glb']);
-								scene.add(scene_objects['models/Steak.glb']);
-								scene.add(scene_objects['models/Chevapchichi.glb']);
-
 								setTimeout
 								(
 									() =>
@@ -1846,7 +1839,7 @@ window.addEventListener
 								document.getElementsByClassName('camera-section')[0].style.display = 'block';
 							},
 
-							0,
+							500,
 						);
 					},
 
