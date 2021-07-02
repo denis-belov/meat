@@ -1,6 +1,7 @@
 /*
 global
 
+gtag,
 XR8,
 */
 
@@ -412,14 +413,18 @@ const parseGlb = (arraybuffer) =>
 
 						gltf.scene.mixer = new THREE.AnimationMixer(gltf.scene);
 
+						// LOG(gltf.animations)
+
+						let anim2 = null;
+
 						gltf.animations.forEach(
 
 							(animation) =>
 							{
 								const action = gltf.scene.mixer.clipAction(animation);
 
-								if (
-
+								if
+								(
 									animation.name !== 'Idle_Marinade' &&
 									animation.name !== 'Idle_Spices' &&
 									animation.name !== 'Idle_Food' &&
@@ -434,9 +439,35 @@ const parseGlb = (arraybuffer) =>
 									action.clampWhenFinished = true;
 								}
 
+								// // LOG(animation.clone)
+
+								// if (animation.name === 'Marinade_Mayonnaise')
+								// {
+
+								// 	anim2 = animation.clone();
+
+								// 	anim2.name = 'Chevapchichi_Wrong';
+								// }
+
 								gltf.scene.animations[animation.name] = action;
 							},
 						);
+
+						// if (anim2)
+						// {
+						// 	// LOG(anim2)
+						// 	gltf.animations.push(anim2);
+
+						// 	const action = gltf.scene.mixer.clipAction(anim2);
+
+						// 	action.loop = THREE.LoopOnce;
+
+						// 	action.clampWhenFinished = true;
+
+						// 	gltf.scene.animations[anim2.name] = action;
+
+						// 	// LOG(gltf.scene.animations[anim2.name])
+						// }
 					}
 
 					gltf.scene.traverse(
@@ -482,6 +513,131 @@ let plane = null;
 let tray = null;
 let tray_barbecue = null;
 let meat = null;
+let chev = false;
+// const chev_spices = [];
+
+
+
+document.getElementById('slider-link').addEventListener(
+
+	'click',
+
+	async () =>
+	{
+		// LOG(selected_spice_set, spice_set.match)
+
+		// selected_spice_set.length = 0;
+
+		// selected_spice_set.push(...chev_spices);
+
+		// LOG(selected_spice_set)
+
+		// if ()
+		// {
+
+		// }
+
+		// selected_spice_set = selected_spice_set.sort();
+
+		scene_objects['models/Meatman.glb'].animations['Idle_Spices'].stop();
+		// scene_objects['models/Meatman.glb'].animations['Chevapchichi_Correct'].stop();
+		scene_objects['models/Meatman.glb'].animations['Chevapchichi_Wrong'].stop();
+
+		if (spice_set.match && selected_spice_set.length === spice_set.match.length)
+		{
+			// gtag('event', 'grill', { event_category: 'Final' });
+
+			// // scene_objects['models/Meatman.glb'].animations['Idle_Spices'].play();
+			// // setTimeout(
+
+			// // 	() =>
+			// // 	{
+			// // 		change_trans = true;
+			// // 		change_trans2 = true;
+
+			// // 		tray.visible = false;
+			// // 		tray_barbecue.visible = false;
+
+			// // 		meat._corresponding_scene_object.visible = false;
+
+			// // 		plane.visible = true;
+
+			// // 		meat.visible = true;
+
+			// // 		spice_set.match.audio.play();
+			// // 		scene_objects['models/Meatman.glb'].animations['Final'].play();
+			// // 	},
+
+			// // 	1000,
+			// // );
+
+
+			// // audio[paths_audio[i]] = document.createElement('audio');
+
+			// // audio[paths_audio[i]].addEventListener('ended', () => audio[paths_audio[i]].pause());
+
+			// // const blob = new Blob([ external_data_loader.content[paths_audio[i]] ], { type: "audio/mp3" });
+
+			// // _audio.src = spice_set.match.audio;
+
+			// spice_set.match.audio.load();
+
+			// await new Promise(
+
+			// 	(resolve) =>
+			// 	{
+			// 		spice_set.match.audio.addEventListener(
+
+			// 			'canplaythrough',
+
+			// 			resolve,
+			// 		);
+			// 	},
+			// );
+
+
+
+			// change_trans = true;
+			// change_trans2 = true;
+
+			// tray.visible = false;
+			// tray_barbecue.visible = false;
+
+			// meat._corresponding_scene_object.visible = false;
+
+			// plane.visible = true;
+
+			// meat.visible = true;
+
+
+
+			audio['audio/mp3/Chevapchichi_Wrong.mp3'].pause();
+			audio['audio/mp3/Chevapchichi_Wrong.mp3'].currentTime = 0;
+			document.getElementsByClassName('camera-section')[3].style.display = 'none';
+			audio['audio/mp3/Chevapchichi_Correct.mp3'].play();
+			document.getElementById('bubble-text').innerHTML = audio['audio/mp3/Chevapchichi_Correct.mp3'].bubble;
+			document.getElementById('bubble').style.display = 'block';
+			scene_objects['models/Meatman.glb'].animations['Chevapchichi_Correct'].play();
+
+			// // current_spice_audio.pause();
+			// // spice_set.match.audio.pause()
+			// spice_set.match.audio.play();
+			// document.getElementById('bubble-text').innerHTML = spice_set.match.audio.bubble;
+			// document.getElementById('bubble').style.display = 'block';
+			// // _audio.play();
+			// scene_objects['models/Meatman.glb'].animations['Final'].play();
+		}
+		else
+		{
+			audio['audio/mp3/Chevapchichi_Wrong.mp3'].pause();
+			audio['audio/mp3/Chevapchichi_Wrong.mp3'].currentTime = 0;
+			audio['audio/mp3/Chevapchichi_Wrong.mp3'].play();
+			document.getElementById('bubble-text').innerHTML = audio['audio/mp3/Chevapchichi_Wrong.mp3'].bubble;
+			document.getElementById('bubble').style.display = 'block';
+			scene_objects['models/Meatman.glb'].animations['Chevapchichi_Wrong'].play();
+		}
+	},
+);
 
 
 
@@ -626,7 +782,7 @@ window.addEventListener(
 						// canvas.style.width = `${ window.innerWidth }px!important`;
 						// canvas.style.height = `${ window.innerHeight }px!important`;
 
-						LOG(window.innerWidth)
+						// LOG(window.innerWidth)
 
 						XR8.XrController.updateCameraProjectionMatrix(
 
@@ -696,6 +852,9 @@ window.addEventListener(
 							'audio/mp3/soy.mp3',
 							'audio/mp3/Marinade_Correct.mp3',
 							'audio/mp3/Marinade_Correct (Short).mp3',
+
+							'audio/mp3/Chevapchichi_Correct.mp3',
+							'audio/mp3/Chevapchichi_Wrong.mp3',
 
 							'audio/mp3/salt.mp3',
 							'audio/mp3/Perec.mp3',
@@ -774,6 +933,9 @@ window.addEventListener(
 							case 'audio/mp3/Marinade_Correct.mp3':
 							case 'audio/mp3/Marinade_Correct (Short).mp3':
 
+							case 'audio/mp3/Chevapchichi_Correct.mp3':
+							case 'audio/mp3/Chevapchichi_Wrong.mp3':
+
 							case 'audio/mp3/salt.mp3':
 							case 'audio/mp3/Perec.mp3':
 							case 'audio/mp3/Luk.mp3':
@@ -790,6 +952,8 @@ window.addEventListener(
 								audio[paths_audio[i]] = document.createElement('audio');
 
 								audio[paths_audio[i]].bubble = bubbles[paths_audio[i]];
+
+								// LOG(paths_audio[i], bubbles[paths_audio[i]])
 
 								audio[paths_audio[i]].addEventListener(
 
@@ -930,6 +1094,8 @@ window.addEventListener(
 
 											() =>
 											{
+												document.getElementById('back').style.display = 'none';
+
 												spice_set = spice_sets[elm];
 
 												spice_set.name = null;
@@ -1008,6 +1174,8 @@ window.addEventListener(
 
 											() =>
 											{
+												document.getElementById('back').style.display = 'none';
+
 												spice_set = spice_sets[elm];
 
 												spice_set.name = null;
@@ -1067,6 +1235,13 @@ window.addEventListener(
 												scene_objects['models/Scene.glb'].animations['Scene_GetFood'].play();
 											},
 										);
+									}
+
+									if (elm === 'models/Chevapchichi.glb')
+									{
+										chev = true;
+
+										// document.getElementById('slider-link').style.display = 'flex';
 									}
 								},
 							);
@@ -1224,6 +1399,91 @@ window.addEventListener(
 
 										break;
 
+									case 'Chevapchichi_Correct':
+									{
+										gtag('event', 'grill', { event_category: 'Final' });
+
+										// scene_objects['models/Meatman.glb'].animations['Idle_Spices'].play();
+										// setTimeout(
+
+										// 	() =>
+										// 	{
+										// 		change_trans = true;
+										// 		change_trans2 = true;
+
+										// 		tray.visible = false;
+										// 		tray_barbecue.visible = false;
+
+										// 		meat._corresponding_scene_object.visible = false;
+
+										// 		plane.visible = true;
+
+										// 		meat.visible = true;
+
+										// 		spice_set.match.audio.play();
+										// 		scene_objects['models/Meatman.glb'].animations['Final'].play();
+										// 	},
+
+										// 	1000,
+										// );
+
+
+										// audio[paths_audio[i]] = document.createElement('audio');
+
+										// audio[paths_audio[i]].addEventListener('ended', () => audio[paths_audio[i]].pause());
+
+										// const blob = new Blob([ external_data_loader.content[paths_audio[i]] ], { type: "audio/mp3" });
+
+										// _audio.src = spice_set.match.audio;
+
+										spice_set.match.audio.load();
+
+										await new Promise(
+
+											(resolve) =>
+											{
+												spice_set.match.audio.addEventListener(
+
+													'canplaythrough',
+
+													resolve,
+												);
+											},
+										);
+
+
+
+										change_trans = true;
+										change_trans2 = true;
+
+										tray.visible = false;
+										tray_barbecue.visible = false;
+
+										meat._corresponding_scene_object.visible = false;
+
+										plane.visible = true;
+
+										meat.visible = true;
+
+										scene_objects['models/Meatman.glb'].animations['Chevapchichi_Correct'].stop();
+
+										// current_spice_audio.pause();
+										// spice_set.match.audio.pause()
+										spice_set.match.audio.play();
+										document.getElementById('bubble-text').innerHTML = spice_set.match.audio.bubble;
+										document.getElementById('bubble').style.display = 'block';
+										// _audio.play();
+										scene_objects['models/Meatman.glb'].animations['Final'].play();
+
+										break;
+									}
+
+									case 'Chevapchichi_Wrong':
+
+										scene_objects['models/Meatman.glb'].animations['Idle_Spices'].play();
+
+										break;
+
 									case 'Get_Spices_Salt':
 									case 'Get_Spices_Perec':
 									case 'Get_Spices_Luk':
@@ -1248,6 +1508,8 @@ window.addEventListener(
 
 										if (spice_set.match && selected_spice_set.length === spice_set.match.length)
 										{
+											gtag('event', 'grill', { event_category: 'Final' });
+
 											scene_objects['models/Meatman.glb'].animations['Idle_Spices'].play();
 											// setTimeout(
 
@@ -1519,74 +1781,95 @@ window.addEventListener(
 
 										() =>
 										{
-											// document.getElementsByClassName('camera-section')[4].style.pointerEvents = 'none';
-											// document.getElementsByClassName('camera-section')[4].classList.add('disabled');
-
-											selected_spice_set.push(elm_index);
-											selected_spice_set = selected_spice_set.sort((a, b) => (a - b));
-
-											if (!spice_set.match)
+											if (chev)
 											{
-												let count = 0;
-												let match = null;
-												let name = null;
-
-												for (const key in spice_set)
+												if (spices_buttons[elm_index].classList.contains('active'))
 												{
-													if (key !== 'match' && key !== 'unique' && key !== 'name' && spice_set[key].includes(elm_index))
-													{
-														++count;
+													spices_buttons[elm_index].classList.remove('active');
 
-														match = spice_set[key];
-														match.audio = spice_set[key].audio;
-														name = key;
+													selected_spice_set.splice(selected_spice_set.indexOf(elm_index), 1);
+												}
+												else
+												{
+													spices_buttons[elm_index].classList.add('active');
+
+													selected_spice_set.push(elm_index);
+													selected_spice_set = selected_spice_set.sort((a, b) => (a - b));
+												}
+
+												document.getElementById('slider-link').style.display = selected_spice_set.length > 0 ? 'flex' : 'none';
+											}
+											else
+											{
+												// document.getElementsByClassName('camera-section')[4].style.pointerEvents = 'none';
+												// document.getElementsByClassName('camera-section')[4].classList.add('disabled');
+
+												selected_spice_set.push(elm_index);
+												selected_spice_set = selected_spice_set.sort((a, b) => (a - b));
+
+												if (!spice_set.match)
+												{
+													let count = 0;
+													let match = null;
+													let name = null;
+
+													for (const key in spice_set)
+													{
+														if (key !== 'match' && key !== 'unique' && key !== 'name' && spice_set[key].includes(elm_index))
+														{
+															++count;
+
+															match = spice_set[key];
+															match.audio = spice_set[key].audio;
+															name = key;
+														}
+													}
+
+													if (count < (Object.keys(spice_set).length - 3))
+													{
+														spice_set.match = match;
+														spice_set.match.audio = match.audio;
+														spice_set.name = name;
+
+														spices_buttons.forEach(
+
+															(_elm, _elm_index) =>
+															{
+																if (!spice_set.match.includes(_elm_index))
+																{
+																	_elm.style.display = 'none';
+																}
+															},
+														);
 													}
 												}
 
-												if (count < (Object.keys(spice_set).length - 3))
+												spices_buttons[elm_index].style.display = 'none';
+
+												// LOG(current_spice_animation)
+
+												if (current_spice_animation)
 												{
-													spice_set.match = match;
-													spice_set.match.audio = match.audio;
-													spice_set.name = name;
-
-													spices_buttons.forEach(
-
-														(_elm, _elm_index) =>
-														{
-															if (!spice_set.match.includes(_elm_index))
-															{
-																_elm.style.display = 'none';
-															}
-														},
-													);
+													current_spice_animation.stop();
+													current_spice_audio.pause();
 												}
+
+												scene_objects['models/Meatman.glb'].animations['Idle_Spices'].stop();
+
+												current_spice_animation = scene_objects['models/Meatman.glb'].animations[elm];
+												current_spice_audio = spice_audio[elm_index];
+
+												current_spice_animation.play();
+												current_spice_audio.play();
+												document.getElementById('bubble-text').innerHTML = current_spice_audio.bubble;
+												document.getElementById('bubble').style.display = 'block';
+
+												// if (spice_set.match && selected_spice_set.length === spice_set.match.length)
+												// {
+												// 	LOG(spice_set.match.audio)
+												// 	spice_set.match.audio.load();
+												// }
 											}
-
-											spices_buttons[elm_index].style.display = 'none';
-
-											// LOG(current_spice_animation)
-
-											if (current_spice_animation)
-											{
-												current_spice_animation.stop();
-												current_spice_audio.pause();
-											}
-
-											scene_objects['models/Meatman.glb'].animations['Idle_Spices'].stop();
-
-											current_spice_animation = scene_objects['models/Meatman.glb'].animations[elm];
-											current_spice_audio = spice_audio[elm_index];
-
-											current_spice_animation.play();
-											current_spice_audio.play();
-											document.getElementById('bubble-text').innerHTML = current_spice_audio.bubble;
-											document.getElementById('bubble').style.display = 'block';
-
-											// if (spice_set.match && selected_spice_set.length === spice_set.match.length)
-											// {
-											// 	LOG(spice_set.match.audio)
-											// 	spice_set.match.audio.load();
-											// }
 										},
 									);
 								},
@@ -1594,12 +1877,115 @@ window.addEventListener(
 
 
 
+						document.getElementById('back').addEventListener(
+
+							'click',
+
+							() =>
+							{
+								// ++meat_try;
+
+								// marinade_try = 0;
+
+								audio['audio/mp3/Nachalo.mp3'].pause();
+								audio['audio/mp3/Nachalo.mp3'].currentTime = 0;
+								document.getElementById('bubble').style.display = 'none';
+
+								document.getElementsByClassName('camera-section')[1].style.display = 'none';
+								document.getElementsByClassName('camera-section')[0].style.display = 'block';
+
+								sauce_buttons.forEach(
+
+									(elm) =>
+									{
+										elm.style.display = 'block';
+									},
+								);
+
+								// meat.visible = false;
+								// plane.visible = false;
+								// // scene_objects['models/Mayonnaise.glb'].visible = false;
+								// // scene_objects['models/SoySauce.glb'].visible = false;
+								// // scene_objects['models/Vinegar.glb'].visible = false;
+
+								// // scene_objects['models/Grill.glb'].visible = true;
+
+								scene_objects['models/Scene.glb'].animations['Scene_Start'].stop();
+								scene_objects['models/Meatman.glb'].animations['Start'].stop();
+								scene_objects['models/Grill.glb'].animations['Grill_Start'].stop();
+
+								scene_objects['models/Scene.glb'].animations['Scene_Idle_Food'].stop();
+								scene_objects['models/Meatman.glb'].animations['Idle_Food'].stop();
+
+								scene_objects['models/Scene.glb'].visible = false;
+								scene_objects['models/Meatman.glb'].visible = false;
+								scene_objects['models/Grill.glb'].visible = false;
+
+								// scene_objects['models/Mayonnaise.glb'].visible = false;
+								// scene_objects['models/SoySauce.glb'].visible = false;
+								// scene_objects['models/Vinegar.glb'].visible = false;
+
+								// scene_objects['models/Kupaty_Extra.glb'].visible = false;
+								// scene_objects['models/Bacon.glb'].visible = false;
+								// scene_objects['models/Sausages_Barbecue.glb'].visible = false;
+								// scene_objects['models/Burger.glb'].visible = false;
+								// scene_objects['models/Barbecue_Classic.glb'].visible = false;
+								// scene_objects['models/Steak.glb'].visible = false;
+								// scene_objects['models/Chevapchichi.glb'].visible = false;
+
+								grid_mesh.visible = true;
+
+								// tray.visible = true;
+								// tray_barbecue.visible = true;
+
+								// plane.position.copy(xz_plane_intersection);
+								// plane.position.add(new THREE.Vector3(0.030909, 0.760915, 0.520341));
+
+								// meat = null;
+								// spice_set = null;
+								// selected_spice_set.length = 0;
+
+								// plane_material.uniforms.time.value = 0;
+								// trans = 0;
+								// trans2 = 0;
+								// change_trans = false;
+								// change_trans2 = false;
+								// chev = false;
+								// document.getElementById('slider-link').style.display = 'none';
+
+								// scene_objects['models/Scene.glb'].animations['SceneFood_Marinade&Spices'].stop();
+								// scene_objects['models/Scene.glb'].animations['SceneBarbecue_Marinade&Spices'].stop();
+								// // scene_objects['models/Scene.glb'].animations['Scene_Start'].play();
+								// scene_objects['models/Meatman.glb'].animations['Final_Idle'].stop();
+								// // scene_objects['models/Meatman.glb'].animations['Start'].play();
+								// // scene_objects['models/Grill.glb'].animations['Grill_Start'].play();
+
+								// scene_objects['models/Scene.glb'].animations['Scene_Idle_Food'].play();
+								// scene_objects['models/Meatman.glb'].animations['Idle_Food'].play();
+
+								// // audio['audio/mp3/Nachalo.mp3'].play();
+								// // document.getElementById('bubble-text').innerHTML = audio['audio/mp3/Nachalo.mp3'].bubble;
+								// // document.getElementById('bubble').style.display = 'block';
+
+								// document.getElementsByClassName('camera-section')[2].style.display = 'block';
+								// // grid_mesh.visible = true;
+
+								// // LOG(document.getElementsByClassName('camera-section')[0])
+							},
+						);
+
 						document.getElementsByClassName('cook-more')[0].addEventListener(
 
 							'click',
 
 							() =>
 							{
+								for (let i = 0; i < spices_buttons.length; ++i)
+								{
+									spices_buttons[i].classList.remove('active');
+									spices_buttons[i].style.display = 'none';
+								}
+
 								++meat_try;
 
 								marinade_try = 0;
@@ -1653,6 +2039,8 @@ window.addEventListener(
 								trans2 = 0;
 								change_trans = false;
 								change_trans2 = false;
+								chev = false;
+								document.getElementById('slider-link').style.display = 'none';
 
 								scene_objects['models/Scene.glb'].animations['SceneFood_Marinade&Spices'].stop();
 								scene_objects['models/Scene.glb'].animations['SceneBarbecue_Marinade&Spices'].stop();

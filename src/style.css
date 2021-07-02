@@ -259,6 +259,36 @@ body {
     position: absolute;
     top: 24px;
 }
+.camera-header a.subtitles {
+    width: 40px;
+    height: 40px;
+    background: #373456;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border-radius: 50%;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    position: absolute;
+    top: 24px;
+    right: 73px;
+}
+.camera-header a.back {
+    width: 40px;
+    height: 40px;
+    background: #373456;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border-radius: 50%;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    position: absolute;
+    top: 24px;
+    left: 24px;
+}
 .camera-header a.logo {
     /* width: 40px;
     height: 40px;
@@ -273,15 +303,15 @@ body {
     position: absolute;
     top: 24px;
 }
-.camera-header a.back {
+/* .camera-header a.back {
     display: none;
     left: 24px;
-}
+} */
 .back-on .camera-header a.back {
     display: flex;
     transform: rotate(-180deg) matrix(-1, 0, 0, 1, 0, 0);
 }
-.camera-header a:hover {
+.camera-header a:active {
     background: #524E7B;
 }
 .camera-header .camera-logo {
@@ -357,7 +387,7 @@ body {
     transition: all 0.2s;
     -webkit-tap-highlight-color: transparent;
 }
-.camera-section a.begin:hover {
+.camera-section a.begin:active {
     background: #524E7B;
 }
 
@@ -445,7 +475,7 @@ body {
     margin-bottom: 8px;
     transition: all 0.2s;
 }
-.camera-section .link-block a.end-link:hover {
+.camera-section .link-block a.end-link:active {
     background: #524E7B;
 }
 .camera-section .link-block a.go-site {
@@ -458,7 +488,7 @@ body {
     color: #373456;
     transition: all 0.2s;
 }
-.camera-section .link-block a.go-site:hover {
+.camera-section .link-block a.go-site:active {
     background: #E4E3FF;
     border: 2px solid #E4E3FF;
 }
@@ -568,7 +598,7 @@ a.slider-link {
     align-items: center;
     justify-content: center;
 }
-a.slider-link:hover {
+a.slider-link:active {
     background: #524E7B;
 }
 
@@ -765,7 +795,7 @@ a.slider-link:hover {
 /* .camera-header #subtitles.subtitles-on .cross {
     display: block;
 } */
-.camera-header #subtitles {
+/* .camera-header #subtitles {
     width: 40px;
     height: 40px;
     background: #373456;
@@ -779,7 +809,7 @@ a.slider-link:hover {
     position: absolute;
     top: 24px;
     right: 73px;
-}
+} */
 /* .camera-header #subtitles.subtitles-off .cross {
     display: none;
 } */
@@ -799,3 +829,19 @@ a.slider-link:hover {
 .camera-header #subtitles.subtitles-on svg.subtitles-on {
     display: block;
 }
+
+/* .camera-header #back {
+    width: 40px;
+    height: 40px;
+    background: #373456;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border-radius: 50%;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    position: absolute;
+    top: 24px;
+    left: 24px;
+} */
