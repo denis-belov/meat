@@ -27,6 +27,17 @@ import bubbles from './bubbles.json';
 
 
 
+Audio.prototype.playWithBubble =
+	function ()
+	{
+		this.play();
+
+		document.getElementById('bubble-text').innerHTML = this.bubble;
+		document.getElementById('bubble').style.display = 'block';
+	};
+
+
+
 // const dpr = confirm('Use device pixel ratio?') ? (window.devicePixelRatio || 1) : 1;
 const dpr = 1;
 
@@ -58,6 +69,23 @@ const meat_position = new THREE.Vector3(0.030909, 0.760915, 0.520341);
 const meat_position2 = new THREE.Vector3();
 
 
+
+const paths =
+[
+	'models/Scene.glb',
+	'models/Meatman.glb',
+	'models/Grill.glb',
+	'models/Kupaty_Extra.glb',
+	'models/Bacon.glb',
+	'models/Sausages_Barbecue.glb',
+	'models/Burger.glb',
+	'models/Barbecue_Classic.glb',
+	'models/Steak.glb',
+	'models/Chevapchichi.glb',
+	'models/Mayonnaise.glb',
+	'models/SoySauce.glb',
+	'models/Vinegar.glb',
+];
 
 const paths_audio =
 [
@@ -484,7 +512,7 @@ const parseGlb = (arraybuffer) =>
 
 let grid_mesh = { visible: false };
 const scene_objects = {};
-const audio = {};
+const audios = {};
 
 let plane_material = null;
 let plane = null;
@@ -504,22 +532,21 @@ document.getElementById('slider-link').addEventListener
 		scene_objects['models/Meatman.glb'].animations['Idle_Spices'].stop();
 		scene_objects['models/Meatman.glb'].animations['Chevapchichi_Wrong'].stop();
 
-		audio['audio/mp3/Chevapchichi_Wrong.mp3'].pause();
-		audio['audio/mp3/Chevapchichi_Wrong.mp3'].currentTime = 0;
+		audios['audio/mp3/Chevapchichi_Wrong.mp3'].pause();
+		audios['audio/mp3/Chevapchichi_Wrong.mp3'].currentTime = 0;
 
 		if (spice_set.match && selected_spice_set.length === spice_set.match.length)
 		{
 			document.getElementsByClassName('camera-section')[4].style.display = 'none';
-			audio['audio/mp3/Chevapchichi_Correct.mp3'].play();
-			document.getElementById('bubble-text').innerHTML = audio['audio/mp3/Chevapchichi_Correct.mp3'].bubble;
-			document.getElementById('bubble').style.display = 'block';
+
+			audios['audio/mp3/Chevapchichi_Correct.mp3'].playWithBubble();
+
 			scene_objects['models/Meatman.glb'].animations['Chevapchichi_Correct'].play();
 		}
 		else
 		{
-			audio['audio/mp3/Chevapchichi_Wrong.mp3'].play();
-			document.getElementById('bubble-text').innerHTML = audio['audio/mp3/Chevapchichi_Wrong.mp3'].bubble;
-			document.getElementById('bubble').style.display = 'block';
+			audios['audio/mp3/Chevapchichi_Wrong.mp3'].playWithBubble();
+
 			scene_objects['models/Meatman.glb'].animations['Chevapchichi_Wrong'].play();
 		}
 	},
@@ -549,9 +576,9 @@ document.getElementById('slider-link').addEventListener
 				document.getElementById('sound').classList.add('sound-off');
 			}
 
-			for (const key in audio)
+			for (const key in audios)
 			{
-				audio[key].muted = muted;
+				audios[key].muted = muted;
 			}
 		},
 	);
@@ -568,15 +595,15 @@ document.getElementById('slider-link').addEventListener
 		{
 			subtitles_off = !subtitles_off;
 
-			if (!subtitles_off)
-			{
-				document.getElementById('subtitles').classList.remove('subtitles-of');
-				document.getElementById('subtitles').classList.add('subtitles-on');
-			}
-			else
+			if (subtitles_off)
 			{
 				document.getElementById('subtitles').classList.remove('subtitles-on');
 				document.getElementById('subtitles').classList.add('subtitles-of');
+			}
+			else
+			{
+				document.getElementById('subtitles').classList.remove('subtitles-of');
+				document.getElementById('subtitles').classList.add('subtitles-on');
 			}
 
 			document.getElementById('bubble').style.visibility = subtitles_off ? 'hidden' : 'visible';
@@ -585,6 +612,16 @@ document.getElementById('slider-link').addEventListener
 }
 
 
+
+// window.addEventListener
+// (
+// 	'DOMContentLoaded',
+
+// 	async () =>
+// 	{
+
+// 	},
+// )
 
 window.addEventListener
 (
@@ -617,8 +654,8 @@ window.addEventListener
 						canvas.width = window.innerWidth * dpr;
 						canvas.height = window.innerHeight * dpr;
 
-						XR8.XrController.updateCameraProjectionMatrix(
-
+						XR8.XrController.updateCameraProjectionMatrix
+						(
 							{
 								cam:
 								{
@@ -639,23 +676,6 @@ window.addEventListener
 						const [ percent ] = document.getElementsByClassName('percent');
 
 						const sources = {};
-
-						const paths =
-						[
-							'models/Scene.glb',
-							'models/Meatman.glb',
-							'models/Grill.glb',
-							'models/Kupaty_Extra.glb',
-							'models/Bacon.glb',
-							'models/Sausages_Barbecue.glb',
-							'models/Burger.glb',
-							'models/Barbecue_Classic.glb',
-							'models/Steak.glb',
-							'models/Chevapchichi.glb',
-							'models/Mayonnaise.glb',
-							'models/SoySauce.glb',
-							'models/Vinegar.glb',
-						];
 
 						paths.forEach
 						(
@@ -701,114 +721,60 @@ window.addEventListener
 							scene_objects[paths[i]] = await parseGlb(external_data_loader.content[paths[i]]);
 						}
 
-						const prom_aud = [];
+						const audios_loaded_promises = [];
 
 						for (let i = 0; i < paths_audio.length; ++i)
 						{
-							let set = null;
+							const audio = new Audio(paths_audio[i]);
+
+							audio.type = 'audio/mpeg';
+
+							audio.bubble = bubbles[paths_audio[i]];
+
+							audio.addEventListener
+							(
+								'ended',
+
+								() =>
+								{
+									document.getElementById('bubble').style.display = 'none';
+								},
+							);
+
+							audio.load();
+
+							audios_loaded_promises.push
+							(
+								new Promise
+								(
+									(resolve) => audio.addEventListener('canplaythrough', resolve),
+								),
+							);
+
+							audios[paths_audio[i]] = audio;
 
 							switch (paths_audio[i])
 							{
-							case 'audio/mp3/Nachalo.mp3':
-
-							case 'audio/mp3/Svinina1.mp3':
-							case 'audio/mp3/Svinina2.mp3':
-							case 'audio/mp3/lenta.mp3':
-
-							case 'audio/mp3/Marinade_Vinegar.mp3':
-							case 'audio/mp3/mazik.mp3':
-							case 'audio/mp3/soy.mp3':
-							case 'audio/mp3/Marinade_Correct.mp3':
-							case 'audio/mp3/Marinade_Correct (Short).mp3':
-
-							case 'audio/mp3/Chevapchichi_Correct.mp3':
-							case 'audio/mp3/Chevapchichi_Wrong.mp3':
-
-							case 'audio/mp3/salt.mp3':
-							case 'audio/mp3/Perec.mp3':
-							case 'audio/mp3/Luk.mp3':
-							case 'audio/mp3/Paprika.mp3':
-							case 'audio/mp3/Zelen.mp3':
-							case 'audio/mp3/bazilik.mp3':
-							case 'audio/mp3/originalno.mp3':
-							case 'audio/mp3/Chesnok.mp3':
-							case 'audio/mp3/PerecSweet.mp3':
-							case 'audio/mp3/Tmin.mp3':
-							case 'audio/mp3/Tomat.mp3':
-							case 'audio/mp3/PerecBlackGoroshek.mp3':
-							{
-								audio[paths_audio[i]] = document.createElement('audio');
-
-								audio[paths_audio[i]].bubble = bubbles[paths_audio[i]];
-
-								audio[paths_audio[i]].addEventListener
-								(
-									'ended',
-
-									() =>
-									{
-										document.getElementById('bubble').style.display = 'none';
-									},
-								);
-
-								audio[paths_audio[i]].src = paths_audio[i];
-								audio[paths_audio[i]].type = 'audio/mpeg';
-
-								audio[paths_audio[i]].load();
-
-								prom_aud.push
-								(
-									new Promise
-									(
-										(resolve) => audio[paths_audio[i]].addEventListener('canplaythrough', resolve),
-									),
-								);
-
-								break;
-							}
-
-							case 'audio/mp3/Bacon.mp3':           { set = spice_sets['models/Bacon.glb']['models/Bacon.glb']; break; }
-							case 'audio/mp3/SashlikKass.mp3':     { set = spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Classic.glb']; break; }
-							case 'audio/mp3/ShashlikTradic.mp3':  { set = spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Traditional.glb']; break; }
-							case 'audio/mp3/SashlikOtborniy.mp3': { set = spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Selected.glb']; break; }
-							case 'audio/mp3/ShaslikPig.mp3':      { set = spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Pig.glb']; break; }
-							case 'audio/mp3/Chevapchichi.mp3':    { set = spice_sets['models/Chevapchichi.glb']['models/Chevapchichi.glb']; break; }
-							case 'audio/mp3/Burger.mp3':          { set = spice_sets['models/Burger.glb']['models/Burger.glb']; break; }
-							case 'audio/mp3/Kupati.mp3':          { set = spice_sets['models/Kupaty_Extra.glb']['models/Kupaty_Extra.glb']; break; }
-							case 'audio/mp3/KupatiPig.mp3':       { set = spice_sets['models/Kupaty_Extra.glb']['models/Kupaty_Pig.glb']; break; }
-							case 'audio/mp3/Steak.mp3':           { set = spice_sets['models/Steak.glb']['models/Steak.glb']; break; }
-							case 'audio/mp3/Kotleti.mp3':         { set = spice_sets['models/Steak.glb']['models/Steak_Neck.glb']; break; }
-							case 'audio/mp3/kolbaskiDom.mp3':     { set = spice_sets['models/Sausages_Barbecue.glb']['models/Sausages_Home.glb']; break; }
-							case 'audio/mp3/BBQ.mp3':             { set = spice_sets['models/Sausages_Barbecue.glb']['models/Sausages_Barbecue.glb']; break; }
-							case 'audio/mp3/Bavarskie.mp3':       { set = spice_sets['models/Sausages_Barbecue.glb']['models/Sausages_Bavarian.glb']; break; }
+							case 'audio/mp3/Bacon.mp3':           { spice_sets['models/Bacon.glb']['models/Bacon.glb'].audio = audios[paths_audio[i]]; break; }
+							case 'audio/mp3/SashlikKass.mp3':     { spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Classic.glb'].audio = audios[paths_audio[i]]; break; }
+							case 'audio/mp3/ShashlikTradic.mp3':  { spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Traditional.glb'].audio = audios[paths_audio[i]]; break; }
+							case 'audio/mp3/SashlikOtborniy.mp3': { spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Selected.glb'].audio = audios[paths_audio[i]]; break; }
+							case 'audio/mp3/ShaslikPig.mp3':      { spice_sets['models/Barbecue_Classic.glb']['models/Barbecue_Pig.glb'].audio = audios[paths_audio[i]]; break; }
+							case 'audio/mp3/Chevapchichi.mp3':    { spice_sets['models/Chevapchichi.glb']['models/Chevapchichi.glb'].audio = audios[paths_audio[i]]; break; }
+							case 'audio/mp3/Burger.mp3':          { spice_sets['models/Burger.glb']['models/Burger.glb'].audio = audios[paths_audio[i]]; break; }
+							case 'audio/mp3/Kupati.mp3':          { spice_sets['models/Kupaty_Extra.glb']['models/Kupaty_Extra.glb'].audio = audios[paths_audio[i]]; break; }
+							case 'audio/mp3/KupatiPig.mp3':       { spice_sets['models/Kupaty_Extra.glb']['models/Kupaty_Pig.glb'].audio = audios[paths_audio[i]]; break; }
+							case 'audio/mp3/Steak.mp3':           { spice_sets['models/Steak.glb']['models/Steak.glb'].audio = audios[paths_audio[i]]; break; }
+							case 'audio/mp3/Kotleti.mp3':         { spice_sets['models/Steak.glb']['models/Steak_Neck.glb'].audio = audios[paths_audio[i]]; break; }
+							case 'audio/mp3/kolbaskiDom.mp3':     { spice_sets['models/Sausages_Barbecue.glb']['models/Sausages_Home.glb'].audio = audios[paths_audio[i]]; break; }
+							case 'audio/mp3/BBQ.mp3':             { spice_sets['models/Sausages_Barbecue.glb']['models/Sausages_Barbecue.glb'].audio = audios[paths_audio[i]]; break; }
+							case 'audio/mp3/Bavarskie.mp3':       { spice_sets['models/Sausages_Barbecue.glb']['models/Sausages_Bavarian.glb'].audio = audios[paths_audio[i]]; break; }
 
 							default:
 							}
-
-							if (set)
-							{
-								set.audio = document.createElement('audio');
-
-								audio[paths_audio[i]] = set.audio;
-
-								audio[paths_audio[i]].bubble = bubbles[paths_audio[i]];
-
-								audio[paths_audio[i]].addEventListener
-								(
-									'ended',
-
-									() =>
-									{
-										document.getElementById('bubble').style.display = 'none';
-									},
-								);
-
-								audio[paths_audio[i]].src = paths_audio[i];
-								audio[paths_audio[i]].type = 'audio/mpeg';
-							}
 						}
 
-						await Promise.resolve(prom_aud);
+						await Promise.resolve(audios_loaded_promises);
 
 						const meat_buttons =
 							Array.from(document.getElementsByClassName('camera-section')[2].getElementsByClassName('slider-block-item'));
@@ -897,15 +863,11 @@ window.addEventListener
 
 												if (meat_try === 0)
 												{
-													audio['audio/mp3/lenta.mp3'].play();
-													document.getElementById('bubble-text').innerHTML = audio['audio/mp3/lenta.mp3'].bubble;
-													document.getElementById('bubble').style.display = 'block';
+													audios['audio/mp3/lenta.mp3'].playWithBubble();
 												}
 												else
 												{
-													audio['audio/mp3/Svinina2.mp3'].play();
-													document.getElementById('bubble-text').innerHTML = audio['audio/mp3/Svinina2.mp3'].bubble;
-													document.getElementById('bubble').style.display = 'block';
+													audios['audio/mp3/Svinina2.mp3'].playWithBubble();
 												}
 
 												scene_objects['models/Scene.glb'].animations['Scene_GetBarbecue'].play();
@@ -975,9 +937,8 @@ window.addEventListener
 
 												scene_objects['models/Scene.glb'].animations['Scene_Idle_Food'].stop();
 
-												audio['audio/mp3/Svinina1.mp3'].play();
-												document.getElementById('bubble-text').innerHTML = audio['audio/mp3/Svinina1.mp3'].bubble;
-												document.getElementById('bubble').style.display = 'block';
+												audios['audio/mp3/Svinina1.mp3'].playWithBubble();
+
 												scene_objects['models/Scene.glb'].animations['Scene_GetFood'].play();
 
 												if (elm === 'models/Chevapchichi.glb')
@@ -1174,9 +1135,8 @@ window.addEventListener
 
 										scene_objects['models/Meatman.glb'].animations['Chevapchichi_Correct'].stop();
 
-										spice_set.match.audio.play();
-										document.getElementById('bubble-text').innerHTML = spice_set.match.audio.bubble;
-										document.getElementById('bubble').style.display = 'block';
+										spice_set.match.audio.playWithBubble();
+
 										scene_objects['models/Meatman.glb'].animations['Final'].play();
 
 										break;
@@ -1241,10 +1201,11 @@ window.addEventListener
 
 
 											scene_objects['models/Meatman.glb'].animations['Idle_Spices'].stop();
+
 											current_spice_audio.pause();
-											spice_set.match.audio.play();
-											document.getElementById('bubble-text').innerHTML = spice_set.match.audio.bubble;
-											document.getElementById('bubble').style.display = 'block';
+
+											spice_set.match.audio.playWithBubble();
+
 											scene_objects['models/Meatman.glb'].animations['Final'].play();
 										}
 										else
@@ -1279,9 +1240,9 @@ window.addEventListener
 						);
 
 						[
-							{ meatman_animation: scene_objects['models/Meatman.glb'].animations['Marinade_Vinegar'], sauce_audio: audio['audio/mp3/Marinade_Vinegar.mp3'] },
-							{ meatman_animation: scene_objects['models/Meatman.glb'].animations['Marinade_Mayonnaise'], sauce_audio: audio['audio/mp3/mazik.mp3'] },
-							{ meatman_animation: scene_objects['models/Meatman.glb'].animations['Marinade_SoySauce'], sauce_audio: audio['audio/mp3/soy.mp3'] },
+							{ meatman_animation: scene_objects['models/Meatman.glb'].animations['Marinade_Vinegar'], sauce_audio: audios['audio/mp3/Marinade_Vinegar.mp3'] },
+							{ meatman_animation: scene_objects['models/Meatman.glb'].animations['Marinade_Mayonnaise'], sauce_audio: audios['audio/mp3/mazik.mp3'] },
+							{ meatman_animation: scene_objects['models/Meatman.glb'].animations['Marinade_SoySauce'], sauce_audio: audios['audio/mp3/soy.mp3'] },
 						]
 							.forEach
 							(
@@ -1308,9 +1269,7 @@ window.addEventListener
 											scene_objects['models/Meatman.glb'].animations['Idle_Marinade'].stop();
 											elm.meatman_animation.play();
 
-											elm.sauce_audio.play();
-											document.getElementById('bubble-text').innerHTML = elm.sauce_audio.bubble;
-											document.getElementById('bubble').style.display = 'block';
+											elm.sauce_audio.playWithBubble();
 										},
 									);
 								},
@@ -1343,16 +1302,14 @@ window.addEventListener
 
 								if (marinade_try === 0)
 								{
-									audio['audio/mp3/Marinade_Correct.mp3'].play();
-									document.getElementById('bubble-text').innerHTML = audio['audio/mp3/Marinade_Correct.mp3'].bubble;
-									document.getElementById('bubble').style.display = 'block';
+									audios['audio/mp3/Marinade_Correct.mp3'].playWithBubble();
+
 									scene_objects['models/Meatman.glb'].animations['Marinade_Correct'].play();
 								}
 								else
 								{
-									audio['audio/mp3/Marinade_Correct (Short).mp3'].play();
-									document.getElementById('bubble-text').innerHTML = audio['audio/mp3/Marinade_Correct (Short).mp3'].bubble;
-									document.getElementById('bubble').style.display = 'block';
+									audios['audio/mp3/Marinade_Correct (Short).mp3'].playWithBubble();
+
 									scene_objects['models/Meatman.glb'].animations['Marinade_Correct(Short)'].play();
 								}
 							},
@@ -1360,25 +1317,25 @@ window.addEventListener
 
 						const spice_audio =
 						[
-							audio['audio/mp3/salt.mp3'],
-							audio['audio/mp3/Perec.mp3'],
-							audio['audio/mp3/Luk.mp3'],
-							audio['audio/mp3/Paprika.mp3'],
-							audio['audio/mp3/Zelen.mp3'],
-							audio['audio/mp3/bazilik.mp3'],
-							audio['audio/mp3/originalno.mp3'],
-							audio['audio/mp3/originalno.mp3'],
-							audio['audio/mp3/PerecBlackGoroshek.mp3'],
-							audio['audio/mp3/Chesnok.mp3'],
-							audio['audio/mp3/originalno.mp3'],
-							audio['audio/mp3/PerecSweet.mp3'],
-							audio['audio/mp3/Tmin.mp3'],
-							audio['audio/mp3/Tomat.mp3'],
-							audio['audio/mp3/originalno.mp3'],
-							audio['audio/mp3/originalno.mp3'],
-							audio['audio/mp3/originalno.mp3'],
-							audio['audio/mp3/Zelen.mp3'],
-							audio['audio/mp3/originalno.mp3'],
+							audios['audio/mp3/salt.mp3'],
+							audios['audio/mp3/Perec.mp3'],
+							audios['audio/mp3/Luk.mp3'],
+							audios['audio/mp3/Paprika.mp3'],
+							audios['audio/mp3/Zelen.mp3'],
+							audios['audio/mp3/bazilik.mp3'],
+							audios['audio/mp3/originalno.mp3'],
+							audios['audio/mp3/originalno.mp3'],
+							audios['audio/mp3/PerecBlackGoroshek.mp3'],
+							audios['audio/mp3/Chesnok.mp3'],
+							audios['audio/mp3/originalno.mp3'],
+							audios['audio/mp3/PerecSweet.mp3'],
+							audios['audio/mp3/Tmin.mp3'],
+							audios['audio/mp3/Tomat.mp3'],
+							audios['audio/mp3/originalno.mp3'],
+							audios['audio/mp3/originalno.mp3'],
+							audios['audio/mp3/originalno.mp3'],
+							audios['audio/mp3/Zelen.mp3'],
+							audios['audio/mp3/originalno.mp3'],
 						];
 
 						// /* salt */ 0,
@@ -1505,12 +1462,11 @@ window.addEventListener
 												scene_objects['models/Meatman.glb'].animations['Idle_Spices'].stop();
 
 												current_spice_animation = scene_objects['models/Meatman.glb'].animations[elm];
-												current_spice_audio = spice_audio[elm_index];
+												current_spice_audio = spice_audios[elm_index];
+
+												current_spice_audio.playWithBubble();
 
 												current_spice_animation.play();
-												current_spice_audio.play();
-												document.getElementById('bubble-text').innerHTML = current_spice_audio.bubble;
-												document.getElementById('bubble').style.display = 'block';
 											}
 										},
 									);
@@ -1525,8 +1481,8 @@ window.addEventListener
 
 							() =>
 							{
-								audio['audio/mp3/Nachalo.mp3'].pause();
-								audio['audio/mp3/Nachalo.mp3'].currentTime = 0;
+								audios['audio/mp3/Nachalo.mp3'].pause();
+								audios['audio/mp3/Nachalo.mp3'].currentTime = 0;
 								document.getElementById('bubble').style.display = 'none';
 
 								document.getElementsByClassName('camera-section')[1].style.display = 'none';
@@ -1864,17 +1820,15 @@ window.addEventListener
 								scene.add(scene_objects['models/Steak.glb']);
 								scene.add(scene_objects['models/Chevapchichi.glb']);
 
-								setTimeout(
-
+								setTimeout
+								(
 									() =>
 									{
 										scene_objects['models/Scene.glb'].animations['Scene_Start'].play();
 										scene_objects['models/Meatman.glb'].animations['Start'].play();
 										scene_objects['models/Grill.glb'].animations['Grill_Start'].play();
 
-										audio['audio/mp3/Nachalo.mp3'].play();
-										document.getElementById('bubble-text').innerHTML = audio['audio/mp3/Nachalo.mp3'].bubble;
-										document.getElementById('bubble').style.display = 'block';
+										audios['audio/mp3/Nachalo.mp3'].playWithBubble();
 
 										scene.visible = true;
 									},
@@ -1887,8 +1841,8 @@ window.addEventListener
 							},
 						);
 
-						setTimeout(
-
+						setTimeout
+						(
 							() =>
 							{
 								document.getElementsByClassName('load-section')[0].style.display = 'none';
